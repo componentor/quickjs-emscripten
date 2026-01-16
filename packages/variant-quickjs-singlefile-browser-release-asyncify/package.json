@@ -50,6 +50,6 @@
     }
   },
   "dependencies": {
-    "@jitl/quickjs-ffi-types": "workspace:*"
+    "@jitl/quickjs-ffi-types": "*"
   }
 }

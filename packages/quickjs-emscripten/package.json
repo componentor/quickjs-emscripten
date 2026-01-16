@@ -53,15 +53,15 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jitl/quickjs-wasmfile-debug-asyncify": "workspace:*",
-    "@jitl/quickjs-wasmfile-debug-sync": "workspace:*",
-    "@jitl/quickjs-wasmfile-release-asyncify": "workspace:*",
-    "@jitl/quickjs-wasmfile-release-sync": "workspace:*",
-    "quickjs-emscripten-core": "workspace:*"
+    "@jitl/quickjs-wasmfile-debug-asyncify": "*",
+    "@jitl/quickjs-wasmfile-debug-sync": "*",
+    "@jitl/quickjs-wasmfile-release-asyncify": "*",
+    "@jitl/quickjs-wasmfile-release-sync": "*",
+    "quickjs-emscripten-core": "*"
   },
   "devDependencies": {
-    "@jitl/quickjs-singlefile-cjs-release-asyncify": "workspace:*",
-    "@jitl/quickjs-singlefile-cjs-release-sync": "workspace:*"
+    "@jitl/quickjs-singlefile-cjs-release-asyncify": "*",
+    "@jitl/quickjs-singlefile-cjs-release-sync": "*"
   },
   "engines": {
     "node": ">=16.0.0"

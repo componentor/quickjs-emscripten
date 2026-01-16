@@ -31,6 +31,6 @@
     }
   },
   "devDependencies": {
-    "@jitl/tsconfig": "workspace:*"
+    "@jitl/tsconfig": "*"
   }
 }
