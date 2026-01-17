@@ -1,0 +1,157 @@
+# WasmFS Variant - QuickJS with native filesystem via WasmFS OPFS backend
+# This variant enables filesystem operations directly in Wasm without JS boundary crossing
+
+# Tools
+EMSDK_VERSION=3.1.65
+EMSDK_DOCKER_IMAGE=emscripten/emsdk:3.1.65
+EMCC_SRC=../../scripts/emcc.sh
+EMCC=EMSDK_VERSION=$(EMSDK_VERSION) EMSDK_DOCKER_IMAGE=$(EMSDK_DOCKER_IMAGE) EMSDK_PROJECT_ROOT=$(REPO_ROOT) EMSDK_DOCKER_CACHE=$(REPO_ROOT)/emsdk-cache/$(EMSDK_VERSION) $(EMCC_SRC)
+GENERATE_TS=$(GENERATE_TS_ENV) ../../scripts/generate.ts
+THIS_DIR := $(dir $(abspath $(firstword $(MAKEFILE_LIST))))
+REPO_ROOT := $(abspath $(THIS_DIR)/../..)
+
+QUICKJS_LIB=quickjs
+
+# Paths
+QUICKJS_ROOT=../../vendor/$(QUICKJS_LIB)
+WRAPPER_ROOT=../../c
+TEMPLATES=../../templates
+# Intermediate build files
+BUILD_ROOT=build
+BUILD_WRAPPER=$(BUILD_ROOT)/wrapper
+BUILD_QUICKJS=$(BUILD_ROOT)/quickjs
+# Distributed to users
+DIST=dist
+
+# QuickJS
+QUICKJS_OBJS=quickjs.o libregexp.o libunicode.o cutils.o quickjs-libc.o libbf.o
+ifeq ($(QUICKJS_LIB),quickjs-ng)
+	QUICKJS_DEFINES:=-D_GNU_SOURCE
+	CFLAGS_WASM+=-DQTS_USE_QUICKJS_NG
+else
+	QUICKJS_CONFIG_VERSION=$(shell cat $(QUICKJS_ROOT)/VERSION)
+	QUICKJS_DEFINES:=-D_GNU_SOURCE -DCONFIG_VERSION=\"$(QUICKJS_CONFIG_VERSION)\" -DCONFIG_STACK_CHECK -DCONFIG_BIGNUM
+	CFLAGS_WASM+=-DCONFIG_BIGNUM
+endif
+VARIANT_QUICKJS_OBJS=$(patsubst %.o, $(BUILD_QUICKJS)/%.o, $(QUICKJS_OBJS))
+
+# quickjs-emscripten
+WRAPPER_DEFINES+=-Wcast-function-type   # Likewise, warns about some quickjs casts we don't control.
+WRAPPER_DEFINES+=-DQTS_WASMFS=1         # Enable WasmFS-specific code paths
+EMCC_EXPORTED_FUNCS+=-s EXPORTED_FUNCTIONS=@$(BUILD_WRAPPER)/symbols.json
+EMCC_EXPORTED_FUNCS_ASYNCIFY+=-s EXPORTED_FUNCTIONS=@$(BUILD_WRAPPER)/symbols.asyncify.json
+
+# Emscripten options - base
+CFLAGS_WASM+=-s EXPORTED_RUNTIME_METHODS=@../../exportedRuntimeMethods.wasmfs.json
+CFLAGS_WASM+=-s MODULARIZE=1
+CFLAGS_WASM+=-s IMPORTED_MEMORY=1
+CFLAGS_WASM+=-s EXPORT_NAME=QuickJSRaw
+CFLAGS_WASM+=-s INVOKE_RUN=0
+CFLAGS_WASM+=-s ALLOW_MEMORY_GROWTH=1
+CFLAGS_WASM+=-s ALLOW_TABLE_GROWTH=1
+CFLAGS_WASM+=-s STACK_SIZE=5MB
+
+# WasmFS options - THIS IS THE KEY DIFFERENCE
+# Instead of -s FILESYSTEM=0, we enable WasmFS
+CFLAGS_WASM+=-sWASMFS
+CFLAGS_WASM+=-sFORCE_FILESYSTEM
+# Export FS and wasmfs functions for JS access
+CFLAGS_WASM+=-sEXPORTED_RUNTIME_METHODS=['FS','PATH','ERRNO_CODES','wasmfsOPFSGetOrCreateFile','wasmfsOPFSGetOrCreateDir']
+# Enable OPFS backend
+CFLAGS_WASM+=-lwasmfs.js
+CFLAGS_WASM+=-lopfs.js
+
+# Emscripten options - like STRICT
+CFLAGS_WASM+=-s IGNORE_MISSING_MAIN=0 --no-entry
+CFLAGS_WASM+=-s AUTO_JS_LIBRARIES=0
+CFLAGS_WASM+=-s -lccall.js
+CFLAGS_WASM+=-s AUTO_NATIVE_LIBRARIES=0
+CFLAGS_WASM+=-s AUTO_ARCHIVE_INDEXES=0
+CFLAGS_WASM+=-s DEFAULT_TO_CXX=0
+# Allow syscalls since WasmFS needs them
+CFLAGS_WASM+=-s ALLOW_UNIMPLEMENTED_SYSCALLS=1
+
+# Emscripten options - NodeJS
+CFLAGS_WASM+=-s MIN_NODE_VERSION=160000
+CFLAGS_WASM+=-s NODEJS_CATCH_EXIT=0
+
+CFLAGS_MJS+=-s EXPORT_ES6=1
+CFLAGS_BROWSER+=-s EXPORT_ES6=1
+
+# VARIANT
+SYNC=SYNC
+CFLAGS_WASM_BROWSER=$(CFLAGS_WASM)
+
+# Emscripten options - variant & target specific
+CFLAGS_WASM+=-Oz
+CFLAGS_WASM+=-flto
+CFLAGS_WASM+=--closure 1
+CFLAGS_WASM+=--pre-js $(TEMPLATES)/pre-extension.js
+CFLAGS_WASM+=--pre-js $(TEMPLATES)/pre-wasmMemory.js
+CFLAGS_WASM+=--pre-js $(TEMPLATES)/pre-wasmfs-opfs.js
+CFLAGS_CJS+=-s ENVIRONMENT=node
+CFLAGS_MJS+=-s ENVIRONMENT=node
+CFLAGS_BROWSER+=-s ENVIRONMENT=web,worker
+CFLAGS_CLOUDFLARE+=-s ENVIRONMENT=web
+
+# GENERATE_TS options - variant specific
+
+
+
+ifdef DEBUG_MAKE
+	MKDIRP=@echo "\n=====[["" target: $@, deps: $<, variant: $(VARIANT) ""]]=====" ; mkdir -p $(dir $@)
+else
+	MKDIRP=@mkdir -p $(dir $@)
+	CFLAGS+=-Wunused-command-line-argument=0
+endif
+
+###############################################################################
+# High-level
+all: EXPORTS
+
+clean:
+	git clean -fx $(DIST) $(BUILD_ROOT)
+
+###############################################################################
+# Emscripten output targets
+# Note: Only BROWSER target makes sense for WasmFS with OPFS (browser-only API)
+EXPORTS: BROWSER
+BROWSER: $(DIST)/emscripten-module.browser.mjs $(DIST)/emscripten-module.browser.d.ts
+
+$(DIST)/emscripten-module.browser.mjs: $(BUILD_WRAPPER)/browser/emscripten-module.js
+	$(MKDIRP)
+	if [ -e $(basename $<).wasm ] ; then cp -v $(basename $<).wasm* $(dir $@); fi
+	cp $< $@
+
+$(DIST)/emscripten-module.browser.d.ts: $(TEMPLATES)/emscripten-module.$(SYNC).d.ts
+	$(MKDIRP)
+	echo '// Generated from $< - WasmFS variant with OPFS support' > $@
+	cat $< >> $@
+
+$(BUILD_WRAPPER)/browser/emscripten-module.js: CFLAGS_WASM+=$(CFLAGS_BROWSER)
+$(BUILD_WRAPPER)/browser/emscripten-module.js: $(BUILD_WRAPPER)/interface.o $(VARIANT_QUICKJS_OBJS) $(WASM_SYMBOLS) | $(EMCC_SRC)
+	$(MKDIRP)
+	$(EMCC) $(CFLAGS_WASM) $(WRAPPER_DEFINES) $(EMCC_EXPORTED_FUNCS) -o $@ $< $(VARIANT_QUICKJS_OBJS)
+
+###############################################################################
+# Emscripten intermediate files
+WASM_SYMBOLS=$(BUILD_WRAPPER)/symbols.json $(BUILD_WRAPPER)/asyncify-remove.json $(BUILD_WRAPPER)/asyncify-imports.json
+$(BUILD_WRAPPER)/%.o: $(WRAPPER_ROOT)/%.c $(WASM_SYMBOLS) | $(EMCC_SRC)
+	$(MKDIRP)
+	$(EMCC) $(CFLAGS_WASM) $(WRAPPER_DEFINES) -c -o $@ $<
+
+$(BUILD_QUICKJS)/%.o: $(QUICKJS_ROOT)/%.c $(WASM_SYMBOLS) | $(EMCC_SRC)
+	$(MKDIRP)
+	$(EMCC) $(CFLAGS_WASM) $(QUICKJS_DEFINES) -c -o $@ $<
+
+$(BUILD_WRAPPER)/symbols.json:
+	$(MKDIRP)
+	$(GENERATE_TS) symbols $@
+
+$(BUILD_WRAPPER)/asyncify-remove.json:
+	$(MKDIRP)
+	$(GENERATE_TS) sync-symbols $@
+
+$(BUILD_WRAPPER)/asyncify-imports.json:
+	$(MKDIRP)
+	$(GENERATE_TS) async-callback-symbols $@

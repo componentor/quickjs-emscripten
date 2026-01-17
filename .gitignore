@@ -1,6 +1,7 @@
 node_modules
 pnpm-error.log
 npm-error.log
+.npmrc
 
 *.tsbuildinfo
 .vscode/*.log

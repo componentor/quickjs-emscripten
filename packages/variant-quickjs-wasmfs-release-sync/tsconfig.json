@@ -1,0 +1,13 @@
+{
+  "extends": "@jitl/tsconfig/tsconfig.json",
+  "include": ["src/*"],
+  "exclude": ["node_modules"],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@componentor/quickjs-wasmfs-release-sync/emscripten-module": [
+        "./dist/emscripten-module.browser.d.ts"
+      ]
+    }
+  }
+}

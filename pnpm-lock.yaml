@@ -384,6 +384,16 @@ importers:
         specifier: workspace:*
         version: link:../internal-tsconfig
 
+  packages/variant-quickjs-wasmfs-release-sync:
+    dependencies:
+      "@jitl/quickjs-ffi-types":
+        specifier: workspace:*
+        version: link:../quickjs-ffi-types
+    devDependencies:
+      "@jitl/tsconfig":
+        specifier: workspace:*
+        version: link:../internal-tsconfig
+
 packages:
   "@babel/helper-string-parser@7.27.1":
     resolution:

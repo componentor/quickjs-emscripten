@@ -1,5 +1,5 @@
 {
-  "name": "quickjs-emscripten-repo",
+  "name": "@componentor/quickjs-emscripten",
   "private": true,
   "version": "0.31.0",
   "sideEffects": false,
@@ -7,7 +7,7 @@
   "type": "commonjs",
   "repository": {
     "type": "git",
-    "url": "https://github.com/justjake/quickjs-emscripten"
+    "url": "https://github.com/componentor/quickjs-emscripten"
   },
   "scripts": {
     "prepack": "pnpm run build && pnpm run check:package",
