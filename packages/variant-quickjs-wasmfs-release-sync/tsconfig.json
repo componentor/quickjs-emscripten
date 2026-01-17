@@ -1,5 +1,5 @@
 {
-  "extends": "@componentor/tsconfig/tsconfig.json",
+  "extends": "@jitl/tsconfig/tsconfig.json",
   "include": ["src/*"],
   "exclude": ["node_modules"],
   "compilerOptions": {
