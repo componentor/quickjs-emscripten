@@ -1,5 +1,5 @@
-import type { QuickJSWASMModule, QuickJSContext } from "quickjs-emscripten-core"
-import { newQuickJSWASMModuleFromVariant } from "quickjs-emscripten-core"
+import type { QuickJSWASMModule, QuickJSContext } from "@componentor/quickjs-emscripten-core"
+import { newQuickJSWASMModuleFromVariant } from "@componentor/quickjs-emscripten-core"
 import RELEASE_SYNC from "@componentor/quickjs-asmjs-mjs-release-sync"
 
 let promise: Promise<QuickJSWASMModule> | undefined
