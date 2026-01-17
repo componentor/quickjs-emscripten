@@ -1,4 +1,7 @@
-import type { EmscriptenModuleLoader, QuickJSAsyncEmscriptenModule } from "@componentor/quickjs-ffi-types"
+import type {
+  EmscriptenModuleLoader,
+  QuickJSAsyncEmscriptenModule,
+} from "@componentor/quickjs-ffi-types"
 /**
  * Emscripten module built from [`quickjs/quickjs.h`](../quickjs/quickjs.h) and
  * our FFI support functions [c/interface.c](../c/interface.c), compiled with -s

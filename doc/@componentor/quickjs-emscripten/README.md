@@ -1111,7 +1111,7 @@ Determines if a VM's execution should be interrupted.
 
 > **Intrinsics** = `object`
 
-Defined in: [packages/quickjs-emscripten-core/src/types.ts:146](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L146)
+Defined in: [packages/quickjs-emscripten-core/src/types.ts:154](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L154)
 
 Language features that can be enabled or disabled in a QuickJSContext.
 
@@ -1125,97 +1125,97 @@ Language features that can be enabled or disabled in a QuickJSContext.
 
 > `optional` **BaseObjects**: `boolean`
 
-Defined in: [packages/quickjs-emscripten-core/src/types.ts:147](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L147)
+Defined in: [packages/quickjs-emscripten-core/src/types.ts:155](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L155)
 
 ##### BigDecimal?
 
 > `optional` **BigDecimal**: `boolean`
 
-Defined in: [packages/quickjs-emscripten-core/src/types.ts:160](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L160)
+Defined in: [packages/quickjs-emscripten-core/src/types.ts:168](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L168)
 
 ##### BigFloat?
 
 > `optional` **BigFloat**: `boolean`
 
-Defined in: [packages/quickjs-emscripten-core/src/types.ts:159](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L159)
+Defined in: [packages/quickjs-emscripten-core/src/types.ts:167](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L167)
 
 ##### BigInt?
 
 > `optional` **BigInt**: `boolean`
 
-Defined in: [packages/quickjs-emscripten-core/src/types.ts:158](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L158)
+Defined in: [packages/quickjs-emscripten-core/src/types.ts:166](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L166)
 
 ##### BignumExt?
 
 > `optional` **BignumExt**: `boolean`
 
-Defined in: [packages/quickjs-emscripten-core/src/types.ts:162](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L162)
+Defined in: [packages/quickjs-emscripten-core/src/types.ts:170](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L170)
 
 ##### Date?
 
 > `optional` **Date**: `boolean`
 
-Defined in: [packages/quickjs-emscripten-core/src/types.ts:148](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L148)
+Defined in: [packages/quickjs-emscripten-core/src/types.ts:156](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L156)
 
 ##### Eval?
 
 > `optional` **Eval**: `boolean`
 
-Defined in: [packages/quickjs-emscripten-core/src/types.ts:149](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L149)
+Defined in: [packages/quickjs-emscripten-core/src/types.ts:157](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L157)
 
 ##### JSON?
 
 > `optional` **JSON**: `boolean`
 
-Defined in: [packages/quickjs-emscripten-core/src/types.ts:153](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L153)
+Defined in: [packages/quickjs-emscripten-core/src/types.ts:161](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L161)
 
 ##### MapSet?
 
 > `optional` **MapSet**: `boolean`
 
-Defined in: [packages/quickjs-emscripten-core/src/types.ts:155](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L155)
+Defined in: [packages/quickjs-emscripten-core/src/types.ts:163](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L163)
 
 ##### OperatorOverloading?
 
 > `optional` **OperatorOverloading**: `boolean`
 
-Defined in: [packages/quickjs-emscripten-core/src/types.ts:161](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L161)
+Defined in: [packages/quickjs-emscripten-core/src/types.ts:169](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L169)
 
 ##### Promise?
 
 > `optional` **Promise**: `boolean`
 
-Defined in: [packages/quickjs-emscripten-core/src/types.ts:157](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L157)
+Defined in: [packages/quickjs-emscripten-core/src/types.ts:165](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L165)
 
 ##### Proxy?
 
 > `optional` **Proxy**: `boolean`
 
-Defined in: [packages/quickjs-emscripten-core/src/types.ts:154](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L154)
+Defined in: [packages/quickjs-emscripten-core/src/types.ts:162](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L162)
 
 ##### RegExp?
 
 > `optional` **RegExp**: `boolean`
 
-Defined in: [packages/quickjs-emscripten-core/src/types.ts:151](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L151)
+Defined in: [packages/quickjs-emscripten-core/src/types.ts:159](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L159)
 
 ##### RegExpCompiler?
 
 > `optional` **RegExpCompiler**: `boolean`
 
-Defined in: [packages/quickjs-emscripten-core/src/types.ts:152](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L152)
+Defined in: [packages/quickjs-emscripten-core/src/types.ts:160](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L160)
 
 ##### StringNormalize?
 
 > `optional` **StringNormalize**: `boolean`
 
-Defined in: [packages/quickjs-emscripten-core/src/types.ts:150](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L150)
+Defined in: [packages/quickjs-emscripten-core/src/types.ts:158](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L158)
 
 ##### TypedArrays?
 
 > `optional` **TypedArrays**: `boolean`
 
-Defined in: [packages/quickjs-emscripten-core/src/types.ts:156](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L156)
+Defined in: [packages/quickjs-emscripten-core/src/types.ts:164](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L164)
 
 ***
 
@@ -1264,7 +1264,7 @@ Defined in: packages/quickjs-ffi-types/dist/index.d.ts:28
 
 > **JSModuleLoadFailure** = `Error` \| [`QuickJSHandle`](#quickjshandle)
 
-Defined in: [packages/quickjs-emscripten-core/src/types.ts:69](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L69)
+Defined in: [packages/quickjs-emscripten-core/src/types.ts:77](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L77)
 
 ***
 
@@ -1272,7 +1272,7 @@ Defined in: [packages/quickjs-emscripten-core/src/types.ts:69](https://github.co
 
 > **JSModuleLoadResult** = [`JSModuleLoadSuccess`](#jsmoduleloadsuccess) \| [`SuccessOrFail`](#successorfail)\<[`JSModuleLoadSuccess`](#jsmoduleloadsuccess), [`JSModuleLoadFailure`](#jsmoduleloadfailure)\>
 
-Defined in: [packages/quickjs-emscripten-core/src/types.ts:70](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L70)
+Defined in: [packages/quickjs-emscripten-core/src/types.ts:78](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L78)
 
 ***
 
@@ -1280,7 +1280,7 @@ Defined in: [packages/quickjs-emscripten-core/src/types.ts:70](https://github.co
 
 > **JSModuleLoadSuccess** = `string`
 
-Defined in: [packages/quickjs-emscripten-core/src/types.ts:68](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L68)
+Defined in: [packages/quickjs-emscripten-core/src/types.ts:76](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L76)
 
 ***
 
@@ -1288,7 +1288,7 @@ Defined in: [packages/quickjs-emscripten-core/src/types.ts:68](https://github.co
 
 > **JSModuleNormalizeFailure** = `Error` \| [`QuickJSHandle`](#quickjshandle)
 
-Defined in: [packages/quickjs-emscripten-core/src/types.ts:87](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L87)
+Defined in: [packages/quickjs-emscripten-core/src/types.ts:95](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L95)
 
 ***
 
@@ -1296,7 +1296,7 @@ Defined in: [packages/quickjs-emscripten-core/src/types.ts:87](https://github.co
 
 > **JSModuleNormalizeResult** = [`JSModuleNormalizeSuccess`](#jsmodulenormalizesuccess) \| [`SuccessOrFail`](#successorfail)\<[`JSModuleNormalizeSuccess`](#jsmodulenormalizesuccess), [`JSModuleNormalizeFailure`](#jsmodulenormalizefailure)\>
 
-Defined in: [packages/quickjs-emscripten-core/src/types.ts:88](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L88)
+Defined in: [packages/quickjs-emscripten-core/src/types.ts:96](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L96)
 
 ***
 
@@ -1304,7 +1304,7 @@ Defined in: [packages/quickjs-emscripten-core/src/types.ts:88](https://github.co
 
 > **JSModuleNormalizeSuccess** = `string`
 
-Defined in: [packages/quickjs-emscripten-core/src/types.ts:86](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L86)
+Defined in: [packages/quickjs-emscripten-core/src/types.ts:94](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L94)
 
 ***
 
@@ -1343,7 +1343,7 @@ Defined in: packages/quickjs-ffi-types/dist/index.d.ts:16
 
 > **JSValue** = [`Lifetime`](classes/Lifetime.md)\<[`JSValuePointer`](#jsvaluepointer), [`JSValuePointer`](#jsvaluepointer), [`QuickJSRuntime`](classes/QuickJSRuntime.md)\>
 
-Defined in: [packages/quickjs-emscripten-core/src/types.ts:43](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L43)
+Defined in: [packages/quickjs-emscripten-core/src/types.ts:51](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L51)
 
 A owned QuickJSHandle that should be disposed or returned.
 
@@ -1365,7 +1365,7 @@ You can do so from Javascript by calling the .dispose() method.
 
 > **JSValueConst** = [`Lifetime`](classes/Lifetime.md)\<[`JSValueConstPointer`](#jsvalueconstpointer), [`JSValuePointer`](#jsvaluepointer), [`QuickJSRuntime`](classes/QuickJSRuntime.md)\>
 
-Defined in: [packages/quickjs-emscripten-core/src/types.ts:26](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L26)
+Defined in: [packages/quickjs-emscripten-core/src/types.ts:34](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L34)
 
 A QuickJSHandle to a borrowed value that does not need to be disposed.
 
@@ -1483,7 +1483,7 @@ Defined in: [packages/quickjs-emscripten-core/src/from-variant.ts:17](https://gi
 
 > **PromiseExecutor**\<`ResolveT`, `RejectT`\> = (`resolve`, `reject`) => `void`
 
-Defined in: [packages/quickjs-emscripten-core/src/types.ts:333](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L333)
+Defined in: [packages/quickjs-emscripten-core/src/types.ts:341](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L341)
 
 #### Type Parameters
 
@@ -1545,7 +1545,7 @@ Used internally for C-to-Javascript module loading.
 
 > **QuickJSHandle** = [`StaticJSValue`](#staticjsvalue) \| [`JSValue`](#jsvalue) \| [`JSValueConst`](#jsvalueconst)
 
-Defined in: [packages/quickjs-emscripten-core/src/types.ts:53](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L53)
+Defined in: [packages/quickjs-emscripten-core/src/types.ts:61](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L61)
 
 Wraps a C pointer to a QuickJS JSValue, which represents a Javascript value inside
 a QuickJS virtual machine.
@@ -1578,7 +1578,7 @@ Defined in: packages/quickjs-ffi-types/dist/index.d.ts:544
 
 > **StaticJSValue** = [`Lifetime`](classes/Lifetime.md)\<[`JSValueConstPointer`](#jsvalueconstpointer), [`JSValueConstPointer`](#jsvalueconstpointer), [`QuickJSRuntime`](classes/QuickJSRuntime.md)\>
 
-Defined in: [packages/quickjs-emscripten-core/src/types.ts:14](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L14)
+Defined in: [packages/quickjs-emscripten-core/src/types.ts:22](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L22)
 
 A QuickJSHandle to a constant that will never change, and does not need to
 be disposed.
@@ -1716,7 +1716,7 @@ Variant with separate .WASM file. Supports browser ESM, NodeJS ESM, and NodeJS C
 
 > `const` **DefaultIntrinsics**: `Readonly`\<\{ `BaseObjects`: `true`; `Date`: `true`; `Eval`: `true`; `JSON`: `true`; `MapSet`: `true`; `Promise`: `true`; `Proxy`: `true`; `RegExp`: `true`; `StringNormalize`: `true`; `TypedArrays`: `true`; \}\>
 
-Defined in: [packages/quickjs-emscripten-core/src/types.ts:173](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L173)
+Defined in: [packages/quickjs-emscripten-core/src/types.ts:181](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L181)
 
 The default [Intrinsics](#intrinsics) language features enabled in a QuickJSContext.
 

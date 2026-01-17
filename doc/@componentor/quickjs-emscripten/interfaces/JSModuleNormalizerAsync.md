@@ -6,7 +6,7 @@
 
 # Interface: JSModuleNormalizerAsync()
 
-Defined in: [packages/quickjs-emscripten-core/src/types.ts:92](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L92)
+Defined in: [packages/quickjs-emscripten-core/src/types.ts:100](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L100)
 
 ## Extended by
 
@@ -14,7 +14,7 @@ Defined in: [packages/quickjs-emscripten-core/src/types.ts:92](https://github.co
 
 > **JSModuleNormalizerAsync**(`baseModuleName`, `requestedName`, `vm`): [`JSModuleNormalizeResult`](../README.md#jsmodulenormalizeresult) \| `Promise`\<[`JSModuleNormalizeResult`](../README.md#jsmodulenormalizeresult)\>
 
-Defined in: [packages/quickjs-emscripten-core/src/types.ts:93](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L93)
+Defined in: [packages/quickjs-emscripten-core/src/types.ts:101](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L101)
 
 ## Parameters
 

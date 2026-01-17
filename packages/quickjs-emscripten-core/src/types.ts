@@ -1,5 +1,13 @@
-import type { JSContextPointer, JSValueConstPointer, JSValuePointer } from "@componentor/quickjs-ffi-types"
-import { EvalFlags, GetOwnPropertyNamesFlags, IntrinsicsFlags } from "@componentor/quickjs-ffi-types"
+import type {
+  JSContextPointer,
+  JSValueConstPointer,
+  JSValuePointer,
+} from "@componentor/quickjs-ffi-types"
+import {
+  EvalFlags,
+  GetOwnPropertyNamesFlags,
+  IntrinsicsFlags,
+} from "@componentor/quickjs-ffi-types"
 import type { QuickJSContext } from "./context"
 import type { SuccessOrFail, VmFunctionImplementation } from "./vm-interface"
 import type { Disposable, Lifetime } from "./lifetime"

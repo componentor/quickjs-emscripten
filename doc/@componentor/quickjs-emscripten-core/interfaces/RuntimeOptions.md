@@ -6,7 +6,7 @@
 
 # Interface: RuntimeOptions
 
-Defined in: [packages/quickjs-emscripten-core/src/types.ts:132](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L132)
+Defined in: [packages/quickjs-emscripten-core/src/types.ts:140](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L140)
 
 ## Extends
 
@@ -18,7 +18,7 @@ Defined in: [packages/quickjs-emscripten-core/src/types.ts:132](https://github.c
 
 > `optional` **gcThreshold**: `undefined`
 
-Defined in: [packages/quickjs-emscripten-core/src/types.ts:119](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L119)
+Defined in: [packages/quickjs-emscripten-core/src/types.ts:127](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L127)
 
 #### Inherited from
 
@@ -30,7 +30,7 @@ Defined in: [packages/quickjs-emscripten-core/src/types.ts:119](https://github.c
 
 > `optional` **interruptHandler**: [`InterruptHandler`](../README.md#interrupthandler)
 
-Defined in: [packages/quickjs-emscripten-core/src/types.ts:113](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L113)
+Defined in: [packages/quickjs-emscripten-core/src/types.ts:121](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L121)
 
 #### Inherited from
 
@@ -42,7 +42,7 @@ Defined in: [packages/quickjs-emscripten-core/src/types.ts:113](https://github.c
 
 > `optional` **maxStackSizeBytes**: `number`
 
-Defined in: [packages/quickjs-emscripten-core/src/types.ts:114](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L114)
+Defined in: [packages/quickjs-emscripten-core/src/types.ts:122](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L122)
 
 #### Inherited from
 
@@ -54,7 +54,7 @@ Defined in: [packages/quickjs-emscripten-core/src/types.ts:114](https://github.c
 
 > `optional` **memoryLimitBytes**: `number`
 
-Defined in: [packages/quickjs-emscripten-core/src/types.ts:115](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L115)
+Defined in: [packages/quickjs-emscripten-core/src/types.ts:123](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L123)
 
 #### Inherited from
 
@@ -66,7 +66,7 @@ Defined in: [packages/quickjs-emscripten-core/src/types.ts:115](https://github.c
 
 > `optional` **moduleLoader**: [`JSModuleLoader`](JSModuleLoader.md)
 
-Defined in: [packages/quickjs-emscripten-core/src/types.ts:133](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L133)
+Defined in: [packages/quickjs-emscripten-core/src/types.ts:141](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L141)
 
 ***
 
@@ -74,7 +74,7 @@ Defined in: [packages/quickjs-emscripten-core/src/types.ts:133](https://github.c
 
 > `optional` **promiseRejectionHandler**: `undefined`
 
-Defined in: [packages/quickjs-emscripten-core/src/types.ts:117](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L117)
+Defined in: [packages/quickjs-emscripten-core/src/types.ts:125](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L125)
 
 #### Inherited from
 
@@ -86,7 +86,7 @@ Defined in: [packages/quickjs-emscripten-core/src/types.ts:117](https://github.c
 
 > `optional` **runtimeInfo**: `undefined`
 
-Defined in: [packages/quickjs-emscripten-core/src/types.ts:118](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L118)
+Defined in: [packages/quickjs-emscripten-core/src/types.ts:126](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L126)
 
 #### Inherited from
 
@@ -98,7 +98,7 @@ Defined in: [packages/quickjs-emscripten-core/src/types.ts:118](https://github.c
 
 > `optional` **sharedArrayBufferFunctions**: `undefined`
 
-Defined in: [packages/quickjs-emscripten-core/src/types.ts:120](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L120)
+Defined in: [packages/quickjs-emscripten-core/src/types.ts:128](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L128)
 
 #### Inherited from
 

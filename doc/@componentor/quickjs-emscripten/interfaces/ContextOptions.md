@@ -6,7 +6,7 @@
 
 # Interface: ContextOptions
 
-Defined in: [packages/quickjs-emscripten-core/src/types.ts:212](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L212)
+Defined in: [packages/quickjs-emscripten-core/src/types.ts:220](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L220)
 
 Options for creating a [QuickJSContext](../classes/QuickJSContext.md) or [QuickJSAsyncContext](../classes/QuickJSAsyncContext.md)
 Pass to [QuickJSRuntime#newContext](../classes/QuickJSRuntime.md#newcontext).
@@ -17,7 +17,7 @@ Pass to [QuickJSRuntime#newContext](../classes/QuickJSRuntime.md#newcontext).
 
 > `optional` **intrinsics**: [`Intrinsics`](../README.md#intrinsics)
 
-Defined in: [packages/quickjs-emscripten-core/src/types.ts:229](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L229)
+Defined in: [packages/quickjs-emscripten-core/src/types.ts:237](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L237)
 
 What built-in objects and language features to enable?
 If unset, the default intrinsics will be used.

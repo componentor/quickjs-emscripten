@@ -6,7 +6,7 @@
 
 # Interface: ContextEvalOptions
 
-Defined in: [packages/quickjs-emscripten-core/src/types.ts:244](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L244)
+Defined in: [packages/quickjs-emscripten-core/src/types.ts:252](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L252)
 
 ## Properties
 
@@ -14,7 +14,7 @@ Defined in: [packages/quickjs-emscripten-core/src/types.ts:244](https://github.c
 
 > `optional` **backtraceBarrier**: `boolean`
 
-Defined in: [packages/quickjs-emscripten-core/src/types.ts:263](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L263)
+Defined in: [packages/quickjs-emscripten-core/src/types.ts:271](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L271)
 
 don't include the stack frames before this eval in the Error() backtraces
 
@@ -24,7 +24,7 @@ don't include the stack frames before this eval in the Error() backtraces
 
 > `optional` **compileOnly**: `boolean`
 
-Defined in: [packages/quickjs-emscripten-core/src/types.ts:261](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L261)
+Defined in: [packages/quickjs-emscripten-core/src/types.ts:269](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L269)
 
 compile but do not run. The result is an object with a
 JS_TAG_FUNCTION_BYTECODE or JS_TAG_MODULE tag. It can be executed
@@ -36,7 +36,7 @@ with JS_EvalFunction().
 
 > `optional` **strict**: `boolean`
 
-Defined in: [packages/quickjs-emscripten-core/src/types.ts:253](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L253)
+Defined in: [packages/quickjs-emscripten-core/src/types.ts:261](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L261)
 
 Force "strict" mode
 
@@ -46,7 +46,7 @@ Force "strict" mode
 
 > `optional` **strip**: `boolean`
 
-Defined in: [packages/quickjs-emscripten-core/src/types.ts:255](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L255)
+Defined in: [packages/quickjs-emscripten-core/src/types.ts:263](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L263)
 
 Force "strip" mode
 
@@ -56,7 +56,7 @@ Force "strip" mode
 
 > `optional` **type**: `"global"` \| `"module"`
 
-Defined in: [packages/quickjs-emscripten-core/src/types.ts:251](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L251)
+Defined in: [packages/quickjs-emscripten-core/src/types.ts:259](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/types.ts#L259)
 
 Global code (default), or "module" code?
 
