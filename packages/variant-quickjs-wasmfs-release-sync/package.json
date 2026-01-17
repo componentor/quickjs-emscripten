@@ -51,7 +51,7 @@
     }
   },
   "dependencies": {
-    "@jitl/quickjs-ffi-types": "workspace:*"
+    "@componentor/quickjs-ffi-types": "workspace:*"
   },
   "devDependencies": {
     "@jitl/tsconfig": "workspace:*"

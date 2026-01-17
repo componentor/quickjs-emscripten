@@ -12,7 +12,7 @@ import { newQuickJSWASMModuleFromVariant } from "quickjs-emscripten-core"
 
 // 2. Import a variant suitable for your use case. For example, if you only care to
 //    target with the fastest execution speed, import the release build variant
-import releaseVariant from "@jitl/quickjs-singlefile-cjs-release-sync"
+import releaseVariant from "@componentor/quickjs-singlefile-cjs-release-sync"
 
 // 3. Create the "QuickJS" module that presents the quickjs-emscripten API.
 //    Export and use in other files, or consume directly.
@@ -48,11 +48,11 @@ You can use [subpath imports in package.json](https://nodejs.org/api/packages.ht
 {
   "imports": {
     "#my-quickjs-variant": {
-      "types": "@jitl/quickjs-wasmfile-release-sync",
+      "types": "@componentor/quickjs-wasmfile-release-sync",
       // In the browser, use the singlefile variant that doesn't need an external file
-      "browser": "@jitl/quickjs-singlefile-browser-release-sync",
+      "browser": "@componentor/quickjs-singlefile-browser-release-sync",
       // Otherwise, use the wasmfile variant, compatible with all environments
-      "default": "@jitl/quickjs-wasmfile-release-sync"
+      "default": "@componentor/quickjs-wasmfile-release-sync"
     }
   }
 }

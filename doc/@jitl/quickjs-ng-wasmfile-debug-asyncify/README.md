@@ -2,9 +2,9 @@
 
 ***
 
-[quickjs-emscripten](../../packages.md) / @jitl/quickjs-ng-wasmfile-debug-asyncify
+[quickjs-emscripten](../../packages.md) / @componentor/quickjs-ng-wasmfile-debug-asyncify
 
-# @jitl/quickjs-ng-wasmfile-debug-asyncify
+# @componentor/quickjs-ng-wasmfile-debug-asyncify
 
 Variant with separate .WASM file. Supports browser ESM, NodeJS ESM, and NodeJS CommonJS.
 
@@ -12,7 +12,7 @@ This generated package is part of [quickjs-emscripten](https://github.com/justja
 It contains a variant of the quickjs WASM library, and can be used with quickjs-emscripten-core.
 
 ```typescript
-import variant from "@jitl/quickjs-ng-wasmfile-debug-asyncify"
+import variant from "@componentor/quickjs-ng-wasmfile-debug-asyncify"
 import { newQuickJSAsyncWASMModuleFromVariant } from "quickjs-emscripten-core"
 const QuickJS = await newQuickJSAsyncWASMModuleFromVariant(variant)
 ```
@@ -106,9 +106,9 @@ Variant-specific Emscripten build flags:
 
 Defined in: [index.ts:18](https://github.com/componentor/quickjs-emscripten/blob/main/packages/variant-quickjs-ng-wasmfile-debug-asyncify/src/index.ts#L18)
 
-### @jitl/quickjs-ng-wasmfile-debug-asyncify
+### @componentor/quickjs-ng-wasmfile-debug-asyncify
 
-[Docs](https://github.com/justjake/quickjs-emscripten/blob/main/doc/@jitl/quickjs-ng-wasmfile-debug-asyncify/README.md) |
+[Docs](https://github.com/justjake/quickjs-emscripten/blob/main/doc/@componentor/quickjs-ng-wasmfile-debug-asyncify/README.md) |
 Variant with separate .WASM file. Supports browser ESM, NodeJS ESM, and NodeJS CommonJS.
 
 | Variable            |    Setting                     |    Description    |

@@ -1,9 +1,9 @@
-import type { QuickJSSyncVariant } from "@jitl/quickjs-ffi-types"
+import type { QuickJSSyncVariant } from "@componentor/quickjs-ffi-types"
 
 /**
- * ### @jitl/quickjs-singlefile-cjs-release-sync
+ * ### @componentor/quickjs-singlefile-cjs-release-sync
  *
- * [Docs](https://github.com/justjake/quickjs-emscripten/blob/main/doc/@jitl/quickjs-singlefile-cjs-release-sync/README.md) |
+ * [Docs](https://github.com/componentor/quickjs-emscripten/blob/main/doc/@componentor/quickjs-singlefile-cjs-release-sync/README.md) |
  * Variant with the WASM data embedded into a universal (Node and Browser compatible) CommonJS module.
  *
  * | Variable            |    Setting                     |    Description    |
@@ -19,7 +19,7 @@ const variant: QuickJSSyncVariant = {
   type: "sync",
   importFFI: () => import("./ffi.js").then((mod) => mod.QuickJSFFI),
   importModuleLoader: () =>
-    import("@jitl/quickjs-singlefile-cjs-release-sync/emscripten-module").then(
+    import("@componentor/quickjs-singlefile-cjs-release-sync/emscripten-module").then(
       (mod) => mod.default,
     ),
 } as const

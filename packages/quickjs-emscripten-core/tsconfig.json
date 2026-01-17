@@ -3,8 +3,8 @@
   "include": ["src/**/*"],
   "compilerOptions": {
     "paths": {
-      "@jitl/quickjs-ffi-types": ["../quickjs-ffi-types/src"],
-      "@jitl/quickjs-ffi-types/*": ["../quickjs-ffi-types/src/*"]
+      "@componentor/quickjs-ffi-types": ["../quickjs-ffi-types/src"],
+      "@componentor/quickjs-ffi-types/*": ["../quickjs-ffi-types/src/*"]
     }
   }
 }

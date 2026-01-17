@@ -3,7 +3,7 @@ import type {
   OwnedHeapCharPointer,
   JSValueConstPointerPointer,
   JSVoidPointer,
-} from "@jitl/quickjs-ffi-types"
+} from "@componentor/quickjs-ffi-types"
 import { Lifetime } from "./lifetime"
 import type { QuickJSHandle } from "./types"
 

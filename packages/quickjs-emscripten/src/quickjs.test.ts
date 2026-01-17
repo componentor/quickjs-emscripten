@@ -1360,7 +1360,7 @@ describe("QuickJSContext", function () {
     if (TEST_RELEASE) {
       describe("quickjs-ng RELEASE_SYNC", function () {
         const loader = memoizePromiseFactory(() =>
-          newQuickJSWASMModule(import("@jitl/quickjs-ng-wasmfile-release-sync")),
+          newQuickJSWASMModule(import("@componentor/quickjs-ng-wasmfile-release-sync")),
         )
         const getContext: GetTestContext = (opts) => loader().then((mod) => mod.newContext(opts))
         contextTests(getContext)
@@ -1370,7 +1370,7 @@ describe("QuickJSContext", function () {
     if (TEST_DEBUG) {
       describe("quickjs-ng DEBUG_SYNC", function () {
         const loader = memoizePromiseFactory(() =>
-          newQuickJSWASMModule(import("@jitl/quickjs-ng-wasmfile-debug-sync")),
+          newQuickJSWASMModule(import("@componentor/quickjs-ng-wasmfile-debug-sync")),
         )
         const getContext: GetTestContext = (opts) => loader().then((mod) => mod.newContext(opts))
         contextTests(getContext)
@@ -1410,7 +1410,7 @@ if (TEST_ASYNC) {
     if (TEST_NG) {
       describe("quickjs-ng RELEASE_ASYNC", function () {
         const loader = memoizePromiseFactory(() =>
-          newQuickJSAsyncWASMModule(import("@jitl/quickjs-ng-wasmfile-release-asyncify")),
+          newQuickJSAsyncWASMModule(import("@componentor/quickjs-ng-wasmfile-release-asyncify")),
         )
         const getContext = (opts?: ContextOptions) => loader().then((mod) => mod.newContext(opts))
 

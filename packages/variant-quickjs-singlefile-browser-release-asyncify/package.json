@@ -1,16 +1,15 @@
 {
-  "name": "@jitl/quickjs-singlefile-browser-release-asyncify",
+  "name": "@componentor/quickjs-singlefile-browser-release-asyncify",
   "license": "MIT",
   "version": "0.31.0",
   "description": "Variant of quickjs library: Variant with the WASM data embedded into a browser ESModule.",
   "sideEffects": false,
   "repository": {
     "type": "git",
-    "url": "https://github.com/justjake/quickjs-emscripten"
+    "url": "https://github.com/componentor/quickjs-emscripten"
   },
   "author": {
-    "name": "Jake Teton-Landis",
-    "url": "https://jake.tl"
+    "name": "Componentor"
   },
   "scripts": {
     "build": "pnpm run build:c && pnpm run build:ts",
@@ -50,7 +49,7 @@
     }
   },
   "dependencies": {
-    "@jitl/quickjs-ffi-types": "workspace:*"
+    "@componentor/quickjs-ffi-types": "workspace:*"
   },
   "devDependencies": {
     "@jitl/tsconfig": "workspace:*"

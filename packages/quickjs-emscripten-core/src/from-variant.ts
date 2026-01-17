@@ -5,7 +5,7 @@ import type {
   EmscriptenModuleLoaderOptions,
   SourceMapData,
   QuickJSEmscriptenExtensions,
-} from "@jitl/quickjs-ffi-types"
+} from "@componentor/quickjs-ffi-types"
 import type { QuickJSWASMModule } from "./module.js"
 import type { QuickJSAsyncWASMModule } from "./module-asyncify.js"
 import { QuickJSEmscriptenModuleError } from "./errors.js"
@@ -31,7 +31,7 @@ export type PromisedDefault<T> =
  * @example
  * ```ts
  * const quickjs = new newQuickJSWASMModuleFromVariant(
- *   import('@jitl/quickjs-browser-release-sync-wasm')
+ *   import('@componentor/quickjs-browser-release-sync-wasm')
  * )
  * ```
  */
@@ -69,7 +69,7 @@ export async function newQuickJSWASMModuleFromVariant(
  * @example
  * ```ts
  * const quickjs = new newQuickJSAsyncWASMModuleFromVariant(
- *   import('@jitl/quickjs-browser-debug-asyncify-wasm')
+ *   import('@componentor/quickjs-browser-debug-asyncify-wasm')
  * )
  * ```
  */

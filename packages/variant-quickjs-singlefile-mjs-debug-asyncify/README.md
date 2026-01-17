@@ -1,13 +1,13 @@
-# @jitl/quickjs-singlefile-mjs-debug-asyncify
+# @componentor/quickjs-singlefile-mjs-debug-asyncify
 
 Variant with the WASM data embedded into a NodeJS ESModule.
 
-This generated package is part of [quickjs-emscripten](https://github.com/justjake/quickjs-emscripten).
-It contains a variant of the quickjs WASM library, and can be used with quickjs-emscripten-core.
+This generated package is part of [quickjs-emscripten](https://github.com/componentor/quickjs-emscripten).
+It contains a variant of the quickjs WASM library, and can be used with @componentor/quickjs-emscripten-core.
 
 ```typescript
-import variant from "@jitl/quickjs-singlefile-mjs-debug-asyncify"
-import { newQuickJSAsyncWASMModuleFromVariant } from "quickjs-emscripten-core"
+import variant from "@componentor/quickjs-singlefile-mjs-debug-asyncify"
+import { newQuickJSAsyncWASMModuleFromVariant } from "@componentor/quickjs-emscripten-core"
 const QuickJS = await newQuickJSAsyncWASMModuleFromVariant(variant)
 ```
 
@@ -31,7 +31,7 @@ Exports the following in package.json for the package entrypoint:
 
 ## Extra async magic? Yes
 
-Build run through the ASYNCIFY WebAssembly transform. This imposes substantial size (2x the size of sync) and speed penalties (40% the speed of sync). In return, allows synchronous calls from the QuickJS WASM runtime to async functions on the host. The extra magic makes this variant slower than sync variants. Note that both variants support regular async functions. Only adopt ASYNCIFY if you need to! The [QuickJSAsyncRuntime](https://github.com/justjake/quickjs-emscripten/blob/main/doc/quickjs-emscripten/classes/QuickJSAsyncRuntime.md) and [QuickJSAsyncContext](https://github.com/justjake/quickjs-emscripten/blob/main/doc/quickjs-emscripten/classes/QuickJSAsyncContext.md) classes expose the ASYNCIFY-specific APIs.
+Build run through the ASYNCIFY WebAssembly transform. This imposes substantial size (2x the size of sync) and speed penalties (40% the speed of sync). In return, allows synchronous calls from the QuickJS WASM runtime to async functions on the host. The extra magic makes this variant slower than sync variants. Note that both variants support regular async functions. Only adopt ASYNCIFY if you need to! The [QuickJSAsyncRuntime](https://github.com/componentor/quickjs-emscripten/blob/main/doc/quickjs-emscripten/classes/QuickJSAsyncRuntime.md) and [QuickJSAsyncContext](https://github.com/componentor/quickjs-emscripten/blob/main/doc/quickjs-emscripten/classes/QuickJSAsyncContext.md) classes expose the ASYNCIFY-specific APIs.
 
 ## Single-file, or separate .wasm file? singlefile
 

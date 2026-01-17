@@ -1,13 +1,13 @@
-# @jitl/quickjs-singlefile-browser-release-sync
+# @componentor/quickjs-singlefile-browser-release-sync
 
 Variant with the WASM data embedded into a browser ESModule.
 
-This generated package is part of [quickjs-emscripten](https://github.com/justjake/quickjs-emscripten).
-It contains a variant of the quickjs WASM library, and can be used with quickjs-emscripten-core.
+This generated package is part of [quickjs-emscripten](https://github.com/componentor/quickjs-emscripten).
+It contains a variant of the quickjs WASM library, and can be used with @componentor/quickjs-emscripten-core.
 
 ```typescript
-import variant from "@jitl/quickjs-singlefile-browser-release-sync"
-import { newQuickJSWASMModuleFromVariant } from "quickjs-emscripten-core"
+import variant from "@componentor/quickjs-singlefile-browser-release-sync"
+import { newQuickJSWASMModuleFromVariant } from "@componentor/quickjs-emscripten-core"
 const QuickJS = await newQuickJSWASMModuleFromVariant(variant)
 ```
 

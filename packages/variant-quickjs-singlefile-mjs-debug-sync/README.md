@@ -1,13 +1,13 @@
-# @jitl/quickjs-singlefile-mjs-debug-sync
+# @componentor/quickjs-singlefile-mjs-debug-sync
 
 Variant with the WASM data embedded into a NodeJS ESModule.
 
-This generated package is part of [quickjs-emscripten](https://github.com/justjake/quickjs-emscripten).
-It contains a variant of the quickjs WASM library, and can be used with quickjs-emscripten-core.
+This generated package is part of [quickjs-emscripten](https://github.com/componentor/quickjs-emscripten).
+It contains a variant of the quickjs WASM library, and can be used with @componentor/quickjs-emscripten-core.
 
 ```typescript
-import variant from "@jitl/quickjs-singlefile-mjs-debug-sync"
-import { newQuickJSWASMModuleFromVariant } from "quickjs-emscripten-core"
+import variant from "@componentor/quickjs-singlefile-mjs-debug-sync"
+import { newQuickJSWASMModuleFromVariant } from "@componentor/quickjs-emscripten-core"
 const QuickJS = await newQuickJSWASMModuleFromVariant(variant)
 ```
 

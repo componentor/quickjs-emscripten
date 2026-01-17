@@ -5,7 +5,7 @@ import type {
   EvalFlags,
   JSRuntimePointer,
   JSValuePointer,
-} from "@jitl/quickjs-ffi-types"
+} from "@componentor/quickjs-ffi-types"
 import type { QuickJSContextResult } from "./context"
 import { QuickJSContext } from "./context"
 import type { Lifetime } from "./lifetime"

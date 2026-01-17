@@ -2,9 +2,9 @@
 
 ***
 
-[quickjs-emscripten](../../packages.md) / @jitl/quickjs-ffi-types
+[quickjs-emscripten](../../packages.md) / @componentor/quickjs-ffi-types
 
-# @jitl/quickjs-ffi-types
+# @componentor/quickjs-ffi-types
 
 This is an internal package, part of [quickjs-emscripten](https://github.com/justjake/quickjs-emscripten).
 

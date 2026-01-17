@@ -393,18 +393,17 @@ async function main() {
         emscriptenExports.browser
 
       const packageJson: PackageJson = {
-        name: `@jitl/${basename}`,
+        name: `@componentor/${basename}`,
         license: rootPackageJson?.license,
         version: existingPackageJson?.version ?? rootPackageJson?.version ?? "0.0.0",
         description: `Variant of quickjs library: ${variant.description}`,
         sideEffects: false,
         repository: {
           type: "git",
-          url: "https://github.com/justjake/quickjs-emscripten",
+          url: "https://github.com/componentor/quickjs-emscripten",
         },
         author: {
-          name: "Jake Teton-Landis",
-          url: "https://jake.tl",
+          name: "Componentor",
         },
         scripts: {
           build: "pnpm run build:c && pnpm run build:ts",
@@ -436,7 +435,7 @@ async function main() {
           "./emscripten-module": emscriptenExports,
         },
         dependencies: {
-          "@jitl/quickjs-ffi-types": "workspace:*",
+          "@componentor/quickjs-ffi-types": "workspace:*",
         },
         devDependencies: {
           "@jitl/tsconfig": "workspace:*",
@@ -509,7 +508,7 @@ const describeMode = {
   [ReleaseMode.Release]: `Optimized for performance; use when building/deploying your application.`,
 }
 
-const DOC_ROOT_URL = `https://github.com/justjake/quickjs-emscripten/blob/main/doc`
+const DOC_ROOT_URL = `https://github.com/componentor/quickjs-emscripten/blob/main/doc`
 
 const describeSyncMode = {
   [SyncMode.Sync]: `The default, normal build. Note that both variants support regular async functions.`,
@@ -565,7 +564,7 @@ function renderReadmeSummary(
   variant: BuildVariant,
   packageJson: PackageJson,
 ): string {
-  const baseURL = "https://github.com/justjake/quickjs-emscripten/blob/main/doc"
+  const baseURL = "https://github.com/componentor/quickjs-emscripten/blob/main/doc"
   const packageURL = `${baseURL}/${packageJson.name}/README.md`
   const inclusion = describeInclusion[variant.emscriptenInclusion]
   const hasExports = Object.keys(variant.exports).join(" ")
@@ -599,14 +598,14 @@ function renderReadme(targetName: string, variant: BuildVariant, packageJson: Pa
 
 ${variant.description}
 
-This generated package is part of [quickjs-emscripten](https://github.com/justjake/quickjs-emscripten).
-It contains a variant of the quickjs WASM library, and can be used with quickjs-emscripten-core.
+This generated package is part of [quickjs-emscripten](https://github.com/componentor/quickjs-emscripten).
+It contains a variant of the quickjs WASM library, and can be used with @componentor/quickjs-emscripten-core.
 
 ${codeFence(
   "typescript",
   `
 import variant from '${packageJson.name}'
-import { ${create} } from 'quickjs-emscripten-core'
+import { ${create} } from '@componentor/quickjs-emscripten-core'
 const QuickJS = await ${create}(variant)
 `,
 )}
@@ -763,7 +762,7 @@ function renderIndexTs(
   if (variant.emscriptenInclusion === EmscriptenInclusion.AsmJs) {
     // Eager loading please!
     return `
-import type { ${variantTypeName} } from '@jitl/quickjs-ffi-types'
+import type { ${variantTypeName} } from '@componentor/quickjs-ffi-types'
 import moduleLoader from '${packageJson.name}/emscripten-module'
 import { ${className} } from './ffi.js'
 /**
@@ -779,7 +778,7 @@ export default variant
   }
 
   return `
-import type { ${variantTypeName} } from '@jitl/quickjs-ffi-types'
+import type { ${variantTypeName} } from '@componentor/quickjs-ffi-types'
 
 /**
 ${docComment}

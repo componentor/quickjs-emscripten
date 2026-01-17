@@ -1,9 +1,9 @@
-import type { QuickJSSyncVariant } from "@jitl/quickjs-ffi-types"
+import type { QuickJSSyncVariant } from "@componentor/quickjs-ffi-types"
 
 /**
- * ### @jitl/quickjs-wasmfile-debug-sync
+ * ### @componentor/quickjs-wasmfile-debug-sync
  *
- * [Docs](https://github.com/justjake/quickjs-emscripten/blob/main/doc/@jitl/quickjs-wasmfile-debug-sync/README.md) |
+ * [Docs](https://github.com/componentor/quickjs-emscripten/blob/main/doc/@componentor/quickjs-wasmfile-debug-sync/README.md) |
  * Variant with separate .WASM file. Supports browser ESM, NodeJS ESM, and NodeJS CommonJS.
  *
  * | Variable            |    Setting                     |    Description    |
@@ -19,7 +19,7 @@ const variant: QuickJSSyncVariant = {
   type: "sync",
   importFFI: () => import("./ffi.js").then((mod) => mod.QuickJSFFI),
   importModuleLoader: () =>
-    import("@jitl/quickjs-wasmfile-debug-sync/emscripten-module").then((mod) => mod.default),
+    import("@componentor/quickjs-wasmfile-debug-sync/emscripten-module").then((mod) => mod.default),
 } as const
 
 export default variant

@@ -24,7 +24,7 @@ import {
   GetOwnPropertyNamesFlags,
   IsEqualOp,
   JSPromiseStateEnum,
-} from "@jitl/quickjs-ffi-types"
+} from "@componentor/quickjs-ffi-types"
 
 /**
  * Low-level FFI bindings to QuickJS's Emscripten module.

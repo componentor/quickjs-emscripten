@@ -1,4 +1,4 @@
-import type { QuickJSSyncVariant } from "@jitl/quickjs-ffi-types"
+import type { QuickJSSyncVariant } from "@componentor/quickjs-ffi-types"
 
 /**
  * ### @componentor/quickjs-wasmfs-release-sync

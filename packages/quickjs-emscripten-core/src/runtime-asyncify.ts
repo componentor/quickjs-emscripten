@@ -3,7 +3,7 @@ import type {
   QuickJSAsyncFFI,
   JSContextPointer,
   JSRuntimePointer,
-} from "@jitl/quickjs-ffi-types"
+} from "@componentor/quickjs-ffi-types"
 import { QuickJSAsyncContext } from "./context-asyncify"
 import type {
   // Used in doc

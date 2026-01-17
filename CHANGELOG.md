@@ -81,8 +81,8 @@ Debug logging is now disabled by default, even when using a DEBUG variant. It ca
 `quickjs-emscripten` is re-organized into several NPM packages in a monorepo structure:
 
 - `quickjs-emscripten` (install size 7.5mb) - mostly backwards compatible all-in-one package. This package installs the WASM files for DEBUG_SYNC, DEBUG_ASYNC, RELEASE_SYNC and RELEASE_ASYNC variants as NPM dependencies. Its total install size is reduced from ~
-- `quickjs-emscripten-core` (install size 573kb) - just the Typescript code, should be compatible with almost any runtime. You can use this with a single a-la-carte build variant, such as `@jitl/quickjs-wasmfile-release-sync` to reduce the total install size needed to run QuickJS to ~1.1mb.
-- Several a-la-carte build variants, named `@jitl/quickjs-{wasmfile,singlefile-{esm,cjs,browser}}-{debug,release}-{sync,asyncify}`. See the [quickjs-emscripten-core docs][core-docs] for more details.
+- `quickjs-emscripten-core` (install size 573kb) - just the Typescript code, should be compatible with almost any runtime. You can use this with a single a-la-carte build variant, such as `@componentor/quickjs-wasmfile-release-sync` to reduce the total install size needed to run QuickJS to ~1.1mb.
+- Several a-la-carte build variants, named `@componentor/quickjs-{wasmfile,singlefile-{esm,cjs,browser}}-{debug,release}-{sync,asyncify}`. See the [quickjs-emscripten-core docs][core-docs] for more details.
 
 [core-docs]: doc/quickjs-emscripten-core/README.md
 

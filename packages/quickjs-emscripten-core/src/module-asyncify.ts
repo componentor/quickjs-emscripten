@@ -1,4 +1,4 @@
-import type { QuickJSAsyncEmscriptenModule, QuickJSAsyncFFI } from "@jitl/quickjs-ffi-types"
+import type { QuickJSAsyncEmscriptenModule, QuickJSAsyncFFI } from "@componentor/quickjs-ffi-types"
 import type { QuickJSAsyncContext } from "./context-asyncify"
 import { QuickJSNotImplemented } from "./errors"
 import { Lifetime, Scope } from "./lifetime"

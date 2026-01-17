@@ -1,4 +1,4 @@
-export * from "@jitl/quickjs-ffi-types"
+export * from "@componentor/quickjs-ffi-types"
 
 // Sync classes
 export { QuickJSWASMModule } from "./module"

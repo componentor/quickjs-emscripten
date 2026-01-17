@@ -660,13 +660,13 @@ for (const quickjs of [
 
 Including 4 different copies of the WebAssembly module in the main package gives it an install size of [about 9.04mb](https://packagephobia.com/result?p=quickjs-emscripten). If you're building a CLI package or library of your own, or otherwise don't need to include 4 different variants in your `node_modules`, you can switch to the `quickjs-emscripten-core` package, which contains only the Javascript code for this library, and install one (or more) variants a-la-carte as separate packages.
 
-The most minimal setup would be to install `quickjs-emscripten-core` and `@jitl/quickjs-wasmfile-release-sync` (1.3mb total):
+The most minimal setup would be to install `quickjs-emscripten-core` and `@componentor/quickjs-wasmfile-release-sync` (1.3mb total):
 
 ```bash
-pnpm run add quickjs-emscripten-core @jitl/quickjs-wasmfile-release-sync
+pnpm run add quickjs-emscripten-core @componentor/quickjs-wasmfile-release-sync
 du -h node_modules
-# 640K    node_modules/@jitl/quickjs-wasmfile-release-sync
-#  80K    node_modules/@jitl/quickjs-ffi-types
+# 640K    node_modules/@componentor/quickjs-wasmfile-release-sync
+#  80K    node_modules/@componentor/quickjs-ffi-types
 # 588K    node_modules/quickjs-emscripten-core
 # 1.3M    node_modules
 ```
@@ -676,7 +676,7 @@ Then, you can use quickjs-emscripten-core's `newQuickJSWASMModuleFromVariant` to
 ```typescript
 // src/quickjs.mjs
 import { newQuickJSWASMModuleFromVariant } from "quickjs-emscripten-core"
-import RELEASE_SYNC from "@jitl/quickjs-wasmfile-release-sync"
+import RELEASE_SYNC from "@componentor/quickjs-wasmfile-release-sync"
 export const QuickJS = await newQuickJSWASMModuleFromVariant(RELEASE_SYNC)
 
 // src/app.mjs
@@ -765,7 +765,7 @@ With quickjs-emscripten-core:
 
 ```typescript
 import { newQuickJSWASMModuleFromVariant } from "quickjs-emscripten-core"
-import DEBUG_SYNC from "@jitl/quickjs-wasmfile-debug-sync"
+import DEBUG_SYNC from "@componentor/quickjs-wasmfile-debug-sync"
 
 const QuickJS = await newQuickJSWASMModuleFromVariant(DEBUG_SYNC)
 ```
@@ -1676,9 +1676,9 @@ It should not retain a reference to its return value or thrown error.
 
 Defined in: packages/variant-quickjs-wasmfile-debug-asyncify/dist/index.d.ts:18
 
-### @jitl/quickjs-wasmfile-debug-asyncify
+### @componentor/quickjs-wasmfile-debug-asyncify
 
-[Docs](https://github.com/justjake/quickjs-emscripten/blob/main/doc/@jitl/quickjs-wasmfile-debug-asyncify/README.md) |
+[Docs](https://github.com/justjake/quickjs-emscripten/blob/main/doc/@componentor/quickjs-wasmfile-debug-asyncify/README.md) |
 Variant with separate .WASM file. Supports browser ESM, NodeJS ESM, and NodeJS CommonJS.
 
 | Variable            |    Setting                     |    Description    |
@@ -1697,9 +1697,9 @@ Variant with separate .WASM file. Supports browser ESM, NodeJS ESM, and NodeJS C
 
 Defined in: packages/variant-quickjs-wasmfile-debug-sync/dist/index.d.ts:18
 
-### @jitl/quickjs-wasmfile-debug-sync
+### @componentor/quickjs-wasmfile-debug-sync
 
-[Docs](https://github.com/justjake/quickjs-emscripten/blob/main/doc/@jitl/quickjs-wasmfile-debug-sync/README.md) |
+[Docs](https://github.com/justjake/quickjs-emscripten/blob/main/doc/@componentor/quickjs-wasmfile-debug-sync/README.md) |
 Variant with separate .WASM file. Supports browser ESM, NodeJS ESM, and NodeJS CommonJS.
 
 | Variable            |    Setting                     |    Description    |
@@ -1966,9 +1966,9 @@ Defined in: packages/quickjs-ffi-types/dist/index.d.ts:145
 
 Defined in: packages/variant-quickjs-wasmfile-release-asyncify/dist/index.d.ts:18
 
-### @jitl/quickjs-wasmfile-release-asyncify
+### @componentor/quickjs-wasmfile-release-asyncify
 
-[Docs](https://github.com/justjake/quickjs-emscripten/blob/main/doc/@jitl/quickjs-wasmfile-release-asyncify/README.md) |
+[Docs](https://github.com/justjake/quickjs-emscripten/blob/main/doc/@componentor/quickjs-wasmfile-release-asyncify/README.md) |
 Variant with separate .WASM file. Supports browser ESM, NodeJS ESM, and NodeJS CommonJS.
 
 | Variable            |    Setting                     |    Description    |
@@ -1987,9 +1987,9 @@ Variant with separate .WASM file. Supports browser ESM, NodeJS ESM, and NodeJS C
 
 Defined in: packages/variant-quickjs-wasmfile-release-sync/dist/index.d.ts:18
 
-### @jitl/quickjs-wasmfile-release-sync
+### @componentor/quickjs-wasmfile-release-sync
 
-[Docs](https://github.com/justjake/quickjs-emscripten/blob/main/doc/@jitl/quickjs-wasmfile-release-sync/README.md) |
+[Docs](https://github.com/justjake/quickjs-emscripten/blob/main/doc/@componentor/quickjs-wasmfile-release-sync/README.md) |
 Variant with separate .WASM file. Supports browser ESM, NodeJS ESM, and NodeJS CommonJS.
 
 | Variable            |    Setting                     |    Description    |
@@ -2323,7 +2323,7 @@ A [QuickJSAsyncVariant](interfaces/QuickJSAsyncVariant.md) to construct the WebA
 
 ```ts
 const quickjs = new newQuickJSAsyncWASMModuleFromVariant(
-  import('@jitl/quickjs-browser-debug-asyncify-wasm')
+  import('@componentor/quickjs-browser-debug-asyncify-wasm')
 )
 ```
 
@@ -2385,7 +2385,7 @@ A [QuickJSSyncVariant](interfaces/QuickJSSyncVariant.md) to construct the WebAss
 
 ```ts
 const quickjs = new newQuickJSWASMModuleFromVariant(
-  import('@jitl/quickjs-browser-release-sync-wasm')
+  import('@componentor/quickjs-browser-release-sync-wasm')
 )
 ```
 

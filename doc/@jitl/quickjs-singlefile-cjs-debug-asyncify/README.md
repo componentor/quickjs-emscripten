@@ -2,9 +2,9 @@
 
 ***
 
-[quickjs-emscripten](../../packages.md) / @jitl/quickjs-singlefile-cjs-debug-asyncify
+[quickjs-emscripten](../../packages.md) / @componentor/quickjs-singlefile-cjs-debug-asyncify
 
-# @jitl/quickjs-singlefile-cjs-debug-asyncify
+# @componentor/quickjs-singlefile-cjs-debug-asyncify
 
 Variant with the WASM data embedded into a universal (Node and Browser compatible) CommonJS module.
 
@@ -12,7 +12,7 @@ This generated package is part of [quickjs-emscripten](https://github.com/justja
 It contains a variant of the quickjs WASM library, and can be used with quickjs-emscripten-core.
 
 ```typescript
-import variant from "@jitl/quickjs-singlefile-cjs-debug-asyncify"
+import variant from "@componentor/quickjs-singlefile-cjs-debug-asyncify"
 import { newQuickJSAsyncWASMModuleFromVariant } from "quickjs-emscripten-core"
 const QuickJS = await newQuickJSAsyncWASMModuleFromVariant(variant)
 ```
@@ -95,9 +95,9 @@ Variant-specific Emscripten build flags:
 
 Defined in: [index.ts:18](https://github.com/componentor/quickjs-emscripten/blob/main/packages/variant-quickjs-singlefile-cjs-debug-asyncify/src/index.ts#L18)
 
-### @jitl/quickjs-singlefile-cjs-debug-asyncify
+### @componentor/quickjs-singlefile-cjs-debug-asyncify
 
-[Docs](https://github.com/justjake/quickjs-emscripten/blob/main/doc/@jitl/quickjs-singlefile-cjs-debug-asyncify/README.md) |
+[Docs](https://github.com/justjake/quickjs-emscripten/blob/main/doc/@componentor/quickjs-singlefile-cjs-debug-asyncify/README.md) |
 Variant with the WASM data embedded into a universal (Node and Browser compatible) CommonJS module.
 
 | Variable            |    Setting                     |    Description    |

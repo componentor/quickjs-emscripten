@@ -127,12 +127,12 @@ test("quickjs-for-quickjs", () => {
     guestImport: "quickjs-emscripten-core",
   })
   moduleLoader.mountImport({
-    hostImport: "@jitl/quickjs-asmjs-mjs-release-sync",
-    guestImport: "@jitl/quickjs-asmjs-mjs-release-sync",
+    hostImport: "@componentor/quickjs-asmjs-mjs-release-sync",
+    guestImport: "@componentor/quickjs-asmjs-mjs-release-sync",
   })
   moduleLoader.mountImport({
-    hostImport: "@jitl/quickjs-ffi-types",
-    guestImport: "@jitl/quickjs-ffi-types",
+    hostImport: "@componentor/quickjs-ffi-types",
+    guestImport: "@componentor/quickjs-ffi-types",
     direct: true,
   })
 
@@ -148,7 +148,7 @@ test("quickjs-for-quickjs", () => {
   const result = context.evalCode(
     `
 import { newQuickJSWASMModuleFromVariant } from 'quickjs-emscripten-core/index.mjs'
-import variant from '@jitl/quickjs-asmjs-mjs-release-sync/index.mjs'
+import variant from '@componentor/quickjs-asmjs-mjs-release-sync/index.mjs'
 globalThis.done = newQuickJSWASMModuleFromVariant(variant).then(QuickJS => {
   const result = QuickJS.evalCode('1+2')
   console.log('inner result', result)

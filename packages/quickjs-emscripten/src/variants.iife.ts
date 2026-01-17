@@ -3,13 +3,13 @@ import type {
   QuickJSAsyncVariant,
   QuickJSWASMModule,
   QuickJSAsyncWASMModule,
-} from "quickjs-emscripten-core"
+} from "@componentor/quickjs-emscripten-core"
 import {
   newQuickJSWASMModuleFromVariant,
   newQuickJSAsyncWASMModuleFromVariant,
-} from "quickjs-emscripten-core"
-import RELEASE_SYNC from "@jitl/quickjs-singlefile-cjs-release-sync"
-import RELEASE_ASYNC from "@jitl/quickjs-singlefile-cjs-release-asyncify"
+} from "@componentor/quickjs-emscripten-core"
+import RELEASE_SYNC from "@componentor/quickjs-singlefile-cjs-release-sync"
+import RELEASE_ASYNC from "@componentor/quickjs-singlefile-cjs-release-asyncify"
 
 /**
  * Create a new, completely isolated WebAssembly module containing the QuickJS library.

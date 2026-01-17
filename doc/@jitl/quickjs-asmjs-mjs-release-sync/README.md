@@ -2,9 +2,9 @@
 
 ***
 
-[quickjs-emscripten](../../packages.md) / @jitl/quickjs-asmjs-mjs-release-sync
+[quickjs-emscripten](../../packages.md) / @componentor/quickjs-asmjs-mjs-release-sync
 
-# @jitl/quickjs-asmjs-mjs-release-sync
+# @componentor/quickjs-asmjs-mjs-release-sync
 
 Compiled to pure Javascript, no WebAssembly required.
 
@@ -12,7 +12,7 @@ This generated package is part of [quickjs-emscripten](https://github.com/justja
 It contains a variant of the quickjs WASM library, and can be used with quickjs-emscripten-core.
 
 ```typescript
-import variant from "@jitl/quickjs-asmjs-mjs-release-sync"
+import variant from "@componentor/quickjs-asmjs-mjs-release-sync"
 import { newQuickJSWASMModuleFromVariant } from "quickjs-emscripten-core"
 const QuickJS = await newQuickJSWASMModuleFromVariant(variant)
 ```
@@ -85,9 +85,9 @@ Variant-specific Emscripten build flags:
 
 Defined in: [index.ts:19](https://github.com/componentor/quickjs-emscripten/blob/main/packages/variant-quickjs-asmjs-mjs-release-sync/src/index.ts#L19)
 
-### @jitl/quickjs-asmjs-mjs-release-sync
+### @componentor/quickjs-asmjs-mjs-release-sync
 
-[Docs](https://github.com/justjake/quickjs-emscripten/blob/main/doc/@jitl/quickjs-asmjs-mjs-release-sync/README.md) |
+[Docs](https://github.com/justjake/quickjs-emscripten/blob/main/doc/@componentor/quickjs-asmjs-mjs-release-sync/README.md) |
 Compiled to pure Javascript, no WebAssembly required.
 
 | Variable            |    Setting                     |    Description    |

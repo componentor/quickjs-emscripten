@@ -1,4 +1,4 @@
-import { IsEqualOp, JSPromiseStateEnum } from "@jitl/quickjs-ffi-types"
+import { IsEqualOp, JSPromiseStateEnum } from "@componentor/quickjs-ffi-types"
 import type {
   EvalFlags,
   EitherModule,
@@ -13,7 +13,7 @@ import type {
   UInt32Pointer,
   JSValuePointerPointerPointer,
   JSVoidPointer,
-} from "@jitl/quickjs-ffi-types"
+} from "@componentor/quickjs-ffi-types"
 import type { JSPromiseState } from "./deferred-promise"
 import { QuickJSDeferredPromise } from "./deferred-promise"
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

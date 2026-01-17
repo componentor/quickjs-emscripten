@@ -2,7 +2,7 @@
 
 ***
 
-[quickjs-emscripten](../../../packages.md) / [@jitl/quickjs-ffi-types](../README.md) / QuickJSAsyncVariant
+[quickjs-emscripten](../../../packages.md) / [@componentor/quickjs-ffi-types](../README.md) / QuickJSAsyncVariant
 
 # Interface: QuickJSAsyncVariant
 

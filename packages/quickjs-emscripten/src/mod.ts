@@ -4,7 +4,7 @@ import type {
   QuickJSAsyncContext,
   QuickJSAsyncRuntime,
   QuickJSWASMModule,
-} from "quickjs-emscripten-core"
+} from "@componentor/quickjs-emscripten-core"
 import { newQuickJSAsyncWASMModule, newQuickJSWASMModule } from "#variants"
 
 let singleton: QuickJSWASMModule | undefined = undefined

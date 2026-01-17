@@ -5,7 +5,7 @@ import type {
   JSRuntimePointer,
   EitherFFI,
   EitherModule,
-} from "@jitl/quickjs-ffi-types"
+} from "@componentor/quickjs-ffi-types"
 import { maybeAsyncFn } from "./asyncify-helpers"
 import { QuickJSContext } from "./context"
 import { QTS_DEBUG } from "./debug"

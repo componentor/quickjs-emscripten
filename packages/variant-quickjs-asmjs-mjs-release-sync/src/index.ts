@@ -1,10 +1,10 @@
-import type { QuickJSSyncVariant } from "@jitl/quickjs-ffi-types"
-import moduleLoader from "@jitl/quickjs-asmjs-mjs-release-sync/emscripten-module"
+import type { QuickJSSyncVariant } from "@componentor/quickjs-ffi-types"
+import moduleLoader from "@componentor/quickjs-asmjs-mjs-release-sync/emscripten-module"
 import { QuickJSFFI } from "./ffi.js"
 /**
- * ### @jitl/quickjs-asmjs-mjs-release-sync
+ * ### @componentor/quickjs-asmjs-mjs-release-sync
  *
- * [Docs](https://github.com/justjake/quickjs-emscripten/blob/main/doc/@jitl/quickjs-asmjs-mjs-release-sync/README.md) |
+ * [Docs](https://github.com/componentor/quickjs-emscripten/blob/main/doc/@componentor/quickjs-asmjs-mjs-release-sync/README.md) |
  * Compiled to pure Javascript, no WebAssembly required.
  *
  * | Variable            |    Setting                     |    Description    |

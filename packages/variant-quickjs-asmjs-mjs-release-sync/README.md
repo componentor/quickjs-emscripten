@@ -1,13 +1,13 @@
-# @jitl/quickjs-asmjs-mjs-release-sync
+# @componentor/quickjs-asmjs-mjs-release-sync
 
 Compiled to pure Javascript, no WebAssembly required.
 
-This generated package is part of [quickjs-emscripten](https://github.com/justjake/quickjs-emscripten).
-It contains a variant of the quickjs WASM library, and can be used with quickjs-emscripten-core.
+This generated package is part of [quickjs-emscripten](https://github.com/componentor/quickjs-emscripten).
+It contains a variant of the quickjs WASM library, and can be used with @componentor/quickjs-emscripten-core.
 
 ```typescript
-import variant from "@jitl/quickjs-asmjs-mjs-release-sync"
-import { newQuickJSWASMModuleFromVariant } from "quickjs-emscripten-core"
+import variant from "@componentor/quickjs-asmjs-mjs-release-sync"
+import { newQuickJSWASMModuleFromVariant } from "@componentor/quickjs-emscripten-core"
 const QuickJS = await newQuickJSWASMModuleFromVariant(variant)
 ```
 

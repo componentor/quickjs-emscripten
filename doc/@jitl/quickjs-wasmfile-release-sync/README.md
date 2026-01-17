@@ -2,9 +2,9 @@
 
 ***
 
-[quickjs-emscripten](../../packages.md) / @jitl/quickjs-wasmfile-release-sync
+[quickjs-emscripten](../../packages.md) / @componentor/quickjs-wasmfile-release-sync
 
-# @jitl/quickjs-wasmfile-release-sync
+# @componentor/quickjs-wasmfile-release-sync
 
 Variant with separate .WASM file. Supports browser ESM, NodeJS ESM, and NodeJS CommonJS.
 
@@ -12,7 +12,7 @@ This generated package is part of [quickjs-emscripten](https://github.com/justja
 It contains a variant of the quickjs WASM library, and can be used with quickjs-emscripten-core.
 
 ```typescript
-import variant from "@jitl/quickjs-wasmfile-release-sync"
+import variant from "@componentor/quickjs-wasmfile-release-sync"
 import { newQuickJSWASMModuleFromVariant } from "quickjs-emscripten-core"
 const QuickJS = await newQuickJSWASMModuleFromVariant(variant)
 ```
@@ -95,9 +95,9 @@ Variant-specific Emscripten build flags:
 
 Defined in: [index.ts:18](https://github.com/componentor/quickjs-emscripten/blob/main/packages/variant-quickjs-wasmfile-release-sync/src/index.ts#L18)
 
-### @jitl/quickjs-wasmfile-release-sync
+### @componentor/quickjs-wasmfile-release-sync
 
-[Docs](https://github.com/justjake/quickjs-emscripten/blob/main/doc/@jitl/quickjs-wasmfile-release-sync/README.md) |
+[Docs](https://github.com/justjake/quickjs-emscripten/blob/main/doc/@componentor/quickjs-wasmfile-release-sync/README.md) |
 Variant with separate .WASM file. Supports browser ESM, NodeJS ESM, and NodeJS CommonJS.
 
 | Variable            |    Setting                     |    Description    |

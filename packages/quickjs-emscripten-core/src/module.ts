@@ -8,7 +8,7 @@ import type {
   JSRuntimePointer,
   JSValuePointer,
   EitherFFI,
-} from "@jitl/quickjs-ffi-types"
+} from "@componentor/quickjs-ffi-types"
 import type { QuickJSContext } from "./context"
 import { debugLog } from "./debug"
 import { QuickJSAsyncifyError, QuickJSAsyncifySuspended } from "./errors"
