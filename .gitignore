@@ -1,5 +1,5 @@
 node_modules
-yarn-error.log
+pnpm-error.log
 npm-error.log
 
 *.tsbuildinfo
@@ -30,5 +30,5 @@ npm-error.log
 /quickjs/repl.c
 /quickjs/run-test262
 
-.yarn/cache
-.yarn/install-state.gz
+.pnpm/cache
+.pnpm/install-state.gz

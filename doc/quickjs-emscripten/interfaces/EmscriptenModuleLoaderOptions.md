@@ -1,27 +1,18 @@
-[quickjs-emscripten](../../packages.md) • **quickjs-emscripten** • [Readme](../README.md) \| [Exports](../exports.md)
+[**quickjs-emscripten**](../../README.md)
 
 ***
 
-[quickjs-emscripten](../../packages.md) / [quickjs-emscripten](../exports.md) / EmscriptenModuleLoaderOptions
+[quickjs-emscripten](../../packages.md) / [quickjs-emscripten](../README.md) / EmscriptenModuleLoaderOptions
 
 # Interface: EmscriptenModuleLoaderOptions
+
+Defined in: packages/quickjs-ffi-types/dist/index.d.ts:222
 
 This structure is defined by Emscripten.
 It's possible to provide these parameters to an emscripten module loader.
 See [the Emscripten Module API reference](https://emscripten.org/docs/api_reference/module.html).
 
-## Contents
-
-- [Extended By](EmscriptenModuleLoaderOptions.md#extended-by)
-- [Properties](EmscriptenModuleLoaderOptions.md#properties)
-  - [wasmBinary?](EmscriptenModuleLoaderOptions.md#wasmbinary)
-  - [wasmMemory?](EmscriptenModuleLoaderOptions.md#wasmmemory)
-- [Methods](EmscriptenModuleLoaderOptions.md#methods)
-  - [instantiateWasm()?](EmscriptenModuleLoaderOptions.md#instantiatewasm)
-  - [locateFile()?](EmscriptenModuleLoaderOptions.md#locatefile)
-  - [monitorRunDependencies()?](EmscriptenModuleLoaderOptions.md#monitorrundependencies)
-
-## Extended By
+## Extended by
 
 - [`EmscriptenModule`](EmscriptenModule.md)
 
@@ -29,53 +20,53 @@ See [the Emscripten Module API reference](https://emscripten.org/docs/api_refere
 
 ### wasmBinary?
 
-> **wasmBinary**?: `ArrayBuffer`
+> `optional` **wasmBinary**: `ArrayBuffer`
+
+Defined in: packages/quickjs-ffi-types/dist/index.d.ts:246
 
 Compile this to WebAssembly.Module
-
-#### Source
-
-packages/quickjs-ffi-types/dist/index.d.ts:246
 
 ***
 
 ### wasmMemory?
 
-> **wasmMemory**?: `Memory`
+> `optional` **wasmMemory**: `Memory`
+
+Defined in: packages/quickjs-ffi-types/dist/index.d.ts:248
 
 If provided, use this WebAssembly.Memory instead of an automatically created one.
-
-#### Source
-
-packages/quickjs-ffi-types/dist/index.d.ts:248
 
 ## Methods
 
 ### instantiateWasm()?
 
-> **`optional`** **instantiateWasm**(`imports`, `onSuccess`): `Exports` \| `Promise`\<`Exports`\>
+> `optional` **instantiateWasm**(`imports`, `onSuccess`): `Exports` \| `Promise`\<`Exports`\>
+
+Defined in: packages/quickjs-ffi-types/dist/index.d.ts:250
 
 Create an instance of the WASM module, call onSuccess(instance), then return instance.exports
 
 #### Parameters
 
-• **imports**: `Imports`
+##### imports
 
-• **onSuccess**: (`instance`) => `void`
+`WebAssembly.Imports`
+
+##### onSuccess
+
+(`instance`) => `void`
 
 #### Returns
 
 `Exports` \| `Promise`\<`Exports`\>
 
-#### Source
-
-packages/quickjs-ffi-types/dist/index.d.ts:250
-
 ***
 
 ### locateFile()?
 
-> **`optional`** **locateFile**(`fileName`, `prefix`): `string`
+> `optional` **locateFile**(`fileName`, `prefix`): `string`
+
+Defined in: packages/quickjs-ffi-types/dist/index.d.ts:242
 
 If set, this method will be called when the runtime needs to load a file,
 such as a .wasm WebAssembly file, .mem memory init file, or a file
@@ -97,9 +88,13 @@ you want to host them on a CDN.
 
 #### Parameters
 
-• **fileName**: `string`
+##### fileName
 
-• **prefix**: `string`
+`string`
+
+##### prefix
+
+`string`
 
 Often `''` (empty string)
 
@@ -107,30 +102,22 @@ Often `''` (empty string)
 
 `string`
 
-#### Source
-
-packages/quickjs-ffi-types/dist/index.d.ts:242
-
 ***
 
 ### monitorRunDependencies()?
 
-> **`optional`** **monitorRunDependencies**(`left`): `void`
+> `optional` **monitorRunDependencies**(`left`): `void`
+
+Defined in: packages/quickjs-ffi-types/dist/index.d.ts:252
 
 Called by emscripten as dependencies blocking initialization are added or fulfilled. May only be called in debug builds.
 
 #### Parameters
 
-• **left**: `number`
+##### left
+
+`number`
 
 #### Returns
 
 `void`
-
-#### Source
-
-packages/quickjs-ffi-types/dist/index.d.ts:252
-
-***
-
-Generated using [typedoc-plugin-markdown](https://www.npmjs.com/package/typedoc-plugin-markdown) and [TypeDoc](https://typedoc.org/)

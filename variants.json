@@ -12,12 +12,12 @@
       "repository": { "type": "git", "url": "https://github.com/justjake/quickjs-emscripten" },
       "author": { "name": "Jake Teton-Landis", "url": "https://jake.tl" },
       "scripts": {
-        "build": "yarn build:c && yarn build:ts",
+        "build": "pnpm run build:c && pnpm run build:ts",
         "build:c": "make",
         "build:ts": "npx tsup",
         "check:types": "npx tsc --project . --noEmit",
         "clean": "make clean",
-        "prepare": "yarn clean && yarn build"
+        "prepare": "pnpm run clean && pnpm run build"
       },
       "files": ["LICENSE", "README.md", "dist/**/*", "!dist/*.tsbuildinfo"],
       "types": "./dist/index.d.ts",
@@ -49,7 +49,8 @@
           "default": "./dist/emscripten-module.cjs"
         }
       },
-      "dependencies": { "@jitl/quickjs-ffi-types": "workspace:*" }
+      "dependencies": { "@jitl/quickjs-ffi-types": "workspace:*" },
+      "devDependencies": { "@jitl/tsconfig": "workspace:*" }
     },
     "variant": {
       "library": "quickjs",
@@ -78,12 +79,12 @@
       "repository": { "type": "git", "url": "https://github.com/justjake/quickjs-emscripten" },
       "author": { "name": "Jake Teton-Landis", "url": "https://jake.tl" },
       "scripts": {
-        "build": "yarn build:c && yarn build:ts",
+        "build": "pnpm run build:c && pnpm run build:ts",
         "build:c": "make",
         "build:ts": "npx tsup",
         "check:types": "npx tsc --project . --noEmit",
         "clean": "make clean",
-        "prepare": "yarn clean && yarn build"
+        "prepare": "pnpm run clean && pnpm run build"
       },
       "files": ["LICENSE", "README.md", "dist/**/*", "!dist/*.tsbuildinfo"],
       "types": "./dist/index.d.ts",
@@ -115,7 +116,8 @@
           "default": "./dist/emscripten-module.cjs"
         }
       },
-      "dependencies": { "@jitl/quickjs-ffi-types": "workspace:*" }
+      "dependencies": { "@jitl/quickjs-ffi-types": "workspace:*" },
+      "devDependencies": { "@jitl/tsconfig": "workspace:*" }
     },
     "variant": {
       "library": "quickjs",
@@ -144,12 +146,12 @@
       "repository": { "type": "git", "url": "https://github.com/justjake/quickjs-emscripten" },
       "author": { "name": "Jake Teton-Landis", "url": "https://jake.tl" },
       "scripts": {
-        "build": "yarn build:c && yarn build:ts",
+        "build": "pnpm run build:c && pnpm run build:ts",
         "build:c": "make",
         "build:ts": "npx tsup",
         "check:types": "npx tsc --project . --noEmit",
         "clean": "make clean",
-        "prepare": "yarn clean && yarn build"
+        "prepare": "pnpm run clean && pnpm run build"
       },
       "files": ["LICENSE", "README.md", "dist/**/*", "!dist/*.tsbuildinfo"],
       "types": "./dist/index.d.ts",
@@ -181,7 +183,8 @@
           "default": "./dist/emscripten-module.cjs"
         }
       },
-      "dependencies": { "@jitl/quickjs-ffi-types": "workspace:*" }
+      "dependencies": { "@jitl/quickjs-ffi-types": "workspace:*" },
+      "devDependencies": { "@jitl/tsconfig": "workspace:*" }
     },
     "variant": {
       "library": "quickjs",
@@ -210,12 +213,12 @@
       "repository": { "type": "git", "url": "https://github.com/justjake/quickjs-emscripten" },
       "author": { "name": "Jake Teton-Landis", "url": "https://jake.tl" },
       "scripts": {
-        "build": "yarn build:c && yarn build:ts",
+        "build": "pnpm run build:c && pnpm run build:ts",
         "build:c": "make",
         "build:ts": "npx tsup",
         "check:types": "npx tsc --project . --noEmit",
         "clean": "make clean",
-        "prepare": "yarn clean && yarn build"
+        "prepare": "pnpm run clean && pnpm run build"
       },
       "files": ["LICENSE", "README.md", "dist/**/*", "!dist/*.tsbuildinfo"],
       "types": "./dist/index.d.ts",
@@ -247,7 +250,8 @@
           "default": "./dist/emscripten-module.cjs"
         }
       },
-      "dependencies": { "@jitl/quickjs-ffi-types": "workspace:*" }
+      "dependencies": { "@jitl/quickjs-ffi-types": "workspace:*" },
+      "devDependencies": { "@jitl/tsconfig": "workspace:*" }
     },
     "variant": {
       "library": "quickjs",
@@ -276,12 +280,12 @@
       "repository": { "type": "git", "url": "https://github.com/justjake/quickjs-emscripten" },
       "author": { "name": "Jake Teton-Landis", "url": "https://jake.tl" },
       "scripts": {
-        "build": "yarn build:c && yarn build:ts",
+        "build": "pnpm run build:c && pnpm run build:ts",
         "build:c": "make",
         "build:ts": "npx tsup",
         "check:types": "npx tsc --project . --noEmit",
         "clean": "make clean",
-        "prepare": "yarn clean && yarn build"
+        "prepare": "pnpm run clean && pnpm run build"
       },
       "files": ["LICENSE", "README.md", "dist/**/*", "!dist/*.tsbuildinfo"],
       "types": "./dist/index.d.ts",
@@ -313,7 +317,8 @@
           "default": "./dist/emscripten-module.cjs"
         }
       },
-      "dependencies": { "@jitl/quickjs-ffi-types": "workspace:*" }
+      "dependencies": { "@jitl/quickjs-ffi-types": "workspace:*" },
+      "devDependencies": { "@jitl/tsconfig": "workspace:*" }
     },
     "variant": {
       "library": "quickjs-ng",
@@ -342,12 +347,12 @@
       "repository": { "type": "git", "url": "https://github.com/justjake/quickjs-emscripten" },
       "author": { "name": "Jake Teton-Landis", "url": "https://jake.tl" },
       "scripts": {
-        "build": "yarn build:c && yarn build:ts",
+        "build": "pnpm run build:c && pnpm run build:ts",
         "build:c": "make",
         "build:ts": "npx tsup",
         "check:types": "npx tsc --project . --noEmit",
         "clean": "make clean",
-        "prepare": "yarn clean && yarn build"
+        "prepare": "pnpm run clean && pnpm run build"
       },
       "files": ["LICENSE", "README.md", "dist/**/*", "!dist/*.tsbuildinfo"],
       "types": "./dist/index.d.ts",
@@ -379,7 +384,8 @@
           "default": "./dist/emscripten-module.cjs"
         }
       },
-      "dependencies": { "@jitl/quickjs-ffi-types": "workspace:*" }
+      "dependencies": { "@jitl/quickjs-ffi-types": "workspace:*" },
+      "devDependencies": { "@jitl/tsconfig": "workspace:*" }
     },
     "variant": {
       "library": "quickjs-ng",
@@ -408,12 +414,12 @@
       "repository": { "type": "git", "url": "https://github.com/justjake/quickjs-emscripten" },
       "author": { "name": "Jake Teton-Landis", "url": "https://jake.tl" },
       "scripts": {
-        "build": "yarn build:c && yarn build:ts",
+        "build": "pnpm run build:c && pnpm run build:ts",
         "build:c": "make",
         "build:ts": "npx tsup",
         "check:types": "npx tsc --project . --noEmit",
         "clean": "make clean",
-        "prepare": "yarn clean && yarn build"
+        "prepare": "pnpm run clean && pnpm run build"
       },
       "files": ["LICENSE", "README.md", "dist/**/*", "!dist/*.tsbuildinfo"],
       "types": "./dist/index.d.ts",
@@ -445,7 +451,8 @@
           "default": "./dist/emscripten-module.cjs"
         }
       },
-      "dependencies": { "@jitl/quickjs-ffi-types": "workspace:*" }
+      "dependencies": { "@jitl/quickjs-ffi-types": "workspace:*" },
+      "devDependencies": { "@jitl/tsconfig": "workspace:*" }
     },
     "variant": {
       "library": "quickjs-ng",
@@ -474,12 +481,12 @@
       "repository": { "type": "git", "url": "https://github.com/justjake/quickjs-emscripten" },
       "author": { "name": "Jake Teton-Landis", "url": "https://jake.tl" },
       "scripts": {
-        "build": "yarn build:c && yarn build:ts",
+        "build": "pnpm run build:c && pnpm run build:ts",
         "build:c": "make",
         "build:ts": "npx tsup",
         "check:types": "npx tsc --project . --noEmit",
         "clean": "make clean",
-        "prepare": "yarn clean && yarn build"
+        "prepare": "pnpm run clean && pnpm run build"
       },
       "files": ["LICENSE", "README.md", "dist/**/*", "!dist/*.tsbuildinfo"],
       "types": "./dist/index.d.ts",
@@ -511,7 +518,8 @@
           "default": "./dist/emscripten-module.cjs"
         }
       },
-      "dependencies": { "@jitl/quickjs-ffi-types": "workspace:*" }
+      "dependencies": { "@jitl/quickjs-ffi-types": "workspace:*" },
+      "devDependencies": { "@jitl/tsconfig": "workspace:*" }
     },
     "variant": {
       "library": "quickjs-ng",
@@ -540,12 +548,12 @@
       "repository": { "type": "git", "url": "https://github.com/justjake/quickjs-emscripten" },
       "author": { "name": "Jake Teton-Landis", "url": "https://jake.tl" },
       "scripts": {
-        "build": "yarn build:c && yarn build:ts",
+        "build": "pnpm run build:c && pnpm run build:ts",
         "build:c": "make -j2",
         "build:ts": "npx tsup",
         "check:types": "npx tsc --project . --noEmit",
         "clean": "make clean",
-        "prepare": "yarn clean && yarn build"
+        "prepare": "pnpm run clean && pnpm run build"
       },
       "files": ["LICENSE", "README.md", "dist/**/*", "!dist/*.tsbuildinfo"],
       "types": "./dist/index.d.ts",
@@ -572,7 +580,8 @@
           "default": "./dist/emscripten-module.cjs"
         }
       },
-      "dependencies": { "@jitl/quickjs-ffi-types": "workspace:*" }
+      "dependencies": { "@jitl/quickjs-ffi-types": "workspace:*" },
+      "devDependencies": { "@jitl/tsconfig": "workspace:*" }
     },
     "variant": {
       "library": "quickjs",
@@ -596,12 +605,12 @@
       "repository": { "type": "git", "url": "https://github.com/justjake/quickjs-emscripten" },
       "author": { "name": "Jake Teton-Landis", "url": "https://jake.tl" },
       "scripts": {
-        "build": "yarn build:c && yarn build:ts",
+        "build": "pnpm run build:c && pnpm run build:ts",
         "build:c": "make -j2",
         "build:ts": "npx tsup",
         "check:types": "npx tsc --project . --noEmit",
         "clean": "make clean",
-        "prepare": "yarn clean && yarn build"
+        "prepare": "pnpm run clean && pnpm run build"
       },
       "files": ["LICENSE", "README.md", "dist/**/*", "!dist/*.tsbuildinfo"],
       "types": "./dist/index.d.ts",
@@ -628,7 +637,8 @@
           "default": "./dist/emscripten-module.cjs"
         }
       },
-      "dependencies": { "@jitl/quickjs-ffi-types": "workspace:*" }
+      "dependencies": { "@jitl/quickjs-ffi-types": "workspace:*" },
+      "devDependencies": { "@jitl/tsconfig": "workspace:*" }
     },
     "variant": {
       "library": "quickjs",
@@ -652,12 +662,12 @@
       "repository": { "type": "git", "url": "https://github.com/justjake/quickjs-emscripten" },
       "author": { "name": "Jake Teton-Landis", "url": "https://jake.tl" },
       "scripts": {
-        "build": "yarn build:c && yarn build:ts",
+        "build": "pnpm run build:c && pnpm run build:ts",
         "build:c": "make -j2",
         "build:ts": "npx tsup",
         "check:types": "npx tsc --project . --noEmit",
         "clean": "make clean",
-        "prepare": "yarn clean && yarn build"
+        "prepare": "pnpm run clean && pnpm run build"
       },
       "files": ["LICENSE", "README.md", "dist/**/*", "!dist/*.tsbuildinfo"],
       "types": "./dist/index.d.ts",
@@ -684,7 +694,8 @@
           "default": "./dist/emscripten-module.cjs"
         }
       },
-      "dependencies": { "@jitl/quickjs-ffi-types": "workspace:*" }
+      "dependencies": { "@jitl/quickjs-ffi-types": "workspace:*" },
+      "devDependencies": { "@jitl/tsconfig": "workspace:*" }
     },
     "variant": {
       "library": "quickjs",
@@ -708,12 +719,12 @@
       "repository": { "type": "git", "url": "https://github.com/justjake/quickjs-emscripten" },
       "author": { "name": "Jake Teton-Landis", "url": "https://jake.tl" },
       "scripts": {
-        "build": "yarn build:c && yarn build:ts",
+        "build": "pnpm run build:c && pnpm run build:ts",
         "build:c": "make -j2",
         "build:ts": "npx tsup",
         "check:types": "npx tsc --project . --noEmit",
         "clean": "make clean",
-        "prepare": "yarn clean && yarn build"
+        "prepare": "pnpm run clean && pnpm run build"
       },
       "files": ["LICENSE", "README.md", "dist/**/*", "!dist/*.tsbuildinfo"],
       "types": "./dist/index.d.ts",
@@ -740,7 +751,8 @@
           "default": "./dist/emscripten-module.cjs"
         }
       },
-      "dependencies": { "@jitl/quickjs-ffi-types": "workspace:*" }
+      "dependencies": { "@jitl/quickjs-ffi-types": "workspace:*" },
+      "devDependencies": { "@jitl/tsconfig": "workspace:*" }
     },
     "variant": {
       "library": "quickjs",
@@ -764,12 +776,12 @@
       "repository": { "type": "git", "url": "https://github.com/justjake/quickjs-emscripten" },
       "author": { "name": "Jake Teton-Landis", "url": "https://jake.tl" },
       "scripts": {
-        "build": "yarn build:c && yarn build:ts",
+        "build": "pnpm run build:c && pnpm run build:ts",
         "build:c": "make -j2",
         "build:ts": "npx tsup",
         "check:types": "npx tsc --project . --noEmit",
         "clean": "make clean",
-        "prepare": "yarn clean && yarn build"
+        "prepare": "pnpm run clean && pnpm run build"
       },
       "files": ["LICENSE", "README.md", "dist/**/*", "!dist/*.tsbuildinfo"],
       "types": "./dist/index.d.mts",
@@ -793,7 +805,8 @@
           "default": "./dist/emscripten-module.mjs"
         }
       },
-      "dependencies": { "@jitl/quickjs-ffi-types": "workspace:*" }
+      "dependencies": { "@jitl/quickjs-ffi-types": "workspace:*" },
+      "devDependencies": { "@jitl/tsconfig": "workspace:*" }
     },
     "variant": {
       "library": "quickjs",
@@ -817,12 +830,12 @@
       "repository": { "type": "git", "url": "https://github.com/justjake/quickjs-emscripten" },
       "author": { "name": "Jake Teton-Landis", "url": "https://jake.tl" },
       "scripts": {
-        "build": "yarn build:c && yarn build:ts",
+        "build": "pnpm run build:c && pnpm run build:ts",
         "build:c": "make -j2",
         "build:ts": "npx tsup",
         "check:types": "npx tsc --project . --noEmit",
         "clean": "make clean",
-        "prepare": "yarn clean && yarn build"
+        "prepare": "pnpm run clean && pnpm run build"
       },
       "files": ["LICENSE", "README.md", "dist/**/*", "!dist/*.tsbuildinfo"],
       "types": "./dist/index.d.mts",
@@ -846,7 +859,8 @@
           "default": "./dist/emscripten-module.mjs"
         }
       },
-      "dependencies": { "@jitl/quickjs-ffi-types": "workspace:*" }
+      "dependencies": { "@jitl/quickjs-ffi-types": "workspace:*" },
+      "devDependencies": { "@jitl/tsconfig": "workspace:*" }
     },
     "variant": {
       "library": "quickjs",
@@ -870,12 +884,12 @@
       "repository": { "type": "git", "url": "https://github.com/justjake/quickjs-emscripten" },
       "author": { "name": "Jake Teton-Landis", "url": "https://jake.tl" },
       "scripts": {
-        "build": "yarn build:c && yarn build:ts",
+        "build": "pnpm run build:c && pnpm run build:ts",
         "build:c": "make -j2",
         "build:ts": "npx tsup",
         "check:types": "npx tsc --project . --noEmit",
         "clean": "make clean",
-        "prepare": "yarn clean && yarn build"
+        "prepare": "pnpm run clean && pnpm run build"
       },
       "files": ["LICENSE", "README.md", "dist/**/*", "!dist/*.tsbuildinfo"],
       "types": "./dist/index.d.mts",
@@ -899,7 +913,8 @@
           "default": "./dist/emscripten-module.mjs"
         }
       },
-      "dependencies": { "@jitl/quickjs-ffi-types": "workspace:*" }
+      "dependencies": { "@jitl/quickjs-ffi-types": "workspace:*" },
+      "devDependencies": { "@jitl/tsconfig": "workspace:*" }
     },
     "variant": {
       "library": "quickjs",
@@ -923,12 +938,12 @@
       "repository": { "type": "git", "url": "https://github.com/justjake/quickjs-emscripten" },
       "author": { "name": "Jake Teton-Landis", "url": "https://jake.tl" },
       "scripts": {
-        "build": "yarn build:c && yarn build:ts",
+        "build": "pnpm run build:c && pnpm run build:ts",
         "build:c": "make -j2",
         "build:ts": "npx tsup",
         "check:types": "npx tsc --project . --noEmit",
         "clean": "make clean",
-        "prepare": "yarn clean && yarn build"
+        "prepare": "pnpm run clean && pnpm run build"
       },
       "files": ["LICENSE", "README.md", "dist/**/*", "!dist/*.tsbuildinfo"],
       "types": "./dist/index.d.mts",
@@ -952,7 +967,8 @@
           "default": "./dist/emscripten-module.mjs"
         }
       },
-      "dependencies": { "@jitl/quickjs-ffi-types": "workspace:*" }
+      "dependencies": { "@jitl/quickjs-ffi-types": "workspace:*" },
+      "devDependencies": { "@jitl/tsconfig": "workspace:*" }
     },
     "variant": {
       "library": "quickjs",
@@ -976,12 +992,12 @@
       "repository": { "type": "git", "url": "https://github.com/justjake/quickjs-emscripten" },
       "author": { "name": "Jake Teton-Landis", "url": "https://jake.tl" },
       "scripts": {
-        "build": "yarn build:c && yarn build:ts",
+        "build": "pnpm run build:c && pnpm run build:ts",
         "build:c": "make -j2",
         "build:ts": "npx tsup",
         "check:types": "npx tsc --project . --noEmit",
         "clean": "make clean",
-        "prepare": "yarn clean && yarn build"
+        "prepare": "pnpm run clean && pnpm run build"
       },
       "files": ["LICENSE", "README.md", "dist/**/*", "!dist/*.tsbuildinfo"],
       "types": "./dist/index.d.mts",
@@ -1007,7 +1023,8 @@
           "default": "./dist/emscripten-module.browser.mjs"
         }
       },
-      "dependencies": { "@jitl/quickjs-ffi-types": "workspace:*" }
+      "dependencies": { "@jitl/quickjs-ffi-types": "workspace:*" },
+      "devDependencies": { "@jitl/tsconfig": "workspace:*" }
     },
     "variant": {
       "library": "quickjs",
@@ -1031,12 +1048,12 @@
       "repository": { "type": "git", "url": "https://github.com/justjake/quickjs-emscripten" },
       "author": { "name": "Jake Teton-Landis", "url": "https://jake.tl" },
       "scripts": {
-        "build": "yarn build:c && yarn build:ts",
+        "build": "pnpm run build:c && pnpm run build:ts",
         "build:c": "make -j2",
         "build:ts": "npx tsup",
         "check:types": "npx tsc --project . --noEmit",
         "clean": "make clean",
-        "prepare": "yarn clean && yarn build"
+        "prepare": "pnpm run clean && pnpm run build"
       },
       "files": ["LICENSE", "README.md", "dist/**/*", "!dist/*.tsbuildinfo"],
       "types": "./dist/index.d.mts",
@@ -1062,7 +1079,8 @@
           "default": "./dist/emscripten-module.browser.mjs"
         }
       },
-      "dependencies": { "@jitl/quickjs-ffi-types": "workspace:*" }
+      "dependencies": { "@jitl/quickjs-ffi-types": "workspace:*" },
+      "devDependencies": { "@jitl/tsconfig": "workspace:*" }
     },
     "variant": {
       "library": "quickjs",
@@ -1086,12 +1104,12 @@
       "repository": { "type": "git", "url": "https://github.com/justjake/quickjs-emscripten" },
       "author": { "name": "Jake Teton-Landis", "url": "https://jake.tl" },
       "scripts": {
-        "build": "yarn build:c && yarn build:ts",
+        "build": "pnpm run build:c && pnpm run build:ts",
         "build:c": "make -j2",
         "build:ts": "npx tsup",
         "check:types": "npx tsc --project . --noEmit",
         "clean": "make clean",
-        "prepare": "yarn clean && yarn build"
+        "prepare": "pnpm run clean && pnpm run build"
       },
       "files": ["LICENSE", "README.md", "dist/**/*", "!dist/*.tsbuildinfo"],
       "types": "./dist/index.d.mts",
@@ -1117,7 +1135,8 @@
           "default": "./dist/emscripten-module.browser.mjs"
         }
       },
-      "dependencies": { "@jitl/quickjs-ffi-types": "workspace:*" }
+      "dependencies": { "@jitl/quickjs-ffi-types": "workspace:*" },
+      "devDependencies": { "@jitl/tsconfig": "workspace:*" }
     },
     "variant": {
       "library": "quickjs",
@@ -1141,12 +1160,12 @@
       "repository": { "type": "git", "url": "https://github.com/justjake/quickjs-emscripten" },
       "author": { "name": "Jake Teton-Landis", "url": "https://jake.tl" },
       "scripts": {
-        "build": "yarn build:c && yarn build:ts",
+        "build": "pnpm run build:c && pnpm run build:ts",
         "build:c": "make -j2",
         "build:ts": "npx tsup",
         "check:types": "npx tsc --project . --noEmit",
         "clean": "make clean",
-        "prepare": "yarn clean && yarn build"
+        "prepare": "pnpm run clean && pnpm run build"
       },
       "files": ["LICENSE", "README.md", "dist/**/*", "!dist/*.tsbuildinfo"],
       "types": "./dist/index.d.mts",
@@ -1172,7 +1191,8 @@
           "default": "./dist/emscripten-module.browser.mjs"
         }
       },
-      "dependencies": { "@jitl/quickjs-ffi-types": "workspace:*" }
+      "dependencies": { "@jitl/quickjs-ffi-types": "workspace:*" },
+      "devDependencies": { "@jitl/tsconfig": "workspace:*" }
     },
     "variant": {
       "library": "quickjs",
@@ -1196,12 +1216,12 @@
       "repository": { "type": "git", "url": "https://github.com/justjake/quickjs-emscripten" },
       "author": { "name": "Jake Teton-Landis", "url": "https://jake.tl" },
       "scripts": {
-        "build": "yarn build:c && yarn build:ts",
+        "build": "pnpm run build:c && pnpm run build:ts",
         "build:c": "make -j2",
         "build:ts": "npx tsup",
         "check:types": "npx tsc --project . --noEmit",
         "clean": "make clean",
-        "prepare": "yarn clean && yarn build"
+        "prepare": "pnpm run clean && pnpm run build"
       },
       "files": ["LICENSE", "README.md", "dist/**/*", "!dist/*.tsbuildinfo"],
       "types": "./dist/index.d.mts",
@@ -1220,7 +1240,8 @@
           "default": "./dist/emscripten-module.mjs"
         }
       },
-      "dependencies": { "@jitl/quickjs-ffi-types": "workspace:*" }
+      "dependencies": { "@jitl/quickjs-ffi-types": "workspace:*" },
+      "devDependencies": { "@jitl/tsconfig": "workspace:*" }
     },
     "variant": {
       "library": "quickjs",

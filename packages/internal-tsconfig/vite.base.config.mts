@@ -8,6 +8,7 @@ export default defineConfig({
   },
   plugins: [tsconfigPaths()],
   test: {
+    include: ["src/**/*.{test,spec}.?(c|m)[jt]s?(x)"],
     onStackTrace(_error, _frame) {
       return true
     },

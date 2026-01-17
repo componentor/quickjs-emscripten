@@ -19,7 +19,7 @@ export type HeapUint8Array = {
  * Add more types as needed.
  * @private
  */
-export type TypedArray = Int32Array | Uint32Array
+export type TypedArray = Int32Array<ArrayBuffer> | Uint32Array<ArrayBuffer>
 
 /** @private */
 export interface TypedArrayConstructor<T> {
@@ -65,7 +65,7 @@ export class ModuleMemory {
   // TODO: shouldn't this be Uint32 instead of Int32?
   newMutablePointerArray<T extends number>(
     length: number,
-  ): Lifetime<{ typedArray: Int32Array; ptr: T }> {
+  ): HeapTypedArray<Int32Array<ArrayBuffer>, T> {
     return this.newTypedArray(Int32Array, length)
   }
 

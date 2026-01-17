@@ -209,6 +209,10 @@ function contextTests(getContext: GetTestContext, isDebug = false) {
 
   describe(
     "functions",
+    {
+      // we need more time to register 2^16 functions
+      timeout: 30000,
+    },
     () => {
       it("can wrap a Javascript function and call it", () => {
         const some = 9
@@ -302,10 +306,6 @@ function contextTests(getContext: GetTestContext, isDebug = false) {
             done(undefined)
           }),
       )
-    },
-    {
-      // we need more time to register 2^16 functions
-      timeout: 30000,
     },
   )
 
@@ -628,7 +628,7 @@ function contextTests(getContext: GetTestContext, isDebug = false) {
     it("respects maxStackSize", async () => {
       try {
         ;(await getQuickJS()).evalCode('"ok"', { maxStackSizeBytes: 1 })
-      } catch (e) {
+      } catch (_e) {
         return
       }
     })
@@ -1271,12 +1271,7 @@ function asyncContextTests(getContext: () => Promise<QuickJSAsyncContext>) {
           loadedName = moduleName
           return `export default 5`
         },
-        function normalize(
-          baseName: string,
-          name: string,
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          _moduleVM: QuickJSAsyncContext,
-        ) {
+        function normalize(baseName: string, name: string, _moduleVM: QuickJSAsyncContext) {
           requestedBaseName = baseName
           requestedName = name
           return NORMALIZED_NAME
@@ -1305,7 +1300,7 @@ function asyncContextTests(getContext: () => Promise<QuickJSAsyncContext>) {
     // | 81920               | 297                |
     it("is enough to support at least 20 levels of function nesting", async () => {
       // The nesting levels of the test cannot be too high, otherwise the
-      // node.js call stack will overflow when executing `yarn test`
+      // node.js call stack will overflow when executing `pnpm run test`
       const buildName = isBuildDebug(vm) ? "debug" : "release"
       const EXPECTED_NESTING_LEVEL = isBuildDebug(vm) ? 18 : 20
 

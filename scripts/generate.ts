@@ -400,7 +400,7 @@ function updateHashFile(src: string, dest: string) {
     if (existing === hash) {
       return
     }
-  } catch (e) {
+  } catch (_e) {
     // pass
   }
   fs.writeFileSync(dest, hash)

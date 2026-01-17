@@ -26,21 +26,17 @@ function checkModuleForLeaks(getModule: () => Promise<QuickJSWASMModule>) {
     }
   })
 
-  it(
-    "if DEBUG and not ASYNCIFY, should have sanitizer.",
-    () => {
-      const ffi = wasmModule.getFFI()
-      if (ffi.QTS_BuildIsSanitizeLeak()) {
-        // Ok! sanitizer enabled
-        return
-      }
+  it("if DEBUG and not ASYNCIFY, should have sanitizer.", testOptions, () => {
+    const ffi = wasmModule.getFFI()
+    if (ffi.QTS_BuildIsSanitizeLeak()) {
+      // Ok! sanitizer enabled
+      return
+    }
 
-      if (ffi.QTS_BuildIsDebug() && !ffi.QTS_BuildIsAsyncify()) {
-        assert.fail("Sanitizer should be enabled in sync debug build.")
-      }
-    },
-    testOptions,
-  )
+    if (ffi.QTS_BuildIsDebug() && !ffi.QTS_BuildIsAsyncify()) {
+      assert.fail("Sanitizer should be enabled in sync debug build.")
+    }
+  })
 
   const DURATION_MS = TEST_LEAK ? 10 * 1000 : 100
   const MAX_ITERATIONS = 1000
@@ -145,26 +141,22 @@ function checkModuleForLeaks(getModule: () => Promise<QuickJSWASMModule>) {
   for (const checkName of checkNames) {
     const fn = checks[checkName as keyof typeof checks]
     const test = TEST_LEAK ? it : it.skip
-    test(
-      `should not leak: ${checkName}`,
-      () => {
-        console.log(`Running ${checkName}...`)
-        const startedAt = Date.now()
-        let i = 0
-        for (; i < MAX_ITERATIONS; i++) {
-          fn()
-          if (i > 1 && Date.now() - startedAt > DURATION_MS) {
-            break
-          }
+    test(`should not leak: ${checkName}`, testOptions, () => {
+      console.log(`Running ${checkName}...`)
+      const startedAt = Date.now()
+      let i = 0
+      for (; i < MAX_ITERATIONS; i++) {
+        fn()
+        if (i > 1 && Date.now() - startedAt > DURATION_MS) {
+          break
         }
+      }
 
-        console.log(i, "iterations,", i / DURATION_MS, "iterations/ms")
+      console.log(i, "iterations,", i / DURATION_MS, "iterations/ms")
 
-        const didLeak = wasmModule.getFFI().QTS_RecoverableLeakCheck()
-        assert.strictEqual(didLeak, 0, "no leaks")
-      },
-      testOptions,
-    )
+      const didLeak = wasmModule.getFFI().QTS_RecoverableLeakCheck()
+      assert.strictEqual(didLeak, 0, "no leaks")
+    })
   }
 }
 

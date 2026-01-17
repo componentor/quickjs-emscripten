@@ -1,4 +1,4 @@
-**quickjs-emscripten** • [Readme](README.md) \| [Packages](packages.md)
+**quickjs-emscripten**
 
 ***
 
@@ -82,14 +82,14 @@ main()
   - [Developing](#developing)
     - [The C parts](#the-c-parts)
     - [The Typescript parts](#the-typescript-parts)
-    - [Yarn updates](#yarn-updates)
+    - [pnpm run updates](#pnpm run-updates)
 
 ## Usage
 
-Install from `npm`: `npm install --save quickjs-emscripten` or `yarn add quickjs-emscripten`.
+Install from `npm`: `npm install --save quickjs-emscripten` or `pnpm run add quickjs-emscripten`.
 
 The root entrypoint of this library is the `getQuickJS` function, which returns
-a promise that resolves to a [QuickJSWASMModule](./doc/quickjs-emscripten/classes/QuickJSWASMModule.md) when
+a promise that resolves to a [QuickJSWASMModule](_media/QuickJSWASMModule.md) when
 the QuickJS WASM module is ready.
 
 Once `getQuickJS` has been awaited at least once, you also can use the `getQuickJSSync`
@@ -623,7 +623,7 @@ The main `quickjs-emscripten` package includes several build variants of the Web
   - `DEBUG_SYNC`: Instrumented to detect memory leaks, in addition to assertions and source maps.
   - `DEBUG_ASYNC`: An [asyncify][] variant with source maps.
 
-To use a variant, call `newQuickJSWASMModule` or `newQuickJSAsyncWASMModule` with the variant object. These functions return a promise that resolves to a [QuickJSWASMModule](./doc/quickjs-emscripten/classes/QuickJSWASMModule.md), the same as `getQuickJS`.
+To use a variant, call `newQuickJSWASMModule` or `newQuickJSAsyncWASMModule` with the variant object. These functions return a promise that resolves to a [QuickJSWASMModule](_media/QuickJSWASMModule.md), the same as `getQuickJS`.
 
 ```typescript
 import {
@@ -661,7 +661,7 @@ Including 4 different copies of the WebAssembly module in the main package gives
 The most minimal setup would be to install `quickjs-emscripten-core` and `@jitl/quickjs-wasmfile-release-sync` (1.3mb total):
 
 ```bash
-yarn add quickjs-emscripten-core @jitl/quickjs-wasmfile-release-sync
+pnpm run add quickjs-emscripten-core @jitl/quickjs-wasmfile-release-sync
 du -h node_modules
 # 640K    node_modules/@jitl/quickjs-wasmfile-release-sync
 #  80K    node_modules/@jitl/quickjs-ffi-types
@@ -848,19 +848,16 @@ audited. Please use with care in production settings.
 thinking comes next. Last updated 2022-03-18.
 
 1. Further work on module loading APIs:
-
    - Create modules via Javascript, instead of source text.
    - Scan source text for imports, for ahead of time or concurrent loading.
      (This is possible with third-party tools, so lower priority.)
 
 2. Higher-level tools for reading QuickJS values:
-
    - Type guard functions: `context.isArray(handle)`, `context.isPromise(handle)`, etc.
    - Iteration utilities: `context.getIterable(handle)`, `context.iterateObjectEntries(handle)`.
      This better supports user-level code to deserialize complex handle objects.
 
 3. Higher-level tools for creating QuickJS values:
-
    - Devise a way to avoid needing to mess around with handles when setting up
      the environment.
    - Consider integrating
@@ -880,7 +877,7 @@ thinking comes next. Last updated 2022-03-18.
 This library is implemented in two languages: C (compiled to WASM with
 Emscripten), and Typescript.
 
-You will need `node`, `yarn`, `make`, and `emscripten` to build this project.
+You will need `node`, `pnpm run`, `make`, and `emscripten` to build this project.
 
 ### The C parts
 
@@ -902,9 +899,9 @@ to build the C code. The Makefile is generated from a template in ./templates/Va
 
 Related NPM scripts:
 
-- `yarn vendor:update` updates vendor/quickjs and vendor/quickjs-ng to the latest versions on Github.
-- `yarn build:codegen` updates the ./packages from the template script `./prepareVariants.ts` and Variant.mk.
-- `yarn build:packages` builds the variant packages in parallel.
+- `pnpm run vendor:update` updates vendor/quickjs and vendor/quickjs-ng to the latest versions on Github.
+- `pnpm run build:codegen` updates the ./packages from the template script `./prepareVariants.ts` and Variant.mk.
+- `pnpm run build:packages` builds the variant packages in parallel.
 
 ### The Typescript parts
 
@@ -919,18 +916,14 @@ The Javascript/Typescript code is also organized into several NPM packages in ./
 
 Related NPM scripts:
 
-- `yarn check` runs all available checks (build, format, tests, etc).
-- `yarn build` builds all the packages and generates the docs.
-- `yarn test` runs the tests for all packages.
-  - `yarn test:fast` runs the tests using only fast build variants.
-- `yarn doc` generates the docs into `./doc`.
-  - `yarn doc:serve` previews the current `./doc` in a browser.
-- `yarn prettier` formats the repo.
+- `pnpm run check` runs all available checks (build, format, tests, etc).
+- `pnpm run build` builds all the packages and generates the docs.
+- `pnpm run test` runs the tests for all packages.
+  - `pnpm run test:fast` runs the tests using only fast build variants.
+- `pnpm run doc` generates the docs into `./doc`.
+  - `pnpm run doc:serve` previews the current `./doc` in a browser.
+- `pnpm run prettier` formats the repo.
 
-### Yarn updates
+### pnpm run updates
 
-Just run `yarn set version from sources` to upgrade the Yarn release.
-
-***
-
-Generated using [typedoc-plugin-markdown](https://www.npmjs.com/package/typedoc-plugin-markdown) and [TypeDoc](https://typedoc.org/)
+Just run `pnpm run set version from sources` to upgrade the pnpm run release.

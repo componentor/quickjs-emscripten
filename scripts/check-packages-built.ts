@@ -53,11 +53,7 @@ function checkFiles(pkg: sh.WorkspaceJson, packageJson: sh.PackageJson) {
   packageJson.types && mustExist(packageJson.types, `package.json types file does not exist`)
 }
 
-function checkReadme(
-  pkg: sh.WorkspaceJson,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  _packageJson: sh.PackageJson,
-) {
+function checkReadme(pkg: sh.WorkspaceJson, _packageJson: sh.PackageJson) {
   if (!fs.existsSync(sh.resolve(pkg.location, "README.md"))) {
     throw new Error(`package.json files entry must include README.md`)
   }
@@ -84,7 +80,7 @@ function checkProperties(pkg: sh.WorkspaceJson, packageJson: sh.PackageJson) {
   }
 }
 
-for (const pkg of sh.getYarnWorkspaces()) {
+for (const pkg of sh.getWorkspaces()) {
   const packageJson: sh.PackageJson = sh.readJson(sh.resolve(pkg.location, "package.json"))
   if (packageJson.private) {
     continue

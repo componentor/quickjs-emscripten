@@ -1,6 +1,6 @@
 ts/generated
 quickjs
-.yarn
+.pnpm run
 .*
 doc
 json-generator-dot-com-1024-rows.json

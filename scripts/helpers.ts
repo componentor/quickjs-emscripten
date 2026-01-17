@@ -141,12 +141,14 @@ export interface WorkspaceJson {
   name: string
 }
 
-export function getYarnWorkspaces(): WorkspaceJson[] {
-  return p
-    .execSync("yarn workspaces list --json", { encoding: "utf-8" })
-    .split("\n")
-    .filter(Boolean)
-    .map((line) => JSON.parse(line) as WorkspaceJson)
+export function getWorkspaces(): WorkspaceJson[] {
+  const output = p.execSync("pnpm list -r --json --depth -1", { encoding: "utf-8" })
+  const parsed = JSON.parse(output)
+  const packages = Array.isArray(parsed) ? parsed : [parsed]
+  return packages.map((pkg: { name: string; path: string }) => ({
+    name: pkg.name,
+    location: pkg.path,
+  }))
 }
 
 export function readJson<T>(filepath: string): T {
@@ -156,7 +158,7 @@ export function readJson<T>(filepath: string): T {
 export function tryReadJson<T>(filepath: string): T | undefined {
   try {
     return readJson(filepath)
-  } catch (e) {
+  } catch (_e) {
     return undefined
   }
 }

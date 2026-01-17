@@ -209,7 +209,7 @@ export class QuickJSContext
   /** @private */
   protected _BigInt: QuickJSHandle | undefined = undefined
   /** @private  */
-  protected uint32Out: HeapTypedArray<Uint32Array, UInt32Pointer>
+  protected uint32Out: HeapTypedArray<Uint32Array<ArrayBuffer>, UInt32Pointer>
   /** @private */
   protected _Symbol: QuickJSHandle | undefined = undefined
   /** @private */
@@ -246,7 +246,7 @@ export class QuickJSContext
     this.getNumber = this.getNumber.bind(this)
     this.resolvePromise = this.resolvePromise.bind(this)
     this.uint32Out = this.memory.manage(
-      this.memory.newTypedArray<Uint32Array, UInt32Pointer>(Uint32Array, 1),
+      this.memory.newTypedArray<Uint32Array<ArrayBuffer>, UInt32Pointer>(Uint32Array, 1),
     )
   }
 
@@ -1263,7 +1263,7 @@ export class QuickJSContext
     const str = this.memory.consumeJSCharPointer(this.ffi.QTS_Dump(this.ctx.value, handle.value))
     try {
       return JSON.parse(str)
-    } catch (err) {
+    } catch (_err) {
       return str
     }
   }
@@ -1430,6 +1430,98 @@ export class QuickJSContext
    */
   decodeBinaryJSON(handle: QuickJSHandle): QuickJSHandle {
     const ptr = this.ffi.QTS_bjson_decode(this.ctx.value, handle.value)
+    return this.memory.heapValueHandle(ptr)
+  }
+
+  // Bytecode compilation and caching -----------------------------------------
+
+  /**
+   * Compile code to bytecode without executing it.
+   * The bytecode can be serialized with {@link encodeBytecode} and later
+   * restored with {@link decodeBytecode} and executed with {@link evalBytecode}.
+   *
+   * This enables bytecode caching for faster startup (~2x improvement).
+   *
+   * ```ts
+   * // Compile code to bytecode
+   * const bytecodeHandle = context.compileCode(`
+   *   function hello() { return "world"; }
+   *   hello();
+   * `, "example.js").unwrap()
+   *
+   * // Serialize to ArrayBuffer for caching
+   * const serialized = context.encodeBytecode(bytecodeHandle)
+   *   .consume(handle => context.getArrayBuffer(handle))
+   *
+   * // Later: restore and execute
+   * const restored = context.newArrayBuffer(serialized.value)
+   *   .consume(handle => context.decodeBytecode(handle))
+   * const result = context.evalBytecode(restored).unwrap()
+   * ```
+   */
+  compileCode(
+    code: string,
+    filename: string = "eval.js",
+    options?: Omit<ContextEvalOptions, "compileOnly">,
+  ): QuickJSContextResult<QuickJSHandle> {
+    return this.evalCode(code, filename, { ...options, compileOnly: true })
+  }
+
+  /**
+   * Execute a bytecode function that was previously compiled with
+   * {@link compileCode} or `evalCode({ compileOnly: true })`, or restored
+   * from serialized bytecode via {@link decodeBytecode}.
+   *
+   * @returns A result. If execution threw synchronously, `result.error` will be
+   * a handle to the exception. Otherwise `result.value` will be a handle to the
+   * return value.
+   */
+  evalBytecode(handle: QuickJSHandle): QuickJSContextResult<QuickJSHandle> {
+    this.runtime.assertOwned(handle)
+    const resultPtr = this.ffi.QTS_EvalFunction(this.ctx.value, handle.value)
+    const errorPtr = this.ffi.QTS_ResolveException(this.ctx.value, resultPtr)
+    if (errorPtr) {
+      this.ffi.QTS_FreeValuePointer(this.ctx.value, resultPtr)
+      return this.fail(this.memory.heapValueHandle(errorPtr))
+    }
+    return this.success(this.memory.heapValueHandle(resultPtr))
+  }
+
+  /**
+   * Serialize a bytecode function to binary format.
+   * The bytecode can be stored/cached and later restored with {@link decodeBytecode}.
+   *
+   * This is more efficient than {@link encodeBinaryJSON} for bytecode because it
+   * uses the `JS_WRITE_OBJ_BYTECODE` flag optimized for function serialization.
+   *
+   * **WARNING**: The bytecode format is not standardized and may change between
+   * QuickJS versions.
+   *
+   * @param handle - A handle to a bytecode function (from {@link compileCode} or
+   *   `evalCode({ compileOnly: true })`)
+   * @returns A handle to an ArrayBuffer containing the serialized bytecode
+   */
+  encodeBytecode(handle: QuickJSHandle): QuickJSHandle {
+    this.runtime.assertOwned(handle)
+    const ptr = this.ffi.QTS_EncodeBytecode(this.ctx.value, handle.value)
+    return this.memory.heapValueHandle(ptr)
+  }
+
+  /**
+   * Deserialize bytecode from binary format.
+   * The bytecode must have been serialized with {@link encodeBytecode}.
+   *
+   * After decoding, use {@link evalBytecode} to execute the bytecode.
+   *
+   * **WARNING**: The bytecode format is not standardized and may change between
+   * QuickJS versions.
+   *
+   * @param handle - A handle to an ArrayBuffer containing serialized bytecode
+   * @returns A handle to the deserialized bytecode function
+   */
+  decodeBytecode(handle: QuickJSHandle): QuickJSHandle {
+    this.runtime.assertOwned(handle)
+    const ptr = this.ffi.QTS_DecodeBytecode(this.ctx.value, handle.value)
     return this.memory.heapValueHandle(ptr)
   }
 

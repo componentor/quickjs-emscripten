@@ -1,18 +1,12 @@
-[quickjs-emscripten](../../packages.md) • **quickjs-emscripten-core** • [Readme](../README.md) \| [Exports](../exports.md)
+[**quickjs-emscripten**](../../README.md)
 
 ***
 
-[quickjs-emscripten](../../packages.md) / [quickjs-emscripten-core](../exports.md) / SourceMapData
+[quickjs-emscripten](../../packages.md) / [quickjs-emscripten-core](../README.md) / SourceMapData
 
 # Interface: SourceMapData
 
-## Contents
-
-- [Properties](SourceMapData.md#properties)
-  - [mappings](SourceMapData.md#mappings)
-  - [names](SourceMapData.md#names)
-  - [sources](SourceMapData.md#sources)
-  - [version](SourceMapData.md#version)
+Defined in: [packages/quickjs-ffi-types/src/emscripten-types.ts:54](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/emscripten-types.ts#L54)
 
 ## Properties
 
@@ -20,9 +14,7 @@
 
 > **mappings**: `string`
 
-#### Source
-
-[packages/quickjs-ffi-types/src/emscripten-types.ts:58](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/emscripten-types.ts#L58)
+Defined in: [packages/quickjs-ffi-types/src/emscripten-types.ts:58](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/emscripten-types.ts#L58)
 
 ***
 
@@ -30,9 +22,7 @@
 
 > **names**: `string`[]
 
-#### Source
-
-[packages/quickjs-ffi-types/src/emscripten-types.ts:57](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/emscripten-types.ts#L57)
+Defined in: [packages/quickjs-ffi-types/src/emscripten-types.ts:57](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/emscripten-types.ts#L57)
 
 ***
 
@@ -40,9 +30,7 @@
 
 > **sources**: `string`[]
 
-#### Source
-
-[packages/quickjs-ffi-types/src/emscripten-types.ts:56](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/emscripten-types.ts#L56)
+Defined in: [packages/quickjs-ffi-types/src/emscripten-types.ts:56](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/emscripten-types.ts#L56)
 
 ***
 
@@ -50,10 +38,4 @@
 
 > **version**: `number`
 
-#### Source
-
-[packages/quickjs-ffi-types/src/emscripten-types.ts:55](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/emscripten-types.ts#L55)
-
-***
-
-Generated using [typedoc-plugin-markdown](https://www.npmjs.com/package/typedoc-plugin-markdown) and [TypeDoc](https://typedoc.org/)
+Defined in: [packages/quickjs-ffi-types/src/emscripten-types.ts:55](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/emscripten-types.ts#L55)

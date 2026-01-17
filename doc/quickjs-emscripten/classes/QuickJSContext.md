@@ -1,18 +1,20 @@
-[quickjs-emscripten](../../packages.md) • **quickjs-emscripten** • [Readme](../README.md) \| [Exports](../exports.md)
+[**quickjs-emscripten**](../../README.md)
 
 ***
 
-[quickjs-emscripten](../../packages.md) / [quickjs-emscripten](../exports.md) / QuickJSContext
+[quickjs-emscripten](../../packages.md) / [quickjs-emscripten](../README.md) / QuickJSContext
 
 # Class: QuickJSContext
+
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:179](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L179)
 
 QuickJSContext wraps a QuickJS Javascript context (JSContext*) within a
 runtime. The contexts within the same runtime may exchange objects freely.
 You can think of separate runtimes like different domains in a browser, and
 the contexts within a runtime like the different windows open to the same
-domain. The [runtime](QuickJSContext.md#runtime) references the context's runtime.
+domain. The [runtime](#runtime) references the context's runtime.
 
-This class's methods return [QuickJSHandle](../exports.md#quickjshandle), which wrap C pointers (JSValue*).
+This class's methods return [QuickJSHandle](../README.md#quickjshandle), which wrap C pointers (JSValue*).
 It's the caller's responsibility to call `.dispose()` on any
 handles you create to free memory once you're done with the handle.
 
@@ -20,245 +22,217 @@ Use [QuickJSRuntime#newContext](QuickJSRuntime.md#newcontext) or [QuickJSWASMMod
 to create a new QuickJSContext.
 
 Create QuickJS values inside the interpreter with methods like
-[newNumber](QuickJSContext.md#newnumber), [newString](QuickJSContext.md#newstring), [newArray](QuickJSContext.md#newarray), [newObject](QuickJSContext.md#newobject),
-[newFunction](QuickJSContext.md#newfunction), and [newPromise](QuickJSContext.md#newpromise).
+[newNumber](#newnumber), [newString](#newstring), [newArray](#newarray), [newObject](#newobject),
+[newFunction](#newfunction), and [newPromise](#newpromise).
 
-Call [setProp](QuickJSContext.md#setprop) or [defineProp](QuickJSContext.md#defineprop) to customize objects. Use those methods
-with [global](QuickJSContext.md#global) to expose the values you create to the interior of the
-interpreter, so they can be used in [evalCode](QuickJSContext.md#evalcode).
+Call [setProp](#setprop) or [defineProp](#defineprop) to customize objects. Use those methods
+with [global](#global) to expose the values you create to the interior of the
+interpreter, so they can be used in [evalCode](#evalcode).
 
-Use [evalCode](QuickJSContext.md#evalcode) or [callFunction](QuickJSContext.md#callfunction) to execute Javascript inside the VM. If
+Use [evalCode](#evalcode) or [callFunction](#callfunction) to execute Javascript inside the VM. If
 you're using asynchronous code inside the QuickJSContext, you may need to also
 call [QuickJSRuntime#executePendingJobs](QuickJSRuntime.md#executependingjobs). Executing code inside the runtime returns a
 result object representing successful execution or an error. You must dispose
 of any such results to avoid leaking memory inside the VM.
 
-Implement memory and CPU constraints at the runtime level, using [runtime](QuickJSContext.md#runtime).
+Implement memory and CPU constraints at the runtime level, using [runtime](#runtime).
 See [QuickJSRuntime](QuickJSRuntime.md) for more information.
-
-## Contents
-
-- [Extends](QuickJSContext.md#extends)
-- [Implements](QuickJSContext.md#implements)
-- [Constructors](QuickJSContext.md#constructors)
-  - [new QuickJSContext(args)](QuickJSContext.md#new-quickjscontextargs)
-- [Properties](QuickJSContext.md#properties)
-  - [runtime](QuickJSContext.md#runtime)
-- [Accessors](QuickJSContext.md#accessors)
-  - [alive](QuickJSContext.md#alive)
-  - [false](QuickJSContext.md#false)
-  - [global](QuickJSContext.md#global)
-  - [null](QuickJSContext.md#null)
-  - [true](QuickJSContext.md#true)
-  - [undefined](QuickJSContext.md#undefined)
-- [Methods](QuickJSContext.md#methods)
-  - [`[dispose]`()](QuickJSContext.md#dispose)
-  - [callFunction()](QuickJSContext.md#callfunction)
-  - [callMethod()](QuickJSContext.md#callmethod)
-  - [decodeBinaryJSON()](QuickJSContext.md#decodebinaryjson)
-  - [defineProp()](QuickJSContext.md#defineprop)
-  - [dispose()](QuickJSContext.md#dispose)
-  - [dump()](QuickJSContext.md#dump)
-  - [encodeBinaryJSON()](QuickJSContext.md#encodebinaryjson)
-  - [eq()](QuickJSContext.md#eq)
-  - [evalCode()](QuickJSContext.md#evalcode)
-  - [fail()](QuickJSContext.md#fail)
-  - [getArrayBuffer()](QuickJSContext.md#getarraybuffer)
-  - [getBigInt()](QuickJSContext.md#getbigint)
-  - [getIterator()](QuickJSContext.md#getiterator)
-  - [getLength()](QuickJSContext.md#getlength)
-  - [getNumber()](QuickJSContext.md#getnumber)
-  - [getOwnPropertyNames()](QuickJSContext.md#getownpropertynames)
-  - [getPromiseState()](QuickJSContext.md#getpromisestate)
-  - [getProp()](QuickJSContext.md#getprop)
-  - [getString()](QuickJSContext.md#getstring)
-  - [getSymbol()](QuickJSContext.md#getsymbol)
-  - [getWellKnownSymbol()](QuickJSContext.md#getwellknownsymbol)
-  - [newArray()](QuickJSContext.md#newarray)
-  - [newArrayBuffer()](QuickJSContext.md#newarraybuffer)
-  - [newBigInt()](QuickJSContext.md#newbigint)
-  - [newError()](QuickJSContext.md#newerror)
-  - [newFunction()](QuickJSContext.md#newfunction)
-  - [newNumber()](QuickJSContext.md#newnumber)
-  - [newObject()](QuickJSContext.md#newobject)
-  - [newPromise()](QuickJSContext.md#newpromise)
-  - [newString()](QuickJSContext.md#newstring)
-  - [newSymbolFor()](QuickJSContext.md#newsymbolfor)
-  - [newUniqueSymbol()](QuickJSContext.md#newuniquesymbol)
-  - [resolvePromise()](QuickJSContext.md#resolvepromise)
-  - [sameValue()](QuickJSContext.md#samevalue)
-  - [sameValueZero()](QuickJSContext.md#samevaluezero)
-  - [setProp()](QuickJSContext.md#setprop)
-  - [success()](QuickJSContext.md#success)
-  - [throw()](QuickJSContext.md#throw)
-  - [typeof()](QuickJSContext.md#typeof)
-  - [unwrapResult()](QuickJSContext.md#unwrapresult)
 
 ## Extends
 
 - [`UsingDisposable`](UsingDisposable.md)
 
+## Extended by
+
+- [`QuickJSAsyncContext`](QuickJSAsyncContext.md)
+
 ## Implements
 
-- [`LowLevelJavascriptVm`](../interfaces/LowLevelJavascriptVm.md)\<[`QuickJSHandle`](../exports.md#quickjshandle)\>
+- [`LowLevelJavascriptVm`](../interfaces/LowLevelJavascriptVm.md)\<[`QuickJSHandle`](../README.md#quickjshandle)\>
 - [`Disposable`](../interfaces/Disposable.md)
 
 ## Constructors
 
-### new QuickJSContext(args)
+### Constructor
 
-> **new QuickJSContext**(`args`): [`QuickJSContext`](QuickJSContext.md)
+> **new QuickJSContext**(`args`): `QuickJSContext`
+
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:224](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L224)
 
 Use [QuickJSRuntime#newContext](QuickJSRuntime.md#newcontext) or [QuickJSWASMModule#newContext](QuickJSWASMModule.md#newcontext)
 to create a new QuickJSContext.
 
 #### Parameters
 
-• **args**: `Object`
+##### args
 
-• **args\.callbacks**: `QuickJSModuleCallbacks`
+###### callbacks
 
-• **args\.ctx**: [`Lifetime`](Lifetime.md)\<[`JSContextPointer`](../exports.md#jscontextpointer), `never`, `never`\>
+`QuickJSModuleCallbacks`
 
-• **args\.ffi**: [`EitherFFI`](../exports.md#eitherffi)
+###### ctx
 
-• **args\.module**: [`EitherModule`](../exports.md#eithermodule)
+[`Lifetime`](Lifetime.md)\<[`JSContextPointer`](../README.md#jscontextpointer)\>
 
-• **args\.ownedLifetimes?**: [`Disposable`](../interfaces/Disposable.md)[]
+###### ffi
 
-• **args\.rt**: [`Lifetime`](Lifetime.md)\<[`JSRuntimePointer`](../exports.md#jsruntimepointer), `never`, `never`\>
+[`EitherFFI`](../README.md#eitherffi)
 
-• **args\.runtime**: [`QuickJSRuntime`](QuickJSRuntime.md)
+###### module
+
+[`EitherModule`](../README.md#eithermodule)
+
+###### ownedLifetimes?
+
+[`Disposable`](../interfaces/Disposable.md)[]
+
+###### rt
+
+[`Lifetime`](Lifetime.md)\<[`JSRuntimePointer`](../README.md#jsruntimepointer)\>
+
+###### runtime
+
+[`QuickJSRuntime`](QuickJSRuntime.md)
 
 #### Returns
 
-[`QuickJSContext`](QuickJSContext.md)
+`QuickJSContext`
 
 #### Overrides
 
-[`quickjs-emscripten.UsingDisposable.constructor`](UsingDisposable.md#constructors)
-
-#### Source
-
-[packages/quickjs-emscripten-core/src/context.ts:224](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L224)
+[`UsingDisposable`](UsingDisposable.md).[`constructor`](UsingDisposable.md#constructor)
 
 ## Properties
 
 ### runtime
 
-> **`readonly`** **runtime**: [`QuickJSRuntime`](QuickJSRuntime.md)
+> `readonly` **runtime**: [`QuickJSRuntime`](QuickJSRuntime.md)
+
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:186](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L186)
 
 The runtime that created this context.
-
-#### Source
-
-[packages/quickjs-emscripten-core/src/context.ts:186](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L186)
 
 ## Accessors
 
 ### alive
 
-> **`get`** **alive**(): `boolean`
+#### Get Signature
 
-#### Returns
+> **get** **alive**(): `boolean`
+
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:255](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L255)
+
+##### Returns
 
 `boolean`
 
 true if the object is alive
 
-false after the object has been [dispose](QuickJSContext.md#dispose-1)d
+#### Implementation of
 
-#### Source
+[`Disposable`](../interfaces/Disposable.md).[`alive`](../interfaces/Disposable.md#alive)
 
-[packages/quickjs-emscripten-core/src/context.ts:255](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L255)
+#### Overrides
+
+[`UsingDisposable`](UsingDisposable.md).[`alive`](UsingDisposable.md#alive)
 
 ***
 
 ### false
 
-> **`get`** **false**(): [`QuickJSHandle`](../exports.md#quickjshandle)
+#### Get Signature
+
+> **get** **false**(): [`QuickJSHandle`](../README.md#quickjshandle)
+
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:313](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L313)
 
 [`false`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/false).
 
-#### Returns
+##### Returns
 
-[`QuickJSHandle`](../exports.md#quickjshandle)
-
-#### Source
-
-[packages/quickjs-emscripten-core/src/context.ts:313](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L313)
+[`QuickJSHandle`](../README.md#quickjshandle)
 
 ***
 
 ### global
 
-> **`get`** **global**(): [`QuickJSHandle`](../exports.md#quickjshandle)
+#### Get Signature
+
+> **get** **global**(): [`QuickJSHandle`](../README.md#quickjshandle)
+
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:328](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L328)
 
 [`global`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects).
 A handle to the global object inside the interpreter.
 You can set properties to create global variables.
 
-#### Returns
+##### Returns
 
-[`QuickJSHandle`](../exports.md#quickjshandle)
+[`QuickJSHandle`](../README.md#quickjshandle)
 
-#### Source
+#### Implementation of
 
-[packages/quickjs-emscripten-core/src/context.ts:328](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L328)
+[`LowLevelJavascriptVm`](../interfaces/LowLevelJavascriptVm.md).[`global`](../interfaces/LowLevelJavascriptVm.md#global)
 
 ***
 
 ### null
 
-> **`get`** **null**(): [`QuickJSHandle`](../exports.md#quickjshandle)
+#### Get Signature
+
+> **get** **null**(): [`QuickJSHandle`](../README.md#quickjshandle)
+
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:287](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L287)
 
 [`null`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null).
 
-#### Returns
+##### Returns
 
-[`QuickJSHandle`](../exports.md#quickjshandle)
-
-#### Source
-
-[packages/quickjs-emscripten-core/src/context.ts:287](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L287)
+[`QuickJSHandle`](../README.md#quickjshandle)
 
 ***
 
 ### true
 
-> **`get`** **true**(): [`QuickJSHandle`](../exports.md#quickjshandle)
+#### Get Signature
+
+> **get** **true**(): [`QuickJSHandle`](../README.md#quickjshandle)
+
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:300](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L300)
 
 [`true`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/true).
 
-#### Returns
+##### Returns
 
-[`QuickJSHandle`](../exports.md#quickjshandle)
-
-#### Source
-
-[packages/quickjs-emscripten-core/src/context.ts:300](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L300)
+[`QuickJSHandle`](../README.md#quickjshandle)
 
 ***
 
 ### undefined
 
-> **`get`** **undefined**(): [`QuickJSHandle`](../exports.md#quickjshandle)
+#### Get Signature
+
+> **get** **undefined**(): [`QuickJSHandle`](../README.md#quickjshandle)
+
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:274](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L274)
 
 [`undefined`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined).
 
-#### Returns
+##### Returns
 
-[`QuickJSHandle`](../exports.md#quickjshandle)
+[`QuickJSHandle`](../README.md#quickjshandle)
 
-#### Source
+#### Implementation of
 
-[packages/quickjs-emscripten-core/src/context.ts:274](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L274)
+[`LowLevelJavascriptVm`](../interfaces/LowLevelJavascriptVm.md).[`undefined`](../interfaces/LowLevelJavascriptVm.md#undefined)
 
 ## Methods
 
-### `[dispose]`()
+### \[dispose\]()
 
-> **[dispose]**(): `void`
+> **\[dispose\]**(): `void`
+
+Defined in: [packages/quickjs-emscripten-core/src/lifetime.ts:47](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/lifetime.ts#L47)
 
 Just calls the standard .dispose() method of this class.
 
@@ -268,44 +242,48 @@ Just calls the standard .dispose() method of this class.
 
 #### Implementation of
 
-[`quickjs-emscripten.Disposable.[dispose]`](../interfaces/Disposable.md#dispose)
+[`Disposable`](../interfaces/Disposable.md).[`[dispose]`](../interfaces/Disposable.md#dispose)
 
 #### Inherited from
 
-[`quickjs-emscripten.UsingDisposable.[dispose]`](UsingDisposable.md#dispose)
-
-#### Source
-
-[packages/quickjs-emscripten-core/src/lifetime.ts:47](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/lifetime.ts#L47)
+[`UsingDisposable`](UsingDisposable.md).[`[dispose]`](UsingDisposable.md#dispose)
 
 ***
 
 ### callFunction()
 
-#### callFunction(func, thisVal, args)
+#### Call Signature
 
-> **callFunction**(`func`, `thisVal`, `args`?): `QuickJSContextResult`\<[`QuickJSHandle`](../exports.md#quickjshandle)\>
+> **callFunction**(`func`, `thisVal`, `args?`): `QuickJSContextResult`\<[`QuickJSHandle`](../README.md#quickjshandle)\>
+
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:1059](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L1059)
 
 [`func.call(thisVal, ...args)`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/call) or
 [`func.apply(thisVal, args)`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/apply).
 Call a JSValue as a function.
 
-See [unwrapResult](QuickJSContext.md#unwrapresult), which will throw if the function returned an error, or
+See [unwrapResult](#unwrapresult), which will throw if the function returned an error, or
 return the result handle directly. If evaluation returned a handle containing
-a promise, use [resolvePromise](QuickJSContext.md#resolvepromise) to convert it to a native promise and
-[runtime](QuickJSContext.md#runtime).[QuickJSRuntime#executePendingJobs](QuickJSRuntime.md#executependingjobs) to finish evaluating the promise.
+a promise, use [resolvePromise](#resolvepromise) to convert it to a native promise and
+[runtime](#runtime).[QuickJSRuntime#executePendingJobs](QuickJSRuntime.md#executependingjobs) to finish evaluating the promise.
 
 ##### Parameters
 
-• **func**: [`QuickJSHandle`](../exports.md#quickjshandle)
+###### func
 
-• **thisVal**: [`QuickJSHandle`](../exports.md#quickjshandle)
+[`QuickJSHandle`](../README.md#quickjshandle)
 
-• **args?**: [`QuickJSHandle`](../exports.md#quickjshandle)[]
+###### thisVal
+
+[`QuickJSHandle`](../README.md#quickjshandle)
+
+###### args?
+
+[`QuickJSHandle`](../README.md#quickjshandle)[]
 
 ##### Returns
 
-`QuickJSContextResult`\<[`QuickJSHandle`](../exports.md#quickjshandle)\>
+`QuickJSContextResult`\<[`QuickJSHandle`](../README.md#quickjshandle)\>
 
 A result. If the function threw synchronously, `result.error` be a
 handle to the exception. Otherwise `result.value` will be a handle to the
@@ -322,71 +300,148 @@ console.log(context.dump(resultHandle)) // 42
 
 ##### Implementation of
 
-[`quickjs-emscripten.LowLevelJavascriptVm.callFunction`](../interfaces/LowLevelJavascriptVm.md#callfunction)
+[`LowLevelJavascriptVm`](../interfaces/LowLevelJavascriptVm.md).[`callFunction`](../interfaces/LowLevelJavascriptVm.md#callfunction)
 
-##### Source
+#### Call Signature
 
-[packages/quickjs-emscripten-core/src/context.ts:1059](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L1059)
+> **callFunction**(`func`, `thisVal`, ...`args`): `QuickJSContextResult`\<[`QuickJSHandle`](../README.md#quickjshandle)\>
 
-#### callFunction(func, thisVal, args)
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:1064](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L1064)
 
-> **callFunction**(`func`, `thisVal`, ...`args`): `QuickJSContextResult`\<[`QuickJSHandle`](../exports.md#quickjshandle)\>
+[`func.call(thisVal, ...args)`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/call) or
+[`func.apply(thisVal, args)`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/apply).
+Call a JSValue as a function.
+
+See [unwrapResult](#unwrapresult), which will throw if the function returned an error, or
+return the result handle directly. If evaluation returned a handle containing
+a promise, use [resolvePromise](#resolvepromise) to convert it to a native promise and
+[runtime](#runtime).[QuickJSRuntime#executePendingJobs](QuickJSRuntime.md#executependingjobs) to finish evaluating the promise.
 
 ##### Parameters
 
-• **func**: [`QuickJSHandle`](../exports.md#quickjshandle)
+###### func
 
-• **thisVal**: [`QuickJSHandle`](../exports.md#quickjshandle)
+[`QuickJSHandle`](../README.md#quickjshandle)
 
-• ...**args**: [`QuickJSHandle`](../exports.md#quickjshandle)[]
+###### thisVal
+
+[`QuickJSHandle`](../README.md#quickjshandle)
+
+###### args
+
+...[`QuickJSHandle`](../README.md#quickjshandle)[]
 
 ##### Returns
 
-`QuickJSContextResult`\<[`QuickJSHandle`](../exports.md#quickjshandle)\>
-
-##### Implementation of
-
-`LowLevelJavascriptVm.callFunction`
-
-##### Source
-
-[packages/quickjs-emscripten-core/src/context.ts:1064](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L1064)
-
-***
-
-### callMethod()
-
-> **callMethod**(`thisHandle`, `key`, `args`): `QuickJSContextResult`\<[`QuickJSHandle`](../exports.md#quickjshandle)\>
-
-`handle[key](...args)`
-
-Call a method on a JSValue. This is a convenience method that calls [getProp](QuickJSContext.md#getprop) and [callFunction](QuickJSContext.md#callfunction).
-
-#### Parameters
-
-• **thisHandle**: [`QuickJSHandle`](../exports.md#quickjshandle)
-
-• **key**: [`QuickJSPropertyKey`](../exports.md#quickjspropertykey)
-
-• **args**: [`QuickJSHandle`](../exports.md#quickjshandle)[]= `[]`
-
-#### Returns
-
-`QuickJSContextResult`\<[`QuickJSHandle`](../exports.md#quickjshandle)\>
+`QuickJSContextResult`\<[`QuickJSHandle`](../README.md#quickjshandle)\>
 
 A result. If the function threw synchronously, `result.error` be a
 handle to the exception. Otherwise `result.value` will be a handle to the
 value.
 
-#### Source
+Example:
 
-[packages/quickjs-emscripten-core/src/context.ts:1113](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L1113)
+```typescript
+using parseIntHandle = context.getProp(global, "parseInt")
+using stringHandle = context.newString("42")
+using resultHandle = context.callFunction(parseIntHandle, context.undefined, stringHandle).unwrap()
+console.log(context.dump(resultHandle)) // 42
+```
+
+##### Implementation of
+
+`LowLevelJavascriptVm.callFunction`
+
+***
+
+### callMethod()
+
+> **callMethod**(`thisHandle`, `key`, `args`): `QuickJSContextResult`\<[`QuickJSHandle`](../README.md#quickjshandle)\>
+
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:1113](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L1113)
+
+`handle[key](...args)`
+
+Call a method on a JSValue. This is a convenience method that calls [getProp](#getprop) and [callFunction](#callfunction).
+
+#### Parameters
+
+##### thisHandle
+
+[`QuickJSHandle`](../README.md#quickjshandle)
+
+##### key
+
+[`QuickJSPropertyKey`](../README.md#quickjspropertykey)
+
+##### args
+
+[`QuickJSHandle`](../README.md#quickjshandle)[] = `[]`
+
+#### Returns
+
+`QuickJSContextResult`\<[`QuickJSHandle`](../README.md#quickjshandle)\>
+
+A result. If the function threw synchronously, `result.error` be a
+handle to the exception. Otherwise `result.value` will be a handle to the
+value.
+
+***
+
+### compileCode()
+
+> **compileCode**(`code`, `filename`, `options?`): `QuickJSContextResult`\<[`QuickJSHandle`](../README.md#quickjshandle)\>
+
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:1462](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L1462)
+
+Compile code to bytecode without executing it.
+The bytecode can be serialized with [encodeBytecode](#encodebytecode) and later
+restored with [decodeBytecode](#decodebytecode) and executed with [evalBytecode](#evalbytecode).
+
+This enables bytecode caching for faster startup (~2x improvement).
+
+```ts
+// Compile code to bytecode
+const bytecodeHandle = context.compileCode(`
+  function hello() { return "world"; }
+  hello();
+`, "example.js").unwrap()
+
+// Serialize to ArrayBuffer for caching
+const serialized = context.encodeBytecode(bytecodeHandle)
+  .consume(handle => context.getArrayBuffer(handle))
+
+// Later: restore and execute
+const restored = context.newArrayBuffer(serialized.value)
+  .consume(handle => context.decodeBytecode(handle))
+const result = context.evalBytecode(restored).unwrap()
+```
+
+#### Parameters
+
+##### code
+
+`string`
+
+##### filename
+
+`string` = `"eval.js"`
+
+##### options?
+
+`Omit`\<[`ContextEvalOptions`](../interfaces/ContextEvalOptions.md), `"compileOnly"`\>
+
+#### Returns
+
+`QuickJSContextResult`\<[`QuickJSHandle`](../README.md#quickjshandle)\>
 
 ***
 
 ### decodeBinaryJSON()
 
-> **decodeBinaryJSON**(`handle`): [`QuickJSHandle`](../exports.md#quickjshandle)
+> **decodeBinaryJSON**(`handle`): [`QuickJSHandle`](../README.md#quickjshandle)
+
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:1431](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L1431)
 
 Outputs Handle of the given QuickJS Object in binary form
 
@@ -401,15 +456,43 @@ socket.on("data", chunk => {
 
 #### Parameters
 
-• **handle**: [`QuickJSHandle`](../exports.md#quickjshandle)
+##### handle
+
+[`QuickJSHandle`](../README.md#quickjshandle)
 
 #### Returns
 
-[`QuickJSHandle`](../exports.md#quickjshandle)
+[`QuickJSHandle`](../README.md#quickjshandle)
 
-#### Source
+***
 
-[packages/quickjs-emscripten-core/src/context.ts:1431](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L1431)
+### decodeBytecode()
+
+> **decodeBytecode**(`handle`): [`QuickJSHandle`](../README.md#quickjshandle)
+
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:1522](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L1522)
+
+Deserialize bytecode from binary format.
+The bytecode must have been serialized with [encodeBytecode](#encodebytecode).
+
+After decoding, use [evalBytecode](#evalbytecode) to execute the bytecode.
+
+**WARNING**: The bytecode format is not standardized and may change between
+QuickJS versions.
+
+#### Parameters
+
+##### handle
+
+[`QuickJSHandle`](../README.md#quickjshandle)
+
+A handle to an ArrayBuffer containing serialized bytecode
+
+#### Returns
+
+[`QuickJSHandle`](../README.md#quickjshandle)
+
+A handle to the deserialized bytecode function
 
 ***
 
@@ -417,18 +500,26 @@ socket.on("data", chunk => {
 
 > **defineProp**(`handle`, `key`, `descriptor`): `void`
 
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:1000](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L1000)
+
 [`Object.defineProperty(handle, key, descriptor)`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty).
 
 #### Parameters
 
-• **handle**: [`QuickJSHandle`](../exports.md#quickjshandle)
+##### handle
 
-• **key**: [`QuickJSPropertyKey`](../exports.md#quickjspropertykey)
+[`QuickJSHandle`](../README.md#quickjshandle)
+
+##### key
+
+[`QuickJSPropertyKey`](../README.md#quickjspropertykey)
 
 The property may be specified as a JSValue handle, or as a
 Javascript string or number (which will be converted automatically to a JSValue).
 
-• **descriptor**: [`VmPropertyDescriptor`](../interfaces/VmPropertyDescriptor.md)\<[`QuickJSHandle`](../exports.md#quickjshandle)\>
+##### descriptor
+
+[`VmPropertyDescriptor`](../interfaces/VmPropertyDescriptor.md)\<[`QuickJSHandle`](../README.md#quickjshandle)\>
 
 #### Returns
 
@@ -436,11 +527,7 @@ Javascript string or number (which will be converted automatically to a JSValue)
 
 #### Implementation of
 
-[`quickjs-emscripten.LowLevelJavascriptVm.defineProp`](../interfaces/LowLevelJavascriptVm.md#defineprop)
-
-#### Source
-
-[packages/quickjs-emscripten-core/src/context.ts:1000](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L1000)
+[`LowLevelJavascriptVm`](../interfaces/LowLevelJavascriptVm.md).[`defineProp`](../interfaces/LowLevelJavascriptVm.md#defineprop)
 
 ***
 
@@ -448,28 +535,26 @@ Javascript string or number (which will be converted automatically to a JSValue)
 
 > **dispose**(): `void`
 
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:265](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L265)
+
 Dispose of this VM's underlying resources.
 
 #### Returns
 
 `void`
 
-#### Implementation of
-
-[`quickjs-emscripten.Disposable.dispose`](../interfaces/Disposable.md#dispose-1)
-
-#### Overrides
-
-[`quickjs-emscripten.UsingDisposable.dispose`](UsingDisposable.md#abstract-dispose)
-
 #### Throws
 
 Calling this method without disposing of all created handles
 will result in an error.
 
-#### Source
+#### Implementation of
 
-[packages/quickjs-emscripten-core/src/context.ts:265](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L265)
+[`Disposable`](../interfaces/Disposable.md).[`dispose`](../interfaces/Disposable.md#dispose-2)
+
+#### Overrides
+
+[`UsingDisposable`](UsingDisposable.md).[`dispose`](UsingDisposable.md#dispose-2)
 
 ***
 
@@ -477,27 +562,29 @@ will result in an error.
 
 > **dump**(`handle`): `any`
 
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:1234](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L1234)
+
 Dump a JSValue to Javascript in a best-effort fashion.
 If the value is a promise, dumps the promise's state.
 Returns `handle.toString()` if it cannot be serialized to JSON.
 
 #### Parameters
 
-• **handle**: [`QuickJSHandle`](../exports.md#quickjshandle)
+##### handle
+
+[`QuickJSHandle`](../README.md#quickjshandle)
 
 #### Returns
 
 `any`
 
-#### Source
-
-[packages/quickjs-emscripten-core/src/context.ts:1234](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L1234)
-
 ***
 
 ### encodeBinaryJSON()
 
-> **encodeBinaryJSON**(`handle`): [`QuickJSHandle`](../exports.md#quickjshandle)
+> **encodeBinaryJSON**(`handle`): [`QuickJSHandle`](../README.md#quickjshandle)
+
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:1414](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L1414)
 
 Outputs QuickJS Objects in binary form
 
@@ -513,15 +600,45 @@ socket.write(dataLifetime?.value)
 
 #### Parameters
 
-• **handle**: [`QuickJSHandle`](../exports.md#quickjshandle)
+##### handle
+
+[`QuickJSHandle`](../README.md#quickjshandle)
 
 #### Returns
 
-[`QuickJSHandle`](../exports.md#quickjshandle)
+[`QuickJSHandle`](../README.md#quickjshandle)
 
-#### Source
+***
 
-[packages/quickjs-emscripten-core/src/context.ts:1414](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L1414)
+### encodeBytecode()
+
+> **encodeBytecode**(`handle`): [`QuickJSHandle`](../README.md#quickjshandle)
+
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:1504](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L1504)
+
+Serialize a bytecode function to binary format.
+The bytecode can be stored/cached and later restored with [decodeBytecode](#decodebytecode).
+
+This is more efficient than [encodeBinaryJSON](#encodebinaryjson) for bytecode because it
+uses the `JS_WRITE_OBJ_BYTECODE` flag optimized for function serialization.
+
+**WARNING**: The bytecode format is not standardized and may change between
+QuickJS versions.
+
+#### Parameters
+
+##### handle
+
+[`QuickJSHandle`](../README.md#quickjshandle)
+
+A handle to a bytecode function (from [compileCode](#compilecode) or
+  `evalCode({ compileOnly: true })`)
+
+#### Returns
+
+[`QuickJSHandle`](../README.md#quickjshandle)
+
+A handle to an ArrayBuffer containing the serialized bytecode
 
 ***
 
@@ -529,28 +646,58 @@ socket.write(dataLifetime?.value)
 
 > **eq**(`handle`, `other`): `boolean`
 
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:811](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L811)
+
 `handle === other` - IsStrictlyEqual.
 See [Equality comparisons and sameness](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Equality_comparisons_and_sameness).
 
 #### Parameters
 
-• **handle**: [`QuickJSHandle`](../exports.md#quickjshandle)
+##### handle
 
-• **other**: [`QuickJSHandle`](../exports.md#quickjshandle)
+[`QuickJSHandle`](../README.md#quickjshandle)
+
+##### other
+
+[`QuickJSHandle`](../README.md#quickjshandle)
 
 #### Returns
 
 `boolean`
 
-#### Source
+***
 
-[packages/quickjs-emscripten-core/src/context.ts:811](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L811)
+### evalBytecode()
+
+> **evalBytecode**(`handle`): `QuickJSContextResult`\<[`QuickJSHandle`](../README.md#quickjshandle)\>
+
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:1479](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L1479)
+
+Execute a bytecode function that was previously compiled with
+[compileCode](#compilecode) or `evalCode({ compileOnly: true })`, or restored
+from serialized bytecode via [decodeBytecode](#decodebytecode).
+
+#### Parameters
+
+##### handle
+
+[`QuickJSHandle`](../README.md#quickjshandle)
+
+#### Returns
+
+`QuickJSContextResult`\<[`QuickJSHandle`](../README.md#quickjshandle)\>
+
+A result. If execution threw synchronously, `result.error` will be
+a handle to the exception. Otherwise `result.value` will be a handle to the
+return value.
 
 ***
 
 ### evalCode()
 
-> **evalCode**(`code`, `filename`, `options`?): `QuickJSContextResult`\<[`QuickJSHandle`](../exports.md#quickjshandle)\>
+> **evalCode**(`code`, `filename`, `options?`): `QuickJSContextResult`\<[`QuickJSHandle`](../README.md#quickjshandle)\>
+
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:1156](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L1156)
 
 Like [`eval(code)`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/eval#Description).
 
@@ -560,41 +707,47 @@ Evaluates `code`, as though it's in a file named `filename`, with options `optio
   scope of the QuickJSContext, and the return value is the result of the last
   expression.
 - When `options.type` is `"module"`, the code is evaluated is a module scope.
-  It may use `import` and `export` if [runtime](QuickJSContext.md#runtime).[QuickJSRuntime#setModuleLoader](QuickJSRuntime.md#setmoduleloader) was called.
+  It may use `import` and `export` if [runtime](#runtime).[QuickJSRuntime#setModuleLoader](QuickJSRuntime.md#setmoduleloader) was called.
   It may use top-level await if supported by the underlying QuickJS library.
   The return value is the module's exports, or a promise for the module's exports.
 - When `options.type` is unset, the code is evaluated as a module if it
   contains an `import` or `export` statement, otherwise it is evaluated in
   the global scope.
 
-When working with async code, you many need to call [runtime](QuickJSContext.md#runtime).[QuickJSRuntime#executePendingJobs](QuickJSRuntime.md#executependingjobs)
+When working with async code, you many need to call [runtime](#runtime).[QuickJSRuntime#executePendingJobs](QuickJSRuntime.md#executependingjobs)
 to execute callbacks pending after synchronous evaluation returns.
 
-See [unwrapResult](QuickJSContext.md#unwrapresult), which will throw if the function returned an error, or
+See [unwrapResult](#unwrapresult), which will throw if the function returned an error, or
 return the result handle directly. If evaluation returned a handle containing
-a promise, use [resolvePromise](QuickJSContext.md#resolvepromise) to convert it to a native promise and
+a promise, use [resolvePromise](#resolvepromise) to convert it to a native promise and
 [QuickJSRuntime#executePendingJobs](QuickJSRuntime.md#executependingjobs) to finish evaluating the promise.
 
 *Note*: to protect against infinite loops, provide an interrupt handler to
-[QuickJSRuntime#setInterruptHandler](QuickJSRuntime.md#setinterrupthandler). You can use [shouldInterruptAfterDeadline](../exports.md#shouldinterruptafterdeadline) to
+[QuickJSRuntime#setInterruptHandler](QuickJSRuntime.md#setinterrupthandler). You can use [shouldInterruptAfterDeadline](../README.md#shouldinterruptafterdeadline) to
 create a time-based deadline.
 
 #### Parameters
 
-• **code**: `string`
+##### code
 
-• **filename**: `string`= `"eval.js"`
+`string`
 
-• **options?**: `number` \| [`ContextEvalOptions`](../interfaces/ContextEvalOptions.md)
+##### filename
+
+`string` = `"eval.js"`
+
+##### options?
 
 If no options are passed, a heuristic will be used to detect if `code` is
 an ES module.
 
-See [EvalFlags](../exports.md#evalflags) for number semantics.
+See [EvalFlags](../README.md#evalflags) for number semantics.
+
+`number` | [`ContextEvalOptions`](../interfaces/ContextEvalOptions.md)
 
 #### Returns
 
-`QuickJSContextResult`\<[`QuickJSHandle`](../exports.md#quickjshandle)\>
+`QuickJSContextResult`\<[`QuickJSHandle`](../README.md#quickjshandle)\>
 
 The last statement's value. If the code threw synchronously,
 `result.error` will be a handle to the exception. If execution was
@@ -603,49 +756,45 @@ interrupted, the error will have name `InternalError` and message
 
 #### Implementation of
 
-[`quickjs-emscripten.LowLevelJavascriptVm.evalCode`](../interfaces/LowLevelJavascriptVm.md#evalcode)
-
-#### Source
-
-[packages/quickjs-emscripten-core/src/context.ts:1156](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L1156)
+[`LowLevelJavascriptVm`](../interfaces/LowLevelJavascriptVm.md).[`evalCode`](../interfaces/LowLevelJavascriptVm.md#evalcode)
 
 ***
 
 ### fail()
 
-> **`protected`** **fail**(`error`): [`DisposableFail`](DisposableFail.md)\<[`QuickJSHandle`](../exports.md#quickjshandle)\>
+> `protected` **fail**(`error`): [`DisposableFail`](DisposableFail.md)\<[`QuickJSHandle`](../README.md#quickjshandle)\>
+
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:1532](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L1532)
 
 #### Parameters
 
-• **error**: [`QuickJSHandle`](../exports.md#quickjshandle)
+##### error
+
+[`QuickJSHandle`](../README.md#quickjshandle)
 
 #### Returns
 
-[`DisposableFail`](DisposableFail.md)\<[`QuickJSHandle`](../exports.md#quickjshandle)\>
-
-#### Source
-
-[packages/quickjs-emscripten-core/src/context.ts:1440](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L1440)
+[`DisposableFail`](DisposableFail.md)\<[`QuickJSHandle`](../README.md#quickjshandle)\>
 
 ***
 
 ### getArrayBuffer()
 
-> **getArrayBuffer**(`handle`): [`Lifetime`](Lifetime.md)\<`Uint8Array`, `never`, `never`\>
+> **getArrayBuffer**(`handle`): [`Lifetime`](Lifetime.md)\<`Uint8Array`\<`ArrayBufferLike`\>\>
+
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:690](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L690)
 
 Coverts `handle` to a JavaScript ArrayBuffer
 
 #### Parameters
 
-• **handle**: [`QuickJSHandle`](../exports.md#quickjshandle)
+##### handle
+
+[`QuickJSHandle`](../README.md#quickjshandle)
 
 #### Returns
 
-[`Lifetime`](Lifetime.md)\<`Uint8Array`, `never`, `never`\>
-
-#### Source
-
-[packages/quickjs-emscripten-core/src/context.ts:690](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L690)
+[`Lifetime`](Lifetime.md)\<`Uint8Array`\<`ArrayBufferLike`\>\>
 
 ***
 
@@ -653,19 +802,19 @@ Coverts `handle` to a JavaScript ArrayBuffer
 
 > **getBigInt**(`handle`): `bigint`
 
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:681](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L681)
+
 Converts `handle` to a Javascript bigint.
 
 #### Parameters
 
-• **handle**: [`QuickJSHandle`](../exports.md#quickjshandle)
+##### handle
+
+[`QuickJSHandle`](../README.md#quickjshandle)
 
 #### Returns
 
 `bigint`
-
-#### Source
-
-[packages/quickjs-emscripten-core/src/context.ts:681](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L681)
 
 ***
 
@@ -673,7 +822,9 @@ Converts `handle` to a Javascript bigint.
 
 > **getIterator**(`iterableHandle`): `QuickJSContextResult`\<`QuickJSIterator`\>
 
-`handle[Symbol.iterator]()`. See [QuickJSIterator]([object Object]).
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:960](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L960)
+
+`handle[Symbol.iterator]()`. See QuickJSIterator.
 Returns a host iterator that wraps and proxies calls to a guest iterator handle.
 Each step of the iteration returns a result, either an error or a handle to the next value.
 Once the iterator is done, the handle is automatically disposed, and the iterator
@@ -689,21 +840,21 @@ for (using entriesHandle of context.getIterator(mapHandle).unwrap()) {
 
 #### Parameters
 
-• **iterableHandle**: [`QuickJSHandle`](../exports.md#quickjshandle)
+##### iterableHandle
+
+[`QuickJSHandle`](../README.md#quickjshandle)
 
 #### Returns
 
 `QuickJSContextResult`\<`QuickJSIterator`\>
 
-#### Source
-
-[packages/quickjs-emscripten-core/src/context.ts:960](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L960)
-
 ***
 
 ### getLength()
 
-> **getLength**(`handle`): `undefined` \| `number`
+> **getLength**(`handle`): `number` \| `undefined`
+
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:870](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L870)
 
 `handle.length` as a host number.
 
@@ -718,17 +869,15 @@ for (let i = 0; i < length; i++) {
 
 #### Parameters
 
-• **handle**: [`QuickJSHandle`](../exports.md#quickjshandle)
+##### handle
+
+[`QuickJSHandle`](../README.md#quickjshandle)
 
 #### Returns
 
-`undefined` \| `number`
+`number` \| `undefined`
 
 a number if the handle has a numeric length property, otherwise `undefined`.
-
-#### Source
-
-[packages/quickjs-emscripten-core/src/context.ts:870](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L870)
 
 ***
 
@@ -736,11 +885,15 @@ a number if the handle has a numeric length property, otherwise `undefined`.
 
 > **getNumber**(`handle`): `number`
 
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:652](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L652)
+
 Converts `handle` into a Javascript number.
 
 #### Parameters
 
-• **handle**: [`QuickJSHandle`](../exports.md#quickjshandle)
+##### handle
+
+[`QuickJSHandle`](../README.md#quickjshandle)
 
 #### Returns
 
@@ -750,17 +903,15 @@ Converts `handle` into a Javascript number.
 
 #### Implementation of
 
-[`quickjs-emscripten.LowLevelJavascriptVm.getNumber`](../interfaces/LowLevelJavascriptVm.md#getnumber)
-
-#### Source
-
-[packages/quickjs-emscripten-core/src/context.ts:652](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L652)
+[`LowLevelJavascriptVm`](../interfaces/LowLevelJavascriptVm.md).[`getNumber`](../interfaces/LowLevelJavascriptVm.md#getnumber)
 
 ***
 
 ### getOwnPropertyNames()
 
-> **getOwnPropertyNames**(`handle`, `options`): `QuickJSContextResult`\<[`DisposableArray`](../exports.md#disposablearrayt)\<[`QuickJSHandle`](../exports.md#quickjshandle)\>\>
+> **getOwnPropertyNames**(`handle`, `options`): `QuickJSContextResult`\<[`DisposableArray`](../README.md#disposablearray)\<[`QuickJSHandle`](../README.md#quickjshandle)\>\>
+
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:907](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L907)
 
 `Object.getOwnPropertyNames(handle)`.
 Similar to the [standard semantics](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/getOwnPropertyNames),
@@ -788,13 +939,17 @@ for (using prop of context.getOwnPropertyNames(objectHandle).unwrap()) {
 
 #### Parameters
 
-• **handle**: [`QuickJSHandle`](../exports.md#quickjshandle)
+##### handle
 
-• **options**: `GetOwnPropertyNamesOptions`= `undefined`
+[`QuickJSHandle`](../README.md#quickjshandle)
+
+##### options
+
+`GetOwnPropertyNamesOptions` = `...`
 
 #### Returns
 
-`QuickJSContextResult`\<[`DisposableArray`](../exports.md#disposablearrayt)\<[`QuickJSHandle`](../exports.md#quickjshandle)\>\>
+`QuickJSContextResult`\<[`DisposableArray`](../README.md#disposablearray)\<[`QuickJSHandle`](../README.md#quickjshandle)\>\>
 
 an an array of handles of the property names. The array itself is disposable for your convenience.
 
@@ -802,18 +957,16 @@ an an array of handles of the property names. The array itself is disposable for
 
 QuickJSEmptyGetOwnPropertyNames if no options are set.
 
-#### Source
-
-[packages/quickjs-emscripten-core/src/context.ts:907](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L907)
-
 ***
 
 ### getPromiseState()
 
-> **getPromiseState**(`handle`): [`JSPromiseState`](../exports.md#jspromisestate)
+> **getPromiseState**(`handle`): [`JSPromiseState`](../README.md#jspromisestate)
 
-Get the current state of a QuickJS promise, see [JSPromiseState](../exports.md#jspromisestate) for the possible states.
-This can be used to expect a promise to be fulfilled when combined with [unwrapResult](QuickJSContext.md#unwrapresult):
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:715](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L715)
+
+Get the current state of a QuickJS promise, see [JSPromiseState](../README.md#jspromisestate) for the possible states.
+This can be used to expect a promise to be fulfilled when combined with [unwrapResult](#unwrapresult):
 
 ```typescript
 const promiseHandle = context.evalCode(`Promise.resolve(42)`);
@@ -826,45 +979,45 @@ resultHandle.dispose();
 
 #### Parameters
 
-• **handle**: [`QuickJSHandle`](../exports.md#quickjshandle)
+##### handle
+
+[`QuickJSHandle`](../README.md#quickjshandle)
 
 #### Returns
 
-[`JSPromiseState`](../exports.md#jspromisestate)
-
-#### Source
-
-[packages/quickjs-emscripten-core/src/context.ts:715](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L715)
+[`JSPromiseState`](../README.md#jspromisestate)
 
 ***
 
 ### getProp()
 
-> **getProp**(`handle`, `key`): [`QuickJSHandle`](../exports.md#quickjshandle)
+> **getProp**(`handle`, `key`): [`QuickJSHandle`](../README.md#quickjshandle)
+
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:840](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L840)
 
 `handle[key]`.
 Get a property from a JSValue.
 
 #### Parameters
 
-• **handle**: [`QuickJSHandle`](../exports.md#quickjshandle)
+##### handle
 
-• **key**: [`QuickJSPropertyKey`](../exports.md#quickjspropertykey)
+[`QuickJSHandle`](../README.md#quickjshandle)
+
+##### key
+
+[`QuickJSPropertyKey`](../README.md#quickjspropertykey)
 
 The property may be specified as a JSValue handle, or as a
 Javascript string (which will be converted automatically).
 
 #### Returns
 
-[`QuickJSHandle`](../exports.md#quickjshandle)
+[`QuickJSHandle`](../README.md#quickjshandle)
 
 #### Implementation of
 
-[`quickjs-emscripten.LowLevelJavascriptVm.getProp`](../interfaces/LowLevelJavascriptVm.md#getprop)
-
-#### Source
-
-[packages/quickjs-emscripten-core/src/context.ts:840](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L840)
+[`LowLevelJavascriptVm`](../interfaces/LowLevelJavascriptVm.md).[`getProp`](../interfaces/LowLevelJavascriptVm.md#getprop)
 
 ***
 
@@ -872,11 +1025,15 @@ Javascript string (which will be converted automatically).
 
 > **getString**(`handle`): `string`
 
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:660](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L660)
+
 Converts `handle` to a Javascript string.
 
 #### Parameters
 
-• **handle**: [`QuickJSHandle`](../exports.md#quickjshandle)
+##### handle
+
+[`QuickJSHandle`](../README.md#quickjshandle)
 
 #### Returns
 
@@ -884,11 +1041,7 @@ Converts `handle` to a Javascript string.
 
 #### Implementation of
 
-[`quickjs-emscripten.LowLevelJavascriptVm.getString`](../interfaces/LowLevelJavascriptVm.md#getstring)
-
-#### Source
-
-[packages/quickjs-emscripten-core/src/context.ts:660](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L660)
+[`LowLevelJavascriptVm`](../interfaces/LowLevelJavascriptVm.md).[`getString`](../interfaces/LowLevelJavascriptVm.md#getstring)
 
 ***
 
@@ -896,160 +1049,160 @@ Converts `handle` to a Javascript string.
 
 > **getSymbol**(`handle`): `symbol`
 
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:669](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L669)
+
 Converts `handle` into a Javascript symbol. If the symbol is in the global
 registry in the guest, it will be created with Symbol.for on the host.
 
 #### Parameters
 
-• **handle**: [`QuickJSHandle`](../exports.md#quickjshandle)
+##### handle
+
+[`QuickJSHandle`](../README.md#quickjshandle)
 
 #### Returns
 
 `symbol`
 
-#### Source
-
-[packages/quickjs-emscripten-core/src/context.ts:669](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L669)
-
 ***
 
 ### getWellKnownSymbol()
 
-> **getWellKnownSymbol**(`name`): [`QuickJSHandle`](../exports.md#quickjshandle)
+> **getWellKnownSymbol**(`name`): [`QuickJSHandle`](../README.md#quickjshandle)
+
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:388](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L388)
 
 Access a well-known symbol that is a property of the global Symbol object, like `Symbol.iterator`.
 
 #### Parameters
 
-• **name**: `string`
+##### name
+
+`string`
 
 #### Returns
 
-[`QuickJSHandle`](../exports.md#quickjshandle)
-
-#### Source
-
-[packages/quickjs-emscripten-core/src/context.ts:388](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L388)
+[`QuickJSHandle`](../README.md#quickjshandle)
 
 ***
 
 ### newArray()
 
-> **newArray**(): [`QuickJSHandle`](../exports.md#quickjshandle)
+> **newArray**(): [`QuickJSHandle`](../README.md#quickjshandle)
+
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:430](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L430)
 
 `[]`.
 Create a new QuickJS [array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array).
 
 #### Returns
 
-[`QuickJSHandle`](../exports.md#quickjshandle)
-
-#### Source
-
-[packages/quickjs-emscripten-core/src/context.ts:430](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L430)
+[`QuickJSHandle`](../README.md#quickjshandle)
 
 ***
 
 ### newArrayBuffer()
 
-> **newArrayBuffer**(`buffer`): [`QuickJSHandle`](../exports.md#quickjshandle)
+> **newArrayBuffer**(`buffer`): [`QuickJSHandle`](../README.md#quickjshandle)
+
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:438](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L438)
 
 Create a new QuickJS [ArrayBuffer](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer).
 
 #### Parameters
 
-• **buffer**: `ArrayBufferLike`
+##### buffer
+
+`ArrayBufferLike`
 
 #### Returns
 
-[`QuickJSHandle`](../exports.md#quickjshandle)
-
-#### Source
-
-[packages/quickjs-emscripten-core/src/context.ts:438](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L438)
+[`QuickJSHandle`](../README.md#quickjshandle)
 
 ***
 
 ### newBigInt()
 
-> **newBigInt**(`num`): [`QuickJSHandle`](../exports.md#quickjshandle)
+> **newBigInt**(`num`): [`QuickJSHandle`](../README.md#quickjshandle)
+
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:396](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L396)
 
 Create a QuickJS [bigint](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt) value.
 
 #### Parameters
 
-• **num**: `bigint`
+##### num
+
+`bigint`
 
 #### Returns
 
-[`QuickJSHandle`](../exports.md#quickjshandle)
-
-#### Source
-
-[packages/quickjs-emscripten-core/src/context.ts:396](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L396)
+[`QuickJSHandle`](../README.md#quickjshandle)
 
 ***
 
 ### newError()
 
-#### newError(error)
+#### Call Signature
 
-> **newError**(`error`): [`QuickJSHandle`](../exports.md#quickjshandle)
+> **newError**(`error`): [`QuickJSHandle`](../README.md#quickjshandle)
 
-##### Parameters
-
-• **error**: `Object`
-
-• **error\.message**: `string`
-
-• **error\.name**: `string`
-
-##### Returns
-
-[`QuickJSHandle`](../exports.md#quickjshandle)
-
-##### Source
-
-[packages/quickjs-emscripten-core/src/context.ts:607](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L607)
-
-#### newError(message)
-
-> **newError**(`message`): [`QuickJSHandle`](../exports.md#quickjshandle)
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:607](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L607)
 
 ##### Parameters
 
-• **message**: `string`
+###### error
+
+###### message
+
+`string`
+
+###### name
+
+`string`
 
 ##### Returns
 
-[`QuickJSHandle`](../exports.md#quickjshandle)
+[`QuickJSHandle`](../README.md#quickjshandle)
 
-##### Source
+#### Call Signature
 
-[packages/quickjs-emscripten-core/src/context.ts:608](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L608)
+> **newError**(`message`): [`QuickJSHandle`](../README.md#quickjshandle)
 
-#### newError(undefined)
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:608](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L608)
 
-> **newError**(): [`QuickJSHandle`](../exports.md#quickjshandle)
+##### Parameters
+
+###### message
+
+`string`
 
 ##### Returns
 
-[`QuickJSHandle`](../exports.md#quickjshandle)
+[`QuickJSHandle`](../README.md#quickjshandle)
 
-##### Source
+#### Call Signature
 
-[packages/quickjs-emscripten-core/src/context.ts:609](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L609)
+> **newError**(): [`QuickJSHandle`](../README.md#quickjshandle)
+
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:609](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L609)
+
+##### Returns
+
+[`QuickJSHandle`](../README.md#quickjshandle)
 
 ***
 
 ### newFunction()
 
-> **newFunction**(`name`, `fn`): [`QuickJSHandle`](../exports.md#quickjshandle)
+> **newFunction**(`name`, `fn`): [`QuickJSHandle`](../README.md#quickjshandle)
+
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:601](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L601)
 
 Convert a Javascript function into a QuickJS function value.
-See [VmFunctionImplementation](../exports.md#vmfunctionimplementationvmhandle) for more details.
+See [VmFunctionImplementation](../README.md#vmfunctionimplementation) for more details.
 
-A [VmFunctionImplementation](../exports.md#vmfunctionimplementationvmhandle) should not free its arguments or its return
+A [VmFunctionImplementation](../README.md#vmfunctionimplementation) should not free its arguments or its return
 value. A VmFunctionImplementation should also not retain any references to
 its return value.
 
@@ -1129,7 +1282,7 @@ class QuickJSInterval extends UsingDisposable {
 }
 ```
 
-To implement an async function, create a promise with [newPromise](QuickJSContext.md#newpromise), then
+To implement an async function, create a promise with [newPromise](#newpromise), then
 return the deferred promise handle from `deferred.handle` from your
 function implementation:
 
@@ -1141,80 +1294,82 @@ return deferred.handle
 
 #### Parameters
 
-• **name**: `string`
+##### name
 
-• **fn**: [`VmFunctionImplementation`](../exports.md#vmfunctionimplementationvmhandle)\<[`QuickJSHandle`](../exports.md#quickjshandle)\>
+`string`
+
+##### fn
+
+[`VmFunctionImplementation`](../README.md#vmfunctionimplementation)\<[`QuickJSHandle`](../README.md#quickjshandle)\>
 
 #### Returns
 
-[`QuickJSHandle`](../exports.md#quickjshandle)
+[`QuickJSHandle`](../README.md#quickjshandle)
 
 #### Implementation of
 
-[`quickjs-emscripten.LowLevelJavascriptVm.newFunction`](../interfaces/LowLevelJavascriptVm.md#newfunction)
-
-#### Source
-
-[packages/quickjs-emscripten-core/src/context.ts:601](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L601)
+[`LowLevelJavascriptVm`](../interfaces/LowLevelJavascriptVm.md).[`newFunction`](../interfaces/LowLevelJavascriptVm.md#newfunction)
 
 ***
 
 ### newNumber()
 
-> **newNumber**(`num`): [`QuickJSHandle`](../exports.md#quickjshandle)
+> **newNumber**(`num`): [`QuickJSHandle`](../README.md#quickjshandle)
+
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:347](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L347)
 
 Converts a Javascript number into a QuickJS value.
 
 #### Parameters
 
-• **num**: `number`
+##### num
+
+`number`
 
 #### Returns
 
-[`QuickJSHandle`](../exports.md#quickjshandle)
+[`QuickJSHandle`](../README.md#quickjshandle)
 
 #### Implementation of
 
-[`quickjs-emscripten.LowLevelJavascriptVm.newNumber`](../interfaces/LowLevelJavascriptVm.md#newnumber)
-
-#### Source
-
-[packages/quickjs-emscripten-core/src/context.ts:347](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L347)
+[`LowLevelJavascriptVm`](../interfaces/LowLevelJavascriptVm.md).[`newNumber`](../interfaces/LowLevelJavascriptVm.md#newnumber)
 
 ***
 
 ### newObject()
 
-> **newObject**(`prototype`?): [`QuickJSHandle`](../exports.md#quickjshandle)
+> **newObject**(`prototype?`): [`QuickJSHandle`](../README.md#quickjshandle)
+
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:416](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L416)
 
 `{}`.
 Create a new QuickJS [object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Object_initializer).
 
 #### Parameters
 
-• **prototype?**: [`QuickJSHandle`](../exports.md#quickjshandle)
+##### prototype?
+
+[`QuickJSHandle`](../README.md#quickjshandle)
 
 Like [`Object.create`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/create).
 
 #### Returns
 
-[`QuickJSHandle`](../exports.md#quickjshandle)
+[`QuickJSHandle`](../README.md#quickjshandle)
 
 #### Implementation of
 
-[`quickjs-emscripten.LowLevelJavascriptVm.newObject`](../interfaces/LowLevelJavascriptVm.md#newobject)
-
-#### Source
-
-[packages/quickjs-emscripten-core/src/context.ts:416](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L416)
+[`LowLevelJavascriptVm`](../interfaces/LowLevelJavascriptVm.md).[`newObject`](../interfaces/LowLevelJavascriptVm.md#newobject)
 
 ***
 
 ### newPromise()
 
-#### newPromise(undefined)
+#### Call Signature
 
 > **newPromise**(): [`QuickJSDeferredPromise`](QuickJSDeferredPromise.md)
+
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:451](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L451)
 
 Create a new [QuickJSDeferredPromise](QuickJSDeferredPromise.md). Use `deferred.resolve(handle)` and
 `deferred.reject(handle)` to fulfill the promise handle available at `deferred.handle`.
@@ -1225,124 +1380,122 @@ resources; see the documentation on [QuickJSDeferredPromise](QuickJSDeferredProm
 
 [`QuickJSDeferredPromise`](QuickJSDeferredPromise.md)
 
-##### Source
-
-[packages/quickjs-emscripten-core/src/context.ts:451](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L451)
-
-#### newPromise(promise)
+#### Call Signature
 
 > **newPromise**(`promise`): [`QuickJSDeferredPromise`](QuickJSDeferredPromise.md)
 
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:459](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L459)
+
 Create a new [QuickJSDeferredPromise](QuickJSDeferredPromise.md) that resolves when the
-given native Promise`<QuickJSHandle>`  resolves. Rejections will be coerced
+given native Promise<QuickJSHandle> resolves. Rejections will be coerced
 to a QuickJS error.
 
 You can still resolve/reject the created promise "early" using its methods.
 
 ##### Parameters
 
-• **promise**: `Promise`\<[`QuickJSHandle`](../exports.md#quickjshandle)\>
+###### promise
+
+`Promise`\<[`QuickJSHandle`](../README.md#quickjshandle)\>
 
 ##### Returns
 
 [`QuickJSDeferredPromise`](QuickJSDeferredPromise.md)
 
-##### Source
-
-[packages/quickjs-emscripten-core/src/context.ts:459](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L459)
-
-#### newPromise(newPromiseFn)
+#### Call Signature
 
 > **newPromise**(`newPromiseFn`): [`QuickJSDeferredPromise`](QuickJSDeferredPromise.md)
 
-Construct a new native Promise`<QuickJSHandle>` , and then convert it into a
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:466](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L466)
+
+Construct a new native Promise<QuickJSHandle>, and then convert it into a
 [QuickJSDeferredPromise](QuickJSDeferredPromise.md).
 
 You can still resolve/reject the created promise "early" using its methods.
 
 ##### Parameters
 
-• **newPromiseFn**: [`PromiseExecutor`](../exports.md#promiseexecutorresolvet-rejectt)\<[`QuickJSHandle`](../exports.md#quickjshandle), `Error` \| [`QuickJSHandle`](../exports.md#quickjshandle)\>
+###### newPromiseFn
+
+[`PromiseExecutor`](../README.md#promiseexecutor)\<[`QuickJSHandle`](../README.md#quickjshandle), `Error` \| [`QuickJSHandle`](../README.md#quickjshandle)\>
 
 ##### Returns
 
 [`QuickJSDeferredPromise`](QuickJSDeferredPromise.md)
 
-##### Source
-
-[packages/quickjs-emscripten-core/src/context.ts:466](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L466)
-
 ***
 
 ### newString()
 
-> **newString**(`str`): [`QuickJSHandle`](../exports.md#quickjshandle)
+> **newString**(`str`): [`QuickJSHandle`](../README.md#quickjshandle)
+
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:354](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L354)
 
 Create a QuickJS [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) value.
 
 #### Parameters
 
-• **str**: `string`
+##### str
+
+`string`
 
 #### Returns
 
-[`QuickJSHandle`](../exports.md#quickjshandle)
+[`QuickJSHandle`](../README.md#quickjshandle)
 
 #### Implementation of
 
-[`quickjs-emscripten.LowLevelJavascriptVm.newString`](../interfaces/LowLevelJavascriptVm.md#newstring)
-
-#### Source
-
-[packages/quickjs-emscripten-core/src/context.ts:354](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L354)
+[`LowLevelJavascriptVm`](../interfaces/LowLevelJavascriptVm.md).[`newString`](../interfaces/LowLevelJavascriptVm.md#newstring)
 
 ***
 
 ### newSymbolFor()
 
-> **newSymbolFor**(`key`): [`QuickJSHandle`](../exports.md#quickjshandle)
+> **newSymbolFor**(`key`): [`QuickJSHandle`](../README.md#quickjshandle)
+
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:377](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L377)
 
 Get a symbol from the [global registry](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol#shared_symbols_in_the_global_symbol_registry) for the given key.
 All symbols created with the same key will be the same value.
 
 #### Parameters
 
-• **key**: `string` \| `symbol`
+##### key
+
+`string` | `symbol`
 
 #### Returns
 
-[`QuickJSHandle`](../exports.md#quickjshandle)
-
-#### Source
-
-[packages/quickjs-emscripten-core/src/context.ts:377](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L377)
+[`QuickJSHandle`](../README.md#quickjshandle)
 
 ***
 
 ### newUniqueSymbol()
 
-> **newUniqueSymbol**(`description`): [`QuickJSHandle`](../exports.md#quickjshandle)
+> **newUniqueSymbol**(`description`): [`QuickJSHandle`](../README.md#quickjshandle)
+
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:365](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L365)
 
 Create a QuickJS [symbol](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol) value.
 No two symbols created with this function will be the same value.
 
 #### Parameters
 
-• **description**: `string` \| `symbol`
+##### description
+
+`string` | `symbol`
 
 #### Returns
 
-[`QuickJSHandle`](../exports.md#quickjshandle)
-
-#### Source
-
-[packages/quickjs-emscripten-core/src/context.ts:365](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L365)
+[`QuickJSHandle`](../README.md#quickjshandle)
 
 ***
 
 ### resolvePromise()
 
-> **resolvePromise**(`promiseLikeHandle`): `Promise`\<`QuickJSContextResult`\<[`QuickJSHandle`](../exports.md#quickjshandle)\>\>
+> **resolvePromise**(`promiseLikeHandle`): `Promise`\<`QuickJSContextResult`\<[`QuickJSHandle`](../README.md#quickjshandle)\>\>
+
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:754](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L754)
 
 `Promise.resolve(value)`.
 Convert a handle containing a Promise-like value inside the VM into an
@@ -1350,21 +1503,19 @@ actual promise on the host.
 
 #### Parameters
 
-• **promiseLikeHandle**: [`QuickJSHandle`](../exports.md#quickjshandle)
+##### promiseLikeHandle
+
+[`QuickJSHandle`](../README.md#quickjshandle)
 
 A handle to a Promise-like value with a `.then(onSuccess, onError)` method.
 
 #### Returns
 
-`Promise`\<`QuickJSContextResult`\<[`QuickJSHandle`](../exports.md#quickjshandle)\>\>
+`Promise`\<`QuickJSContextResult`\<[`QuickJSHandle`](../README.md#quickjshandle)\>\>
 
 #### Remarks
 
-You may need to call [runtime](QuickJSContext.md#runtime).[QuickJSRuntime#executePendingJobs](QuickJSRuntime.md#executependingjobs) to ensure that the promise is resolved.
-
-#### Source
-
-[packages/quickjs-emscripten-core/src/context.ts:754](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L754)
+You may need to call [runtime](#runtime).[QuickJSRuntime#executePendingJobs](QuickJSRuntime.md#executependingjobs) to ensure that the promise is resolved.
 
 ***
 
@@ -1372,22 +1523,24 @@ You may need to call [runtime](QuickJSContext.md#runtime).[QuickJSRuntime#execut
 
 > **sameValue**(`handle`, `other`): `boolean`
 
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:819](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L819)
+
 `Object.is(a, b)`
 See [Equality comparisons and sameness](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Equality_comparisons_and_sameness).
 
 #### Parameters
 
-• **handle**: [`QuickJSHandle`](../exports.md#quickjshandle)
+##### handle
 
-• **other**: [`QuickJSHandle`](../exports.md#quickjshandle)
+[`QuickJSHandle`](../README.md#quickjshandle)
+
+##### other
+
+[`QuickJSHandle`](../README.md#quickjshandle)
 
 #### Returns
 
 `boolean`
-
-#### Source
-
-[packages/quickjs-emscripten-core/src/context.ts:819](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L819)
 
 ***
 
@@ -1395,22 +1548,24 @@ See [Equality comparisons and sameness](https://developer.mozilla.org/en-US/docs
 
 > **sameValueZero**(`handle`, `other`): `boolean`
 
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:827](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L827)
+
 SameValueZero comparison.
 See [Equality comparisons and sameness](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Equality_comparisons_and_sameness).
 
 #### Parameters
 
-• **handle**: [`QuickJSHandle`](../exports.md#quickjshandle)
+##### handle
 
-• **other**: [`QuickJSHandle`](../exports.md#quickjshandle)
+[`QuickJSHandle`](../README.md#quickjshandle)
+
+##### other
+
+[`QuickJSHandle`](../README.md#quickjshandle)
 
 #### Returns
 
 `boolean`
-
-#### Source
-
-[packages/quickjs-emscripten-core/src/context.ts:827](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L827)
 
 ***
 
@@ -1418,78 +1573,86 @@ See [Equality comparisons and sameness](https://developer.mozilla.org/en-US/docs
 
 > **setProp**(`handle`, `key`, `value`): `void`
 
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:985](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L985)
+
 `handle[key] = value`.
 Set a property on a JSValue.
 
 #### Parameters
 
-• **handle**: [`QuickJSHandle`](../exports.md#quickjshandle)
+##### handle
 
-• **key**: [`QuickJSPropertyKey`](../exports.md#quickjspropertykey)
+[`QuickJSHandle`](../README.md#quickjshandle)
+
+##### key
+
+[`QuickJSPropertyKey`](../README.md#quickjspropertykey)
 
 The property may be specified as a JSValue handle, or as a
 Javascript string or number (which will be converted automatically to a JSValue).
 
-• **value**: [`QuickJSHandle`](../exports.md#quickjshandle)
+##### value
+
+[`QuickJSHandle`](../README.md#quickjshandle)
 
 #### Returns
 
 `void`
 
-#### Implementation of
-
-[`quickjs-emscripten.LowLevelJavascriptVm.setProp`](../interfaces/LowLevelJavascriptVm.md#setprop)
-
 #### Remarks
 
-Note that the QuickJS authors recommend using [defineProp](QuickJSContext.md#defineprop) to define new
+Note that the QuickJS authors recommend using [defineProp](#defineprop) to define new
 properties.
 
-#### Source
+#### Implementation of
 
-[packages/quickjs-emscripten-core/src/context.ts:985](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L985)
+[`LowLevelJavascriptVm`](../interfaces/LowLevelJavascriptVm.md).[`setProp`](../interfaces/LowLevelJavascriptVm.md#setprop)
 
 ***
 
 ### success()
 
-> **`protected`** **success**\<`S`\>(`value`): [`DisposableSuccess`](DisposableSuccess.md)\<`S`\>
+> `protected` **success**\<`S`\>(`value`): [`DisposableSuccess`](DisposableSuccess.md)\<`S`\>
 
-#### Type parameters
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:1528](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L1528)
 
-• **S**
+#### Type Parameters
+
+##### S
+
+`S`
 
 #### Parameters
 
-• **value**: `S`
+##### value
+
+`S`
 
 #### Returns
 
 [`DisposableSuccess`](DisposableSuccess.md)\<`S`\>
 
-#### Source
-
-[packages/quickjs-emscripten-core/src/context.ts:1436](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L1436)
-
 ***
 
 ### throw()
 
-> **throw**(`error`): [`JSValuePointer`](../exports.md#jsvaluepointer)
+> **throw**(`error`): [`JSValuePointer`](../README.md#jsvaluepointer)
+
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:1193](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L1193)
+
+**`Experimental`**
 
 Throw an error in the VM, interrupted whatever current execution is in progress when execution resumes.
 
 #### Parameters
 
-• **error**: `Error` \| [`QuickJSHandle`](../exports.md#quickjshandle)
+##### error
+
+`Error` | [`QuickJSHandle`](../README.md#quickjshandle)
 
 #### Returns
 
-[`JSValuePointer`](../exports.md#jsvaluepointer)
-
-#### Source
-
-[packages/quickjs-emscripten-core/src/context.ts:1193](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L1193)
+[`JSValuePointer`](../README.md#jsvaluepointer)
 
 ***
 
@@ -1497,27 +1660,27 @@ Throw an error in the VM, interrupted whatever current execution is in progress 
 
 > **typeof**(`handle`): `string`
 
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:643](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L643)
+
 `typeof` operator. **Not** [standards compliant](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/typeof).
 
 #### Parameters
 
-• **handle**: [`QuickJSHandle`](../exports.md#quickjshandle)
+##### handle
+
+[`QuickJSHandle`](../README.md#quickjshandle)
 
 #### Returns
 
 `string`
 
-#### Implementation of
-
-[`quickjs-emscripten.LowLevelJavascriptVm.typeof`](../interfaces/LowLevelJavascriptVm.md#typeof)
-
 #### Remarks
 
 Does not support BigInt values correctly.
 
-#### Source
+#### Implementation of
 
-[packages/quickjs-emscripten-core/src/context.ts:643](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L643)
+[`LowLevelJavascriptVm`](../interfaces/LowLevelJavascriptVm.md).[`typeof`](../interfaces/LowLevelJavascriptVm.md#typeof)
 
 ***
 
@@ -1525,27 +1688,25 @@ Does not support BigInt values correctly.
 
 > **unwrapResult**\<`T`\>(`result`): `T`
 
-Unwrap a SuccessOrFail result such as a [VmCallResult](../exports.md#vmcallresultvmhandle) or a
-[ExecutePendingJobsResult](../exports.md#executependingjobsresult), where the fail branch contains a handle to a QuickJS error value.
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:1277](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L1277)
+
+Unwrap a SuccessOrFail result such as a [VmCallResult](../README.md#vmcallresult) or a
+[ExecutePendingJobsResult](../README.md#executependingjobsresult), where the fail branch contains a handle to a QuickJS error value.
 If the result is a success, returns the value.
 If the result is an error, converts the error to a native object and throws the error.
 
-#### Type parameters
+#### Type Parameters
 
-• **T**
+##### T
+
+`T`
 
 #### Parameters
 
-• **result**: [`SuccessOrFail`](../exports.md#successorfails-f)\<`T`, [`QuickJSHandle`](../exports.md#quickjshandle)\>
+##### result
+
+[`SuccessOrFail`](../README.md#successorfail)\<`T`, [`QuickJSHandle`](../README.md#quickjshandle)\>
 
 #### Returns
 
 `T`
-
-#### Source
-
-[packages/quickjs-emscripten-core/src/context.ts:1277](https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L1277)
-
-***
-
-Generated using [typedoc-plugin-markdown](https://www.npmjs.com/package/typedoc-plugin-markdown) and [TypeDoc](https://typedoc.org/)

@@ -211,4 +211,16 @@ export interface QuickJSFFI {
     ctx: JSContextPointer,
     data: JSValuePointer | JSValueConstPointer,
   ) => JSValuePointer
+  QTS_EvalFunction: (
+    ctx: JSContextPointer,
+    fun_obj: JSValuePointer | JSValueConstPointer,
+  ) => JSValuePointer
+  QTS_EncodeBytecode: (
+    ctx: JSContextPointer,
+    val: JSValuePointer | JSValueConstPointer,
+  ) => JSValuePointer
+  QTS_DecodeBytecode: (
+    ctx: JSContextPointer,
+    data: JSValuePointer | JSValueConstPointer,
+  ) => JSValuePointer
 }

@@ -407,12 +407,12 @@ async function main() {
           url: "https://jake.tl",
         },
         scripts: {
-          build: "yarn build:c && yarn build:ts",
+          build: "pnpm run build:c && pnpm run build:ts",
           "build:c": variant.exports.import && variant.exports.require ? "make" : "make -j2",
           "build:ts": "npx tsup",
           "check:types": "npx tsc --project . --noEmit",
           clean: "make clean",
-          prepare: "yarn clean && yarn build",
+          prepare: "pnpm run clean && pnpm run build",
         },
         files: ["LICENSE", "README.md", "dist/**/*", "!dist/*.tsbuildinfo"],
         types: indexExports.types,
@@ -437,6 +437,9 @@ async function main() {
         },
         dependencies: {
           "@jitl/quickjs-ffi-types": "workspace:*",
+        },
+        devDependencies: {
+          "@jitl/tsconfig": "workspace:*",
         },
       }
 

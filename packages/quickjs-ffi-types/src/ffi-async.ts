@@ -263,4 +263,20 @@ export interface QuickJSAsyncFFI {
     ctx: JSContextPointer,
     data: JSValuePointer | JSValueConstPointer,
   ) => JSValuePointer
+  QTS_EvalFunction: (
+    ctx: JSContextPointer,
+    fun_obj: JSValuePointer | JSValueConstPointer,
+  ) => JSValuePointer
+  QTS_EvalFunction_MaybeAsync: (
+    ctx: JSContextPointer,
+    fun_obj: JSValuePointer | JSValueConstPointer,
+  ) => JSValuePointer | Promise<JSValuePointer>
+  QTS_EncodeBytecode: (
+    ctx: JSContextPointer,
+    val: JSValuePointer | JSValueConstPointer,
+  ) => JSValuePointer
+  QTS_DecodeBytecode: (
+    ctx: JSContextPointer,
+    data: JSValuePointer | JSValueConstPointer,
+  ) => JSValuePointer
 }

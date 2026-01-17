@@ -36,7 +36,6 @@ describe("README.md", () => {
   describe("intro", () => {
     it("first example", async () => {
       {
-        // eslint-disable-next-line no-inner-declarations
         async function main() {
           const QuickJS = await getQuickJS()
           const vm = QuickJS.newContext()

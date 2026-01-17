@@ -12,6 +12,6 @@
     "quickjs-atom.h": "c"
   },
   "files.exclude": {
-    ".yarn/releases/*": true
+    ".pnpm run/releases/*": true
   }
 }

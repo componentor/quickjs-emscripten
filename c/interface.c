@@ -1250,3 +1250,43 @@ JSValue *QTS_bjson_decode(JSContext *ctx, JSValueConst *data) {
   JSValue value = JS_ReadObject(ctx, buffer, length, 0);
   return jsvalue_to_heap(value);
 }
+
+/**
+ * Evaluate a bytecode function object (compiled with JS_EVAL_FLAG_COMPILE_ONLY).
+ * This instantiates and executes the bytecode, returning the result.
+ */
+MaybeAsync(JSValue *) QTS_EvalFunction(JSContext *ctx, JSValueConst *fun_obj) {
+  // Duplicate the value because JS_EvalFunction consumes its argument
+  JSValue fun_copy = JS_DupValue(ctx, *fun_obj);
+  JSValue result = JS_EvalFunction(ctx, fun_copy);
+  return jsvalue_to_heap(result);
+}
+
+/**
+ * Serialize a bytecode function to binary format.
+ * Uses JS_WRITE_OBJ_BYTECODE flag for more efficient bytecode serialization.
+ */
+JSValue *QTS_EncodeBytecode(JSContext *ctx, JSValueConst *val) {
+  size_t length;
+  uint8_t *buffer = JS_WriteObject(ctx, &length, *val, JS_WRITE_OBJ_BYTECODE);
+  if (!buffer)
+    return jsvalue_to_heap(JS_EXCEPTION);
+
+  JSValue array = JS_NewArrayBufferCopy(ctx, buffer, length);
+  js_free(ctx, buffer);
+  return jsvalue_to_heap(array);
+}
+
+/**
+ * Deserialize bytecode from binary format.
+ * Uses JS_READ_OBJ_BYTECODE flag to allow bytecode deserialization.
+ */
+JSValue *QTS_DecodeBytecode(JSContext *ctx, JSValueConst *data) {
+  size_t length;
+  uint8_t *buffer = JS_GetArrayBuffer(ctx, &length, *data);
+  if (!buffer)
+    return jsvalue_to_heap(JS_EXCEPTION);
+
+  JSValue value = JS_ReadObject(ctx, buffer, length, JS_READ_OBJ_BYTECODE);
+  return jsvalue_to_heap(value);
+}

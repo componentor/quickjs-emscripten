@@ -520,4 +520,29 @@ export class QuickJSAsyncFFI {
     ctx: JSContextPointer,
     data: JSValuePointer | JSValueConstPointer,
   ) => JSValuePointer = this.module.cwrap("QTS_bjson_decode", "number", ["number", "number"])
+
+  QTS_EvalFunction: (
+    ctx: JSContextPointer,
+    fun_obj: JSValuePointer | JSValueConstPointer,
+  ) => JSValuePointer = assertSync(
+    this.module.cwrap("QTS_EvalFunction", "number", ["number", "number"]),
+  )
+
+  QTS_EvalFunction_MaybeAsync: (
+    ctx: JSContextPointer,
+    fun_obj: JSValuePointer | JSValueConstPointer,
+  ) => JSValuePointer | Promise<JSValuePointer> = this.module.cwrap("QTS_EvalFunction", "number", [
+    "number",
+    "number",
+  ])
+
+  QTS_EncodeBytecode: (
+    ctx: JSContextPointer,
+    val: JSValuePointer | JSValueConstPointer,
+  ) => JSValuePointer = this.module.cwrap("QTS_EncodeBytecode", "number", ["number", "number"])
+
+  QTS_DecodeBytecode: (
+    ctx: JSContextPointer,
+    data: JSValuePointer | JSValueConstPointer,
+  ) => JSValuePointer = this.module.cwrap("QTS_DecodeBytecode", "number", ["number", "number"])
 }

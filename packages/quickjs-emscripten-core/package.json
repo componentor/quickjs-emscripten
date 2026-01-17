@@ -44,6 +44,9 @@
     "build": "npx tsup"
   },
   "dependencies": {
-    "@jitl/quickjs-ffi-types": "*"
+    "@jitl/quickjs-ffi-types": "workspace:*"
+  },
+  "devDependencies": {
+    "@jitl/tsconfig": "workspace:*"
   }
 }

@@ -169,9 +169,9 @@ export interface EmscriptenModule extends EmscriptenModuleLoaderOptions {
 }
 
 // This isn't the real return type of handleAsync, but it's better to treat it this way.
-declare const AsyncifySleepReturnValue: unique symbol
+declare const _AsyncifySleepReturnValue: unique symbol
 /** @private */
-export type AsyncifySleepResult<T> = T & typeof AsyncifySleepReturnValue
+export type AsyncifySleepResult<T> = T & typeof _AsyncifySleepReturnValue
 
 /**
  * Allows us to optionally suspend the Emscripten runtime to wait for a promise.
