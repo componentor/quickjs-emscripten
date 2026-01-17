@@ -1,0 +1,28 @@
+[**quickjs-emscripten**](../../../README.md)
+
+***
+
+[quickjs-emscripten](../../../packages.md) / [@componentor/quickjs-emscripten-core](../README.md) / JSPromiseStateRejected
+
+# Interface: JSPromiseStateRejected
+
+Defined in: [packages/quickjs-emscripten-core/src/deferred-promise.ts:45](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/deferred-promise.ts#L45)
+
+Rejected promise state.
+See [JSPromiseState](../README.md#jspromisestate).
+
+## Properties
+
+### error
+
+> **error**: [`QuickJSHandle`](../README.md#quickjshandle)
+
+Defined in: [packages/quickjs-emscripten-core/src/deferred-promise.ts:47](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/deferred-promise.ts#L47)
+
+***
+
+### type
+
+> **type**: `"rejected"`
+
+Defined in: [packages/quickjs-emscripten-core/src/deferred-promise.ts:46](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/deferred-promise.ts#L46)

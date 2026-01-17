@@ -41,14 +41,14 @@ async function main() {
 main()
 ```
 
-[github]: https://github.com/justjake/quickjs-emscripten
+[github]: https://github.com/componentor/quickjs-emscripten
 [npm]: https://www.npmjs.com/package/quickjs-emscripten
-[api]: https://github.com/justjake/quickjs-emscripten/blob/main/doc/packages.md
-[tests]: https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten/src/quickjs.test.ts
+[api]: https://github.com/componentor/quickjs-emscripten/blob/main/doc/packages.md
+[tests]: https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten/src/quickjs.test.ts
 [values]: #interfacing-with-the-interpreter
 [asyncify]: #asyncify
 [functions]: #exposing-apis
-[quickjs-for-quickjs]: https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-for-quickjs
+[quickjs-for-quickjs]: https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-for-quickjs
 
 - [quickjs-emscripten](#quickjs-emscripten)
   - [Usage](#usage)
@@ -97,7 +97,7 @@ function to directly access the singleton in your synchronous code.
 
 ### Safely evaluate Javascript code
 
-See [QuickJSWASMModule.evalCode](https://github.com/justjake/quickjs-emscripten/blob/main/doc/quickjs-emscripten/classes/QuickJSWASMModule.md#evalcode)
+See [QuickJSWASMModule.evalCode](https://github.com/componentor/quickjs-emscripten/blob/main/doc/@componentor/quickjs-emscripten/classes/QuickJSWASMModule.md#evalcode)
 
 ```typescript
 import { getQuickJS, shouldInterruptAfterDeadline } from "quickjs-emscripten"
@@ -113,7 +113,7 @@ getQuickJS().then((QuickJS) => {
 
 ### Interfacing with the interpreter
 
-You can use [QuickJSContext](https://github.com/justjake/quickjs-emscripten/blob/main/doc/quickjs-emscripten/classes/QuickJSContext.md)
+You can use [QuickJSContext](https://github.com/componentor/quickjs-emscripten/blob/main/doc/@componentor/quickjs-emscripten/classes/QuickJSContext.md)
 to build a scripting environment by modifying globals and exposing functions
 into the QuickJS interpreter.
 
@@ -122,7 +122,7 @@ classes -- and actions from one context won't leak into other contexts or
 runtimes (with one exception, see [Asyncify][asyncify]).
 
 Every context is created inside a
-[QuickJSRuntime](https://github.com/justjake/quickjs-emscripten/blob/main/doc/quickjs-emscripten/classes/QuickJSRuntime.md).
+[QuickJSRuntime](https://github.com/componentor/quickjs-emscripten/blob/main/doc/@componentor/quickjs-emscripten/classes/QuickJSRuntime.md).
 A runtime represents a Javascript heap, and you can even share values between
 contexts in the same runtime.
 
@@ -256,7 +256,7 @@ console.log("vm result:", vm.getNumber(nextId), "native state:", state)
 #### Scope
 
 A
-[`Scope`](https://github.com/justjake/quickjs-emscripten/blob/main/doc/quickjs-emscripten/classes/Scope.md#class-scope)
+[`Scope`](https://github.com/componentor/quickjs-emscripten/blob/main/doc/@componentor/quickjs-emscripten/classes/Scope.md#class-scope)
 instance manages a set of disposables and calls their `.dispose()`
 method in the reverse order in which they're added to the scope. Here's the
 "Interfacing with the interpreter" example re-written using `Scope`:
@@ -287,7 +287,7 @@ calling `scope.dispose()` yourself.
 
 #### `Lifetime.consume(fn)`
 
-[`Lifetime.consume`](https://github.com/justjake/quickjs-emscripten/blob/main/doc/quickjs-emscripten/classes/lifetime.md#consume)
+[`Lifetime.consume`](https://github.com/componentor/quickjs-emscripten/blob/main/doc/@componentor/quickjs-emscripten/classes/lifetime.md#consume)
 is sugar for the common pattern of using a handle and then
 immediately disposing of it. `Lifetime.consume` takes a `map` function that
 produces a result of any type. The `map` fuction is called with the handle,
@@ -339,9 +339,9 @@ logHandle.dispose()
 vm.unwrapResult(vm.evalCode(`console.log("Hello from QuickJS!")`)).dispose()
 ```
 
-[newObject]: https://github.com/justjake/quickjs-emscripten/blob/main/doc/quickjs-emscripten/classes/QuickJSContext.md#newobject
-[newFunction]: https://github.com/justjake/quickjs-emscripten/blob/main/doc/quickjs-emscripten/classes/QuickJSContext.md#newfunction
-[setProp]: https://github.com/justjake/quickjs-emscripten/blob/main/doc/quickjs-emscripten/classes/QuickJSContext.md#setprop
+[newObject]: https://github.com/componentor/quickjs-emscripten/blob/main/doc/@componentor/quickjs-emscripten/classes/QuickJSContext.md#newobject
+[newFunction]: https://github.com/componentor/quickjs-emscripten/blob/main/doc/@componentor/quickjs-emscripten/classes/QuickJSContext.md#newfunction
+[setProp]: https://github.com/componentor/quickjs-emscripten/blob/main/doc/@componentor/quickjs-emscripten/classes/QuickJSContext.md#setprop
 
 #### Promises
 
@@ -381,7 +381,7 @@ resultHandle.dispose()
 promiseHandle.dispose()
 ```
 
-[JSPromiseState]: https://github.com/justjake/quickjs-emscripten/blob/main/doc/quickjs-emscripten/exports.md#jspromisestate
+[JSPromiseState]: https://github.com/componentor/quickjs-emscripten/blob/main/doc/@componentor/quickjs-emscripten/exports.md#jspromisestate
 
 ##### context.resolvePromise(handle)
 
@@ -477,9 +477,9 @@ To use asyncify features, use the following functions:
   WebAssembly module.
 - [newQuickJSAsyncWASMModule][]: create an empty WebAssembly module.
 
-[newasyncruntime]: https://github.com/justjake/quickjs-emscripten/blob/main/doc/quickjs-emscripten/exports.md#newasyncruntime
-[newasynccontext]: https://github.com/justjake/quickjs-emscripten/blob/main/doc/quickjs-emscripten/exports.md#newasynccontext
-[newquickjsasyncwasmmodule]: https://github.com/justjake/quickjs-emscripten/blob/main/doc/quickjs-emscripten/exports.md#newquickjsasyncwasmmodule
+[newasyncruntime]: https://github.com/componentor/quickjs-emscripten/blob/main/doc/@componentor/quickjs-emscripten/exports.md#newasyncruntime
+[newasynccontext]: https://github.com/componentor/quickjs-emscripten/blob/main/doc/@componentor/quickjs-emscripten/exports.md#newasynccontext
+[newquickjsasyncwasmmodule]: https://github.com/componentor/quickjs-emscripten/blob/main/doc/@componentor/quickjs-emscripten/exports.md#newquickjsasyncwasmmodule
 
 These functions are asynchronous because they always create a new underlying
 WebAssembly module so that each instance can suspend and resume independently,
@@ -608,9 +608,9 @@ describe("Realistic test with QuickJS RELEASE build", () => {
 
 For more testing examples, please explore the typescript source of [quickjs-emscripten][ts] repository.
 
-[ts]: https://github.com/justjake/quickjs-emscripten/blob/main/packages/quickjs-emscripten/src/
-[debug_sync]: https://github.com/justjake/quickjs-emscripten/blob/main/doc/quickjs-emscripten/exports.md#debug_sync
-[testquickjswasmmodule]: https://github.com/justjake/quickjs-emscripten/blob/main/doc/quickjs-emscripten/classes/TestQuickJSWASMModule.md
+[ts]: https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten/src/
+[debug_sync]: https://github.com/componentor/quickjs-emscripten/blob/main/doc/@componentor/quickjs-emscripten/exports.md#debug_sync
+[testquickjswasmmodule]: https://github.com/componentor/quickjs-emscripten/blob/main/doc/@componentor/quickjs-emscripten/classes/TestQuickJSWASMModule.md
 
 ### Packaging
 
@@ -684,7 +684,7 @@ console.log(QuickJS.evalCode("1 + 1"))
 
 See the [documentation of quickjs-emscripten-core][core] for more details and the list of variant packages.
 
-[core]: https://github.com/justjake/quickjs-emscripten/blob/main/doc/quickjs-emscripten-core/README.md
+[core]: https://github.com/componentor/quickjs-emscripten/blob/main/doc/quickjs-emscripten-core/README.md
 
 #### WebAssembly loading
 
@@ -708,7 +708,7 @@ const cloudflareVariant = newVariant(baseVariant, {
 })
 ```
 
-[newVariant]: https://github.com/justjake/quickjs-emscripten/blob/main/doc/quickjs-emscripten/interfaces/CustomizeVariantOptions.md
+[newVariant]: https://github.com/componentor/quickjs-emscripten/blob/main/doc/@componentor/quickjs-emscripten/interfaces/CustomizeVariantOptions.md
 
 #### quickjs-ng
 
@@ -794,8 +794,8 @@ const context = QuickJS.newContext()
 context.runtime.setDebugMode(true)
 ```
 
-[setDebugMode]: doc/quickjs-emscripten/exports.md#setdebugmode
-[setDebugModeRt]: https://github.com/justjake/quickjs-emscripten/blob/main/doc/quickjs-emscripten-core/classes/QuickJSRuntime.md#setdebugmode
+[setDebugMode]: _media/README.md#setdebugmode
+[setDebugModeRt]: https://github.com/componentor/quickjs-emscripten/blob/main/doc/@componentor/quickjs-emscripten-core/classes/QuickJSRuntime.md#setdebugmode
 
 ### Supported Platforms
 
@@ -814,14 +814,14 @@ context.runtime.setDebugMode(true)
 - Cloudflare Workers: tested with wrangler@3.22.1. See the [Cloudflare Workers example][cloudflare].
 - Deno: tested with deno 1.39.1. See the [Deno example][deno].
 
-[iife]: https://github.com/justjake/quickjs-emscripten/blob/main/examples/global-iife.html
-[esm-html]: https://github.com/justjake/quickjs-emscripten/blob/main/examples/esmodule.html
-[deno]: https://github.com/justjake/quickjs-emscripten/blob/main/examples/deno
-[vite]: https://github.com/justjake/quickjs-emscripten/blob/main/examples/vite-vue
-[cra]: https://github.com/justjake/quickjs-emscripten/blob/main/examples/create-react-app
-[cloudflare]: https://github.com/justjake/quickjs-emscripten/blob/main/examples/cloudflare-workers
-[tsx-example]: https://github.com/justjake/quickjs-emscripten/blob/main/examples/node-typescript
-[minimal]: https://github.com/justjake/quickjs-emscripten/blob/main/examples/node-minimal
+[iife]: https://github.com/componentor/quickjs-emscripten/blob/main/examples/global-iife.html
+[esm-html]: https://github.com/componentor/quickjs-emscripten/blob/main/examples/esmodule.html
+[deno]: https://github.com/componentor/quickjs-emscripten/blob/main/examples/deno
+[vite]: https://github.com/componentor/quickjs-emscripten/blob/main/examples/vite-vue
+[cra]: https://github.com/componentor/quickjs-emscripten/blob/main/examples/create-react-app
+[cloudflare]: https://github.com/componentor/quickjs-emscripten/blob/main/examples/cloudflare-workers
+[tsx-example]: https://github.com/componentor/quickjs-emscripten/blob/main/examples/node-typescript
+[minimal]: https://github.com/componentor/quickjs-emscripten/blob/main/examples/node-minimal
 
 ### More Documentation
 

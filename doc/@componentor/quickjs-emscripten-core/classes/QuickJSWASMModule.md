@@ -2,7 +2,7 @@
 
 ***
 
-[quickjs-emscripten](../../../packages.md) / [@componentor/quickjs-emscripten](../README.md) / QuickJSWASMModule
+[quickjs-emscripten](../../../packages.md) / [@componentor/quickjs-emscripten-core](../README.md) / QuickJSWASMModule
 
 # Class: QuickJSWASMModule
 
