@@ -10,7 +10,7 @@
     "url": "https://github.com/componentor/quickjs-emscripten"
   },
   "scripts": {
-    "prepack": "pnpm run build && pnpm run check:package",
+    "prepack": "pnpm run build && pnpm run check:packages",
     "tarball": "pnpm run check:packages && rm -rf $PWD/build/tar && mkdir -p $PWD/build/tar && pnpm -r --filter './packages/*' exec pnpm pack --pack-destination $PWD/build/tar",
     "prepare": "pnpm run check",
     "clean": "git clean -dfx ./build && pnpm -r --filter './packages/*' run clean",
