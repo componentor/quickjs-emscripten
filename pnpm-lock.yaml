@@ -99,6 +99,9 @@ importers:
       "@componentor/quickjs-wasmfile-release-sync":
         specifier: workspace:*
         version: link:../variant-quickjs-wasmfile-release-sync
+      "@componentor/quickjs-wasmfs-release-sync":
+        specifier: workspace:*
+        version: link:../variant-quickjs-wasmfs-release-sync
     devDependencies:
       "@componentor/quickjs-asmjs-mjs-release-sync":
         specifier: workspace:*
