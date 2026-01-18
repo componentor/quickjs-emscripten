@@ -1,7 +1,7 @@
 {
   "name": "@componentor/quickjs-wasmfs-release-sync",
   "license": "MIT",
-  "version": "0.31.1",
+  "version": "0.31.2",
   "description": "QuickJS variant with WasmFS and OPFS support for native filesystem access in browsers without JS boundary crossing.",
   "sideEffects": false,
   "repository": {
