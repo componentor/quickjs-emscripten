@@ -6,5 +6,7 @@
   "___lsan_do_recoverable_leak_check",
   "FS",
   "PATH",
-  "ERRNO_CODES"
+  "ERRNO_CODES",
+  "wasmfsOPFSGetOrCreateFile",
+  "wasmfsOPFSGetOrCreateDir"
 ]

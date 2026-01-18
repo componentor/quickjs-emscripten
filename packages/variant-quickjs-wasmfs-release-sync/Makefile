@@ -55,9 +55,7 @@ CFLAGS_WASM+=-s STACK_SIZE=5MB
 # Instead of -s FILESYSTEM=0, we enable WasmFS
 CFLAGS_WASM+=-sWASMFS
 CFLAGS_WASM+=-sFORCE_FILESYSTEM
-# Export FS and wasmfs functions for JS access
-CFLAGS_WASM+=-sEXPORTED_RUNTIME_METHODS=['FS','PATH','ERRNO_CODES','wasmfsOPFSGetOrCreateFile','wasmfsOPFSGetOrCreateDir']
-# Enable OPFS backend
+# Enable OPFS backend (FS, PATH, ERRNO_CODES, wasmfsOPFS* are in exportedRuntimeMethods.wasmfs.json)
 CFLAGS_WASM+=-lwasmfs.js
 CFLAGS_WASM+=-lopfs.js
 
