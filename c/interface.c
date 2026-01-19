@@ -551,6 +551,7 @@ int QTS_IsJobPending(JSRuntime *rt) {
 */
 MaybeAsync(JSValue *) QTS_ExecutePendingJob(JSRuntime *rt, int maxJobsToExecute, JSContext **lastJobContext) {
   JSContext *pctx = NULL;
+  JSContext *lastValidCtx = NULL;  // Track the last context where a job was executed
   int status = 1;
   int executed = 0;
   while (executed != maxJobsToExecute && status == 1) {
@@ -559,28 +560,26 @@ MaybeAsync(JSValue *) QTS_ExecutePendingJob(JSRuntime *rt, int maxJobsToExecute,
       *lastJobContext = pctx;
       return jsvalue_to_heap(JS_GetException(pctx));
     } else if (status == 1) {
+      lastValidCtx = pctx;  // Save the context when a job was actually executed
       *lastJobContext = pctx;
       executed++;
     }
   }
-  // If no jobs were executed, pctx may be NULL. Set lastJobContext to NULL in this case.
-  if (pctx == NULL) {
+  // If no jobs were executed, set lastJobContext to NULL
+  if (executed == 0) {
     *lastJobContext = NULL;
   }
   IF_DEBUG_RT {
     char msg[LOG_LEN];
-    snprintf(msg, LOG_LEN, "QTS_ExecutePendingJob(executed: %d, pctx: %p, lastJobExecuted: %p)", executed, pctx, *lastJobContext);
+    snprintf(msg, LOG_LEN, "QTS_ExecutePendingJob(executed: %d, lastValidCtx: %p, lastJobContext: %p)", executed, lastValidCtx, *lastJobContext);
     qts_log(msg);
   }
-  // If pctx is NULL (no jobs executed), we can't create a JSValue.
-  // Return the executed count as a raw integer encoded in the pointer.
-  // The TypeScript side handles this by checking if the context is NULL.
-  if (pctx == NULL) {
-    // Return a special value indicating no context available.
-    // We use JS_MKVAL to create a tagged integer that doesn't require a context.
+  // If no jobs were executed, we may not have a valid context.
+  // JS_NewInt32 doesn't actually use the context (just creates a tagged int), so this is safe.
+  if (lastValidCtx == NULL) {
     return jsvalue_to_heap(JS_NewInt32(NULL, executed));
   }
-  return jsvalue_to_heap(JS_NewFloat64(pctx, executed));
+  return jsvalue_to_heap(JS_NewFloat64(lastValidCtx, executed));
 }
 
 MaybeAsync(JSValue *) QTS_GetProp(JSContext *ctx, JSValueConst *this_val, JSValueConst *prop_name) {
