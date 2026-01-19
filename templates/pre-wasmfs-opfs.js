@@ -275,3 +275,25 @@ Module["syncOPFS"] = async function () {
     })
   }
 }
+
+// ============================================================================
+// Export guard - prevents Closure Compiler from removing wrapper functions
+// This creates references that Closure can't eliminate as dead code
+// ============================================================================
+Module["__wasmfs_exports__"] = {
+  mountOPFS: Module["mountOPFS"],
+  readFile: Module["readFile"],
+  readFileString: Module["readFileString"],
+  writeFile: Module["writeFile"],
+  writeFileString: Module["writeFileString"],
+  readdir: Module["readdir"],
+  stat: Module["stat"],
+  mkdir: Module["mkdir"],
+  unlink: Module["unlink"],
+  rmdir: Module["rmdir"],
+  rename: Module["rename"],
+  exists: Module["exists"],
+  syncOPFS: Module["syncOPFS"],
+  watchFiles: Module["watchFiles"],
+  watchDirectory: Module["watchDirectory"],
+}

@@ -29,3 +29,14 @@ Object.prototype.create
 Object.prototype.syncfs
 Object.prototype.mount
 Object.prototype.filesystems
+
+// Custom Module-level wrapper functions (defined in pre-wasmfs-opfs.js)
+// These need to be preserved so they survive Closure dead code elimination
+Object.prototype.mountOPFS
+Object.prototype.watchFiles
+Object.prototype.watchDirectory
+Object.prototype.readFileString
+Object.prototype.writeFileString
+Object.prototype.exists
+Object.prototype.syncOPFS
+Object.prototype.__wasmfs_exports__
