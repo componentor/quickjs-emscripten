@@ -40,7 +40,8 @@ Module["mountOPFS"] = async function (mountPoint = "/opfs") {
   } else if (Module["FS"] && Module["FS"].filesystems && Module["FS"].filesystems.OPFS) {
     // Fallback to FS.mount if available (older Emscripten API)
     try {
-      Module["FS"].mkdir(mountPoint)
+      // Use Module-level mkdir wrapper (handles minification)
+      Module["mkdir"](mountPoint)
     } catch (e) {
       // Directory might already exist, ignore EEXIST
       if (e.code !== "EEXIST" && e.errno !== 20) {
@@ -130,7 +131,8 @@ Module["watchDirectory"] = function (dirPath, callback, intervalMs = 100) {
   function scanDirectory(path) {
     const files = []
     try {
-      const entries = Module["FS"].readdir(path)
+      // Use the Module-level readdir wrapper (handles minification)
+      const entries = Module["readdir"](path)
       for (const entry of entries) {
         if (entry === "." || entry === "..") continue
         const fullPath = path + "/" + entry
@@ -193,23 +195,80 @@ Module["watchDirectory"] = function (dirPath, callback, intervalMs = 100) {
   }
 }
 
-// Helper to read file as string
+// ============================================================================
+// FS Wrapper Functions
+// These wrappers provide a stable API on Module that calls FS methods directly.
+// The closure-externs.js file ensures these FS method names are NOT minified.
+// ============================================================================
+
+// Read file as Uint8Array
+Module["readFile"] = function (path) {
+  return Module["FS"].readFile(path)
+}
+
+// Read file as string (convenience wrapper)
 Module["readFileString"] = function (path) {
-  const data = Module["FS"].readFile(path)
+  var data = Module["FS"].readFile(path)
   return new TextDecoder().decode(data)
 }
 
-// Helper to write string to file
-Module["writeFileString"] = function (path, content) {
-  const data = new TextEncoder().encode(content)
+// Write Uint8Array to file
+Module["writeFile"] = function (path, data) {
   Module["FS"].writeFile(path, data)
+}
+
+// Write string to file (convenience wrapper)
+Module["writeFileString"] = function (path, content) {
+  var data = new TextEncoder().encode(content)
+  Module["FS"].writeFile(path, data)
+}
+
+// Read directory contents
+Module["readdir"] = function (path) {
+  return Module["FS"].readdir(path)
+}
+
+// Stat a file/directory
+Module["stat"] = function (path) {
+  return Module["FS"].stat(path)
+}
+
+// Create a directory
+Module["mkdir"] = function (path) {
+  return Module["FS"].mkdir(path)
+}
+
+// Remove a file
+Module["unlink"] = function (path) {
+  return Module["FS"].unlink(path)
+}
+
+// Remove a directory
+Module["rmdir"] = function (path) {
+  return Module["FS"].rmdir(path)
+}
+
+// Rename/move a file or directory
+Module["rename"] = function (oldPath, newPath) {
+  return Module["FS"].rename(oldPath, newPath)
+}
+
+// Check if path exists (returns true/false, doesn't throw)
+Module["exists"] = function (path) {
+  try {
+    Module["FS"].stat(path)
+    return true
+  } catch (e) {
+    return false
+  }
 }
 
 // Sync OPFS to ensure all writes are persisted
 Module["syncOPFS"] = async function () {
-  if (Module["FS"] && Module["FS"].syncfs) {
-    return new Promise((resolve, reject) => {
-      Module["FS"].syncfs(false, (err) => {
+  var FS = Module["FS"]
+  if (FS && typeof FS.syncfs === "function") {
+    return new Promise(function(resolve, reject) {
+      FS.syncfs(false, function(err) {
         if (err) reject(err)
         else resolve()
       })

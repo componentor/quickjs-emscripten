@@ -83,10 +83,13 @@ CFLAGS_WASM_BROWSER=$(CFLAGS_WASM)
 # Emscripten options - variant & target specific
 CFLAGS_WASM+=-Oz
 CFLAGS_WASM+=-flto
-CFLAGS_WASM+=--closure 1
-CFLAGS_WASM+=--pre-js $(TEMPLATES)/pre-extension.js
-CFLAGS_WASM+=--pre-js $(TEMPLATES)/pre-wasmMemory.js
-CFLAGS_WASM+=--pre-js $(TEMPLATES)/pre-wasmfs-opfs.js
+
+# Linker-only flags (closure, pre-js files)
+LDFLAGS_WASM+=--closure 1
+LDFLAGS_WASM+=--closure-args="--externs=closure-externs.js"
+LDFLAGS_WASM+=--pre-js $(TEMPLATES)/pre-extension.js
+LDFLAGS_WASM+=--pre-js $(TEMPLATES)/pre-wasmMemory.js
+LDFLAGS_WASM+=--pre-js $(TEMPLATES)/pre-wasmfs-opfs.js
 CFLAGS_CJS+=-s ENVIRONMENT=node
 CFLAGS_MJS+=-s ENVIRONMENT=node
 CFLAGS_BROWSER+=-s ENVIRONMENT=web,worker
@@ -129,7 +132,7 @@ $(DIST)/emscripten-module.browser.d.ts: $(TEMPLATES)/emscripten-module.$(SYNC).d
 $(BUILD_WRAPPER)/browser/emscripten-module.js: CFLAGS_WASM+=$(CFLAGS_BROWSER)
 $(BUILD_WRAPPER)/browser/emscripten-module.js: $(BUILD_WRAPPER)/interface.o $(VARIANT_QUICKJS_OBJS) $(WASM_SYMBOLS) | $(EMCC_SRC)
 	$(MKDIRP)
-	$(EMCC) $(CFLAGS_WASM) $(WRAPPER_DEFINES) $(EMCC_EXPORTED_FUNCS) -o $@ $< $(VARIANT_QUICKJS_OBJS)
+	$(EMCC) $(CFLAGS_WASM) $(LDFLAGS_WASM) $(WRAPPER_DEFINES) $(EMCC_EXPORTED_FUNCS) -o $@ $< $(VARIANT_QUICKJS_OBJS)
 
 ###############################################################################
 # Emscripten intermediate files
