@@ -267,8 +267,8 @@ Module["exists"] = function (path) {
 Module["syncOPFS"] = async function () {
   var FS = Module["FS"]
   if (FS && typeof FS.syncfs === "function") {
-    return new Promise(function(resolve, reject) {
-      FS.syncfs(false, function(err) {
+    return new Promise(function (resolve, reject) {
+      FS.syncfs(false, function (err) {
         if (err) reject(err)
         else resolve()
       })

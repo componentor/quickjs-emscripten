@@ -12,20 +12,20 @@
 /** @externs */
 
 // Preserve FS method names on any object
-Object.prototype.readdir;
-Object.prototype.readFile;
-Object.prototype.writeFile;
-Object.prototype.mkdir;
-Object.prototype.rmdir;
-Object.prototype.unlink;
-Object.prototype.rename;
-Object.prototype.stat;
-Object.prototype.open;
-Object.prototype.close;
-Object.prototype.read;
-Object.prototype.write;
-Object.prototype.truncate;
-Object.prototype.create;
-Object.prototype.syncfs;
-Object.prototype.mount;
-Object.prototype.filesystems;
+Object.prototype.readdir
+Object.prototype.readFile
+Object.prototype.writeFile
+Object.prototype.mkdir
+Object.prototype.rmdir
+Object.prototype.unlink
+Object.prototype.rename
+Object.prototype.stat
+Object.prototype.open
+Object.prototype.close
+Object.prototype.read
+Object.prototype.write
+Object.prototype.truncate
+Object.prototype.create
+Object.prototype.syncfs
+Object.prototype.mount
+Object.prototype.filesystems
