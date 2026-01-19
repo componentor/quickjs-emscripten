@@ -5,120 +5,212 @@
  * It provides methods to mount the browser's Origin Private File System
  * as a WasmFS backend, enabling fast filesystem access without JS boundary crossing.
  *
- * IMPORTANT: OPFS directories must be mounted during module initialization (preRun phase).
- * Calling wasmfsOPFSGetOrCreateDir after initialization returns error -29.
+ * IMPORTANT: OPFS directories must be mounted during module initialization.
+ * The wasmfsOPFSGetOrCreateDir function must be called at the right time.
  */
 
 // ============================================================================
 // Automatic OPFS Mounting During Initialization
-// wasmfsOPFSGetOrCreateDir must be called BEFORE run() starts.
-// We add a run dependency immediately and start the async mount process.
+// All async work is done inside preRun with proper run dependency handling.
 // ============================================================================
 
 // Check if we're in a browser environment with OPFS
 if (typeof navigator !== "undefined" && navigator.storage && navigator.storage.getDirectory) {
-  // Add run dependency immediately - this MUST happen before run()
+  // Debug monitoring
   Module["monitorRunDependencies"] = function (left) {
     console.log("[WasmFS] Run dependencies remaining:", left)
   }
 
-  // Flag to track if OPFS mount was attempted
-  Module["_opfsPending"] = true
-
-  // Start async OPFS discovery immediately
-  ;(async function () {
-    try {
-      var opfsRoot = await navigator.storage.getDirectory()
-      var opfsDirs = []
-
-      // Collect all OPFS directories
-      for await (var entry of opfsRoot.entries()) {
-        var name = entry[0]
-        var handle = entry[1]
-        if (handle.kind === "directory") {
-          opfsDirs.push({ name: name, handle: handle })
-        }
-      }
-
-      console.log(
-        "[WasmFS] Found OPFS directories:",
-        opfsDirs.map(function (d) {
-          return d.name
-        }),
-      )
-
-      // Store for use during preRun
-      Module["_opfsDirsToMount"] = opfsDirs
-    } catch (e) {
-      console.error("[WasmFS] Failed to enumerate OPFS:", e)
-      Module["_opfsDirsToMount"] = []
-    }
-  })()
-
   // preRun hook - called after Wasm is instantiated but before run()
+  // ALL async work happens here with proper dependency management
   Module["preRun"] = Module["preRun"] || []
   Module["preRun"].push(function () {
+    console.log("[WasmFS preRun] Starting OPFS mount process")
+
+    // Check available methods
+    console.log("[WasmFS preRun] Available methods:", {
+      wasmfsOPFSGetOrCreateDir: typeof Module["wasmfsOPFSGetOrCreateDir"],
+      addRunDependency: typeof Module["addRunDependency"],
+      removeRunDependency: typeof Module["removeRunDependency"],
+      FS: typeof Module["FS"],
+    })
+
     if (typeof Module["wasmfsOPFSGetOrCreateDir"] !== "function") {
-      console.log("[WasmFS preRun] wasmfsOPFSGetOrCreateDir not available")
+      console.log("[WasmFS preRun] wasmfsOPFSGetOrCreateDir not available, skipping mount")
       return
     }
 
-    var opfsDirs = Module["_opfsDirsToMount"] || []
-    if (opfsDirs.length === 0) {
-      console.log("[WasmFS preRun] No OPFS directories to mount")
+    if (typeof Module["addRunDependency"] !== "function") {
+      console.error("[WasmFS preRun] addRunDependency not available!")
       return
     }
 
-    // Skip system directories
-    var skipDirs = ["dev", "tmp", "proc", "sys"]
-
-    // Add run dependency to block until mounting completes
+    // Add run dependency FIRST to block execution
     Module["addRunDependency"]("opfs-mount")
+    console.log("[WasmFS preRun] Added run dependency 'opfs-mount'")
 
-    var mountPromises = []
-    for (var i = 0; i < opfsDirs.length; i++) {
-      ;(function (dir) {
-        if (skipDirs.indexOf(dir.name) !== -1) {
-          console.log("[WasmFS preRun] Skipping system dir:", dir.name)
+    // List existing WasmFS directories to see what already exists
+    try {
+      var rootEntries = Module["FS"].readdir("/")
+      console.log("[WasmFS preRun] Existing WasmFS root entries:", rootEntries)
+    } catch (e) {
+      console.log("[WasmFS preRun] Cannot list root (expected during early init):", e.message)
+    }
+
+    // Do all async work here
+    ;(async function () {
+      try {
+        // Discover OPFS directories
+        var opfsRoot = await navigator.storage.getDirectory()
+        console.log("[WasmFS preRun] Got OPFS root")
+
+        // TEST: Try mounting OPFS root at /opfs to see if the function works at all
+        console.log("[WasmFS preRun] TEST: Mounting OPFS root at /opfs...")
+        try {
+          var testResult = await Module["wasmfsOPFSGetOrCreateDir"](opfsRoot, "/opfs")
+          console.log("[WasmFS preRun] TEST: wasmfsOPFSGetOrCreateDir(/opfs) returned:", testResult)
+          if (testResult === 0 || testResult === undefined) {
+            console.log("[WasmFS preRun] TEST SUCCESS: Function works! Can mount at /opfs")
+            // List what's in /opfs
+            try {
+              var opfsEntries = Module["FS"].readdir("/opfs")
+              console.log("[WasmFS preRun] /opfs contents:", opfsEntries)
+            } catch (e) {
+              console.log("[WasmFS preRun] Cannot list /opfs:", e)
+            }
+          } else {
+            console.error("[WasmFS preRun] TEST FAILED: Function returned error:", testResult)
+          }
+        } catch (testErr) {
+          console.error("[WasmFS preRun] TEST FAILED: Function threw:", testErr)
+        }
+
+        var opfsDirs = []
+        for await (var entry of opfsRoot.entries()) {
+          var name = entry[0]
+          var handle = entry[1]
+          if (handle.kind === "directory") {
+            opfsDirs.push({ name: name, handle: handle })
+          }
+        }
+
+        console.log(
+          "[WasmFS preRun] Found OPFS directories:",
+          opfsDirs.map(function (d) {
+            return d.name
+          }),
+        )
+
+        if (opfsDirs.length === 0) {
+          console.log("[WasmFS preRun] No OPFS directories to mount")
           return
         }
 
-        var wasmfsPath = "/" + dir.name
-        console.log("[WasmFS preRun] Attempting to mount:", dir.name, "at", wasmfsPath)
-
-        // Call wasmfsOPFSGetOrCreateDir
-        mountPromises.push(
-          Module["wasmfsOPFSGetOrCreateDir"](dir.handle, wasmfsPath).then(function (result) {
-            return { name: dir.name, path: wasmfsPath, result: result }
-          }),
-        )
-      })(opfsDirs[i])
-    }
-
-    Promise.all(mountPromises)
-      .then(function (results) {
+        // Skip system directories that WasmFS creates by default
+        var skipDirs = ["dev", "tmp", "proc", "sys"]
         var mounted = []
-        for (var j = 0; j < results.length; j++) {
-          var r = results[j]
-          if (r.result === 0 || r.result === undefined) {
-            mounted.push(r.path)
-            console.log("[WasmFS preRun] Mounted OPFS", r.name, "at", r.path)
-          } else {
-            console.warn("[WasmFS preRun] Failed to mount", r.name, "error code:", r.result)
+
+        // Mount each OPFS directory
+        for (var i = 0; i < opfsDirs.length; i++) {
+          var dir = opfsDirs[i]
+
+          if (skipDirs.indexOf(dir.name) !== -1) {
+            console.log("[WasmFS preRun] Skipping system dir:", dir.name)
+            continue
+          }
+
+          var wasmfsPath = "/" + dir.name
+          console.log("[WasmFS preRun] Mounting:", dir.name, "at", wasmfsPath, "handle:", dir.handle)
+
+          // Check if this path already exists in WasmFS (created during WasmFS init)
+          var pathExists = false
+          try {
+            Module["FS"].stat(wasmfsPath)
+            pathExists = true
+            console.log("[WasmFS preRun] Path", wasmfsPath, "already exists in WasmFS - will try to remove it first")
+          } catch (e) {
+            console.log("[WasmFS preRun] Path", wasmfsPath, "does not exist in WasmFS yet - good")
+          }
+
+          // If path exists, try to remove it first (only if empty)
+          if (pathExists) {
+            try {
+              var entries = Module["FS"].readdir(wasmfsPath)
+              // Filter out . and ..
+              entries = entries.filter(function (e) {
+                return e !== "." && e !== ".."
+              })
+              if (entries.length === 0) {
+                console.log("[WasmFS preRun] Removing empty WasmFS directory:", wasmfsPath)
+                Module["FS"].rmdir(wasmfsPath)
+                pathExists = false
+              } else {
+                console.warn("[WasmFS preRun] Cannot remove non-empty directory:", wasmfsPath, "contents:", entries)
+              }
+            } catch (rmErr) {
+              console.warn("[WasmFS preRun] Failed to check/remove existing directory:", rmErr)
+            }
+          }
+
+          try {
+            // Call the Emscripten OPFS mounting function
+            var result = await Module["wasmfsOPFSGetOrCreateDir"](dir.handle, wasmfsPath)
+            console.log("[WasmFS preRun] wasmfsOPFSGetOrCreateDir returned:", result, "for", wasmfsPath)
+
+            if (result === 0 || result === undefined) {
+              mounted.push(wasmfsPath)
+              console.log("[WasmFS preRun] Successfully mounted OPFS", dir.name, "at", wasmfsPath)
+            } else {
+              console.warn("[WasmFS preRun] Mount returned error code:", result, "for", dir.name)
+              if (result === -29) {
+                console.warn("[WasmFS preRun] Error -29: Path conflict or timing issue")
+                // If path still exists, try mounting at /opfs/<name> instead
+                if (pathExists) {
+                  var altPath = "/opfs_" + dir.name
+                  console.log("[WasmFS preRun] Trying alternative path:", altPath)
+                  try {
+                    var altResult = await Module["wasmfsOPFSGetOrCreateDir"](dir.handle, altPath)
+                    console.log("[WasmFS preRun] Alternative mount returned:", altResult)
+                    if (altResult === 0 || altResult === undefined) {
+                      mounted.push(altPath)
+                      Module["_opfsPathMapping"] = Module["_opfsPathMapping"] || {}
+                      Module["_opfsPathMapping"]["/" + dir.name] = altPath
+                      console.log("[WasmFS preRun] Mounted at alternative path:", altPath, "-> /" + dir.name)
+                    }
+                  } catch (altErr) {
+                    console.error("[WasmFS preRun] Alternative mount failed:", altErr)
+                  }
+                }
+              }
+            }
+          } catch (mountErr) {
+            console.error("[WasmFS preRun] Mount threw error for", dir.name, ":", mountErr)
           }
         }
+
+        // Store results
         if (mounted.length > 0) {
           Module["_opfsMounted"] = true
           Module["_opfsMountedPaths"] = mounted
-          console.log("[WasmFS preRun] Successfully mounted:", mounted)
+          console.log("[WasmFS preRun] Successfully mounted paths:", mounted)
+        } else {
+          console.warn("[WasmFS preRun] No directories were mounted successfully")
         }
-      })
-      .catch(function (e) {
-        console.error("[WasmFS preRun] Mount error:", e)
-      })
-      .finally(function () {
+
+        // List root after mounting
+        try {
+          var rootAfter = Module["FS"].readdir("/")
+          console.log("[WasmFS preRun] WasmFS root after mount:", rootAfter)
+        } catch (e) {
+          console.log("[WasmFS preRun] Cannot list root after mount:", e.message)
+        }
+      } catch (e) {
+        console.error("[WasmFS preRun] OPFS mount process failed:", e)
+      } finally {
+        console.log("[WasmFS preRun] Removing run dependency 'opfs-mount'")
         Module["removeRunDependency"]("opfs-mount")
-      })
+      }
+    })()
   })
 } else {
   console.log("[WasmFS] OPFS not available (not in browser or no storage API)")
