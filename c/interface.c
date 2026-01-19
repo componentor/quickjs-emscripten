@@ -714,6 +714,15 @@ JSValue *QTS_ResolveException(JSContext *ctx, JSValue *maybe_exception) {
   return NULL;
 }
 
+/**
+ * Get the pending exception from the context.
+ * Use this after a function returns an error code (e.g., -1) to retrieve the exception.
+ * Note: This clears the exception from the context.
+ */
+JSValue *QTS_GetException(JSContext *ctx) {
+  return jsvalue_to_heap(JS_GetException(ctx));
+}
+
 MaybeAsync(JSBorrowedChar *) QTS_Dump(JSContext *ctx, JSValueConst *obj) {
   JSValue obj_json_value = JS_JSONStringify(ctx, *obj, JS_UNDEFINED, JS_UNDEFINED);
   if (!JS_IsException(obj_json_value)) {

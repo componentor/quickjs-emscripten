@@ -1536,20 +1536,17 @@ export class QuickJSContext
    * For non-module bytecode (scripts), this is a no-op.
    *
    * @param handle - A handle to a module (from {@link decodeBytecode})
-   * @returns 0 on success, -1 on failure (throws if module resolution fails)
+   * @returns A result. If resolution failed, `result.error` will be a handle
+   *   to the exception. Otherwise `result.value` will be undefined.
    */
-  resolveModule(handle: QuickJSHandle): number {
+  resolveModule(handle: QuickJSHandle): QuickJSContextResult<void> {
     this.runtime.assertOwned(handle)
     const result = this.ffi.QTS_ResolveModule(this.ctx.value, handle.value)
     if (result < 0) {
-      // Resolution failed - throw the pending exception
       const errorPtr = this.ffi.QTS_GetException(this.ctx.value)
-      if (errorPtr) {
-        const error = this.memory.heapValueHandle(errorPtr)
-        throw this.unwrapResult(error)
-      }
+      return this.fail(this.memory.heapValueHandle(errorPtr))
     }
-    return result
+    return this.success(undefined)
   }
 
   protected success<S>(value: S): DisposableSuccess<S> {

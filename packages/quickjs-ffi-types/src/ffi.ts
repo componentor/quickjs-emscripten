@@ -145,6 +145,7 @@ export interface QuickJSFFI {
     argv_ptrs: JSValueConstPointerPointer,
   ) => JSValuePointer
   QTS_ResolveException: (ctx: JSContextPointer, maybe_exception: JSValuePointer) => JSValuePointer
+  QTS_GetException: (ctx: JSContextPointer) => JSValuePointer
   QTS_Dump: (
     ctx: JSContextPointer,
     obj: JSValuePointer | JSValueConstPointer,
@@ -223,8 +224,5 @@ export interface QuickJSFFI {
     ctx: JSContextPointer,
     data: JSValuePointer | JSValueConstPointer,
   ) => JSValuePointer
-  QTS_ResolveModule: (
-    ctx: JSContextPointer,
-    obj: JSValuePointer | JSValueConstPointer,
-  ) => number
+  QTS_ResolveModule: (ctx: JSContextPointer, obj: JSValuePointer | JSValueConstPointer) => number
 }

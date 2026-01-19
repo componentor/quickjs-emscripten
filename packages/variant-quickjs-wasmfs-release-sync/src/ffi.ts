@@ -287,6 +287,9 @@ export class QuickJSFFI {
   QTS_ResolveException: (ctx: JSContextPointer, maybe_exception: JSValuePointer) => JSValuePointer =
     this.module.cwrap("QTS_ResolveException", "number", ["number", "number"])
 
+  QTS_GetException: (ctx: JSContextPointer) => JSValuePointer =
+    this.module.cwrap("QTS_GetException", "number", ["number"])
+
   QTS_Dump: (
     ctx: JSContextPointer,
     obj: JSValuePointer | JSValueConstPointer,
