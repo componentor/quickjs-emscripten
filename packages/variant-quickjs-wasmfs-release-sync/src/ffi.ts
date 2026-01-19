@@ -431,4 +431,9 @@ export class QuickJSFFI {
     ctx: JSContextPointer,
     data: JSValuePointer | JSValueConstPointer,
   ) => JSValuePointer = this.module.cwrap("QTS_DecodeBytecode", "number", ["number", "number"])
+
+  QTS_ResolveModule: (
+    ctx: JSContextPointer,
+    obj: JSValuePointer | JSValueConstPointer,
+  ) => number = this.module.cwrap("QTS_ResolveModule", "number", ["number", "number"])
 }

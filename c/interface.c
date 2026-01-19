@@ -1290,3 +1290,14 @@ JSValue *QTS_DecodeBytecode(JSContext *ctx, JSValueConst *data) {
   JSValue value = JS_ReadObject(ctx, buffer, length, JS_READ_OBJ_BYTECODE);
   return jsvalue_to_heap(value);
 }
+
+/**
+ * Resolve module dependencies.
+ * Must be called after decoding module bytecode and before evaluation.
+ * This resolves all imports and populates the module's dependency pointers.
+ *
+ * @returns 0 on success, -1 on failure (sets exception).
+ */
+int QTS_ResolveModule(JSContext *ctx, JSValueConst *obj) {
+  return JS_ResolveModule(ctx, *obj);
+}

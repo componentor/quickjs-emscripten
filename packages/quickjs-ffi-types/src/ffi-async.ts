@@ -279,4 +279,8 @@ export interface QuickJSAsyncFFI {
     ctx: JSContextPointer,
     data: JSValuePointer | JSValueConstPointer,
   ) => JSValuePointer
+  QTS_ResolveModule: (
+    ctx: JSContextPointer,
+    obj: JSValuePointer | JSValueConstPointer,
+  ) => number
 }

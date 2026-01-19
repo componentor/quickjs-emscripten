@@ -1525,6 +1525,33 @@ export class QuickJSContext
     return this.memory.heapValueHandle(ptr)
   }
 
+  /**
+   * Resolve module dependencies after loading module bytecode.
+   *
+   * When loading ES module bytecode via {@link decodeBytecode}, the module's
+   * import dependencies are not automatically resolved. Call this method
+   * after decoding module bytecode and before {@link evalBytecode} to resolve
+   * all imports.
+   *
+   * For non-module bytecode (scripts), this is a no-op.
+   *
+   * @param handle - A handle to a module (from {@link decodeBytecode})
+   * @returns 0 on success, -1 on failure (throws if module resolution fails)
+   */
+  resolveModule(handle: QuickJSHandle): number {
+    this.runtime.assertOwned(handle)
+    const result = this.ffi.QTS_ResolveModule(this.ctx.value, handle.value)
+    if (result < 0) {
+      // Resolution failed - throw the pending exception
+      const errorPtr = this.ffi.QTS_GetException(this.ctx.value)
+      if (errorPtr) {
+        const error = this.memory.heapValueHandle(errorPtr)
+        throw this.unwrapResult(error)
+      }
+    }
+    return result
+  }
+
   protected success<S>(value: S): DisposableSuccess<S> {
     return DisposableResult.success(value)
   }
