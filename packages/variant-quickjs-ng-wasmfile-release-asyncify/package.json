@@ -1,7 +1,7 @@
 {
   "name": "@componentor/quickjs-ng-wasmfile-release-asyncify",
   "license": "MIT",
-  "version": "0.31.2",
+  "version": "0.31.3",
   "description": "Variant of quickjs library: Variant with separate .WASM file. Supports browser ESM, NodeJS ESM, and NodeJS CommonJS.",
   "sideEffects": false,
   "repository": {

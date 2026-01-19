@@ -1,7 +1,7 @@
 {
   "name": "@componentor/quickjs-singlefile-browser-debug-asyncify",
   "license": "MIT",
-  "version": "0.31.2",
+  "version": "0.31.3",
   "description": "Variant of quickjs library: Variant with the WASM data embedded into a browser ESModule.",
   "sideEffects": false,
   "repository": {
