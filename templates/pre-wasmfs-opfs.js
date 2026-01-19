@@ -120,14 +120,25 @@ if (typeof navigator !== "undefined" && navigator.storage && navigator.storage.g
           }
 
           var wasmfsPath = "/" + dir.name
-          console.log("[WasmFS preRun] Mounting:", dir.name, "at", wasmfsPath, "handle:", dir.handle)
+          console.log(
+            "[WasmFS preRun] Mounting:",
+            dir.name,
+            "at",
+            wasmfsPath,
+            "handle:",
+            dir.handle,
+          )
 
           // Check if this path already exists in WasmFS (created during WasmFS init)
           var pathExists = false
           try {
             Module["FS"].stat(wasmfsPath)
             pathExists = true
-            console.log("[WasmFS preRun] Path", wasmfsPath, "already exists in WasmFS - will try to remove it first")
+            console.log(
+              "[WasmFS preRun] Path",
+              wasmfsPath,
+              "already exists in WasmFS - will try to remove it first",
+            )
           } catch (e) {
             console.log("[WasmFS preRun] Path", wasmfsPath, "does not exist in WasmFS yet - good")
           }
@@ -145,7 +156,12 @@ if (typeof navigator !== "undefined" && navigator.storage && navigator.storage.g
                 Module["FS"].rmdir(wasmfsPath)
                 pathExists = false
               } else {
-                console.warn("[WasmFS preRun] Cannot remove non-empty directory:", wasmfsPath, "contents:", entries)
+                console.warn(
+                  "[WasmFS preRun] Cannot remove non-empty directory:",
+                  wasmfsPath,
+                  "contents:",
+                  entries,
+                )
               }
             } catch (rmErr) {
               console.warn("[WasmFS preRun] Failed to check/remove existing directory:", rmErr)
@@ -155,7 +171,12 @@ if (typeof navigator !== "undefined" && navigator.storage && navigator.storage.g
           try {
             // Call the Emscripten OPFS mounting function
             var result = await Module["wasmfsOPFSGetOrCreateDir"](dir.handle, wasmfsPath)
-            console.log("[WasmFS preRun] wasmfsOPFSGetOrCreateDir returned:", result, "for", wasmfsPath)
+            console.log(
+              "[WasmFS preRun] wasmfsOPFSGetOrCreateDir returned:",
+              result,
+              "for",
+              wasmfsPath,
+            )
 
             if (result === 0 || result === undefined) {
               mounted.push(wasmfsPath)
@@ -175,7 +196,11 @@ if (typeof navigator !== "undefined" && navigator.storage && navigator.storage.g
                       mounted.push(altPath)
                       Module["_opfsPathMapping"] = Module["_opfsPathMapping"] || {}
                       Module["_opfsPathMapping"]["/" + dir.name] = altPath
-                      console.log("[WasmFS preRun] Mounted at alternative path:", altPath, "-> /" + dir.name)
+                      console.log(
+                        "[WasmFS preRun] Mounted at alternative path:",
+                        altPath,
+                        "-> /" + dir.name,
+                      )
                     }
                   } catch (altErr) {
                     console.error("[WasmFS preRun] Alternative mount failed:", altErr)
