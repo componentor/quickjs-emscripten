@@ -5,11 +5,9 @@
  * It provides methods to mount the browser's Origin Private File System
  * as a WasmFS backend, enabling fast filesystem access without JS boundary crossing.
  *
- * IMPORTANT: OPFS directories must be mounted during module initialization.
- * We use multiple hooks to try mounting at the right time:
- * 1. preInit - runs before runtime init (may be too early)
- * 2. onRuntimeInitialized - runs right when runtime is ready
- * 3. preRun - runs after runtime init (may be too late)
+ * IMPORTANT: OPFS mounting only works at onRuntimeInitialized.
+ * Earlier hooks (preInit, preRun) have the function but it returns -29.
+ * C constructors don't have access to the function at all.
  */
 
 // ============================================================================
@@ -64,9 +62,9 @@ if (typeof navigator !== "undefined" && navigator.storage && navigator.storage.g
 // Mount Function - attempts to mount OPFS directories
 // ============================================================================
 async function _attemptOPFSMount(phase) {
-  if (_opfsMountState.attempted) {
-    console.log("[WasmFS " + phase + "] Mount already attempted, skipping")
-    return _opfsMountState.succeeded
+  if (_opfsMountState.succeeded) {
+    console.log("[WasmFS " + phase + "] Mount already succeeded, skipping")
+    return true
   }
 
   // Wait for discovery to complete
@@ -84,8 +82,8 @@ async function _attemptOPFSMount(phase) {
     return false
   }
 
-  _opfsMountState.attempted = true
   console.log("[WasmFS " + phase + "] Attempting OPFS mount...")
+  _opfsMountState.attempted = true
 
   // Check what functions are available
   var hasMountFunc = typeof Module["wasmfsOPFSGetOrCreateDir"] === "function"
@@ -94,18 +92,18 @@ async function _attemptOPFSMount(phase) {
   console.log("[WasmFS " + phase + "] Available:", {
     wasmfsOPFSGetOrCreateDir: hasMountFunc,
     FS: hasFS,
-    "Module._qtsEarlyInitCalled": Module._qtsEarlyInitCalled,
-    "Module._qtsLateInitCalled": Module._qtsLateInitCalled,
   })
 
   if (!hasMountFunc) {
     console.warn("[WasmFS " + phase + "] wasmfsOPFSGetOrCreateDir not available")
+    _opfsMountState.attempted = false // Allow retry at next hook
     return false
   }
 
   // Skip system directories
   var skipDirs = ["dev", "tmp", "proc", "sys"]
   var mounted = []
+  var allErrors = []
 
   for (var i = 0; i < _opfsMountState.opfsDirs.length; i++) {
     var dir = _opfsMountState.opfsDirs[i]
@@ -126,13 +124,30 @@ async function _attemptOPFSMount(phase) {
         console.log("[WasmFS " + phase + "] SUCCESS: Mounted", dir.name, "at", wasmfsPath)
       } else {
         console.warn("[WasmFS " + phase + "] Mount returned error:", result, "for", dir.name)
-        _opfsMountState.errors.push({ path: wasmfsPath, error: result })
+        allErrors.push({ path: wasmfsPath, error: result })
       }
     } catch (e) {
       console.error("[WasmFS " + phase + "] Mount threw for", dir.name, ":", e)
-      _opfsMountState.errors.push({ path: wasmfsPath, error: e })
+      allErrors.push({ path: wasmfsPath, error: e })
     }
   }
+
+  // If ALL mounts failed with -29, the runtime isn't ready yet - allow retry
+  var all29 =
+    allErrors.length > 0 &&
+    allErrors.every(function (e) {
+      return e.error === -29
+    })
+  if (all29 && mounted.length === 0) {
+    console.log(
+      "[WasmFS " + phase + "] All mounts returned -29, runtime not ready - will retry at next hook",
+    )
+    _opfsMountState.attempted = false // Allow retry
+    _opfsMountState.errors = _opfsMountState.errors.concat(allErrors)
+    return false
+  }
+
+  _opfsMountState.errors = _opfsMountState.errors.concat(allErrors)
 
   if (mounted.length > 0) {
     _opfsMountState.succeeded = true
@@ -149,60 +164,53 @@ async function _attemptOPFSMount(phase) {
 
 // ============================================================================
 // Hook: preInit - runs BEFORE runtime initialization
+// NOTE: wasmfsOPFSGetOrCreateDir exists here but returns -29 (too early)
 // ============================================================================
 if (typeof navigator !== "undefined" && navigator.storage && navigator.storage.getDirectory) {
   Module["preInit"] = Module["preInit"] || []
   Module["preInit"].push(function () {
-    console.log("[WasmFS preInit] Hook called")
-    console.log("[WasmFS preInit] Available functions:", {
-      wasmfsOPFSGetOrCreateDir: typeof Module["wasmfsOPFSGetOrCreateDir"],
-      FS: typeof Module["FS"],
-      addRunDependency: typeof Module["addRunDependency"],
-    })
-
-    // The mount function probably isn't available yet, but let's check
-    if (typeof Module["wasmfsOPFSGetOrCreateDir"] === "function") {
-      console.log("[WasmFS preInit] wasmfsOPFSGetOrCreateDir IS available in preInit!")
-      // Add dependency to block execution until mount completes
-      if (typeof Module["addRunDependency"] === "function") {
-        Module["addRunDependency"]("opfs-mount-preInit")
-        _attemptOPFSMount("preInit")
-          .then(function () {
-            Module["removeRunDependency"]("opfs-mount-preInit")
-          })
-          .catch(function (e) {
-            console.error("[WasmFS preInit] Mount failed:", e)
-            Module["removeRunDependency"]("opfs-mount-preInit")
-          })
-      }
-    } else {
-      console.log("[WasmFS preInit] wasmfsOPFSGetOrCreateDir not yet available (expected)")
-    }
+    console.log("[WasmFS preInit] Hook called - skipping mount (too early, returns -29)")
+    // Don't try mounting here - it always returns -29
   })
 }
 
 // ============================================================================
 // Hook: onRuntimeInitialized - runs when runtime is JUST initialized
-// This is potentially the sweet spot for OPFS mounting
+// THIS IS THE RIGHT TIME TO MOUNT OPFS
 // ============================================================================
 if (typeof navigator !== "undefined" && navigator.storage && navigator.storage.getDirectory) {
   var origOnRuntimeInitialized = Module["onRuntimeInitialized"]
 
   Module["onRuntimeInitialized"] = function () {
-    console.log("[WasmFS onRuntimeInitialized] Hook called")
+    console.log("[WasmFS onRuntimeInitialized] Hook called - attempting mount NOW")
     console.log("[WasmFS onRuntimeInitialized] Available functions:", {
       wasmfsOPFSGetOrCreateDir: typeof Module["wasmfsOPFSGetOrCreateDir"],
       FS: typeof Module["FS"],
     })
 
-    // Try mounting here - this might be the right time
+    // This is the right time to mount OPFS
     if (typeof Module["wasmfsOPFSGetOrCreateDir"] === "function") {
-      console.log("[WasmFS onRuntimeInitialized] Attempting mount synchronously...")
-      // Note: This is async but we can't block here. The mount will complete
-      // but may not be ready before preRun callbacks
-      _attemptOPFSMount("onRuntimeInitialized").then(function (success) {
-        console.log("[WasmFS onRuntimeInitialized] Mount result:", success)
-      })
+      // We need to block until mount completes
+      // Use addRunDependency if available
+      if (typeof Module["addRunDependency"] === "function") {
+        Module["addRunDependency"]("opfs-mount-runtime")
+        _attemptOPFSMount("onRuntimeInitialized")
+          .then(function (success) {
+            console.log("[WasmFS onRuntimeInitialized] Mount result:", success)
+            Module["removeRunDependency"]("opfs-mount-runtime")
+          })
+          .catch(function (e) {
+            console.error("[WasmFS onRuntimeInitialized] Mount failed:", e)
+            Module["removeRunDependency"]("opfs-mount-runtime")
+          })
+      } else {
+        // No dependency mechanism, just try async
+        _attemptOPFSMount("onRuntimeInitialized").then(function (success) {
+          console.log("[WasmFS onRuntimeInitialized] Mount result:", success)
+        })
+      }
+    } else {
+      console.warn("[WasmFS onRuntimeInitialized] wasmfsOPFSGetOrCreateDir not available!")
     }
 
     // Call original handler if any
@@ -214,38 +222,32 @@ if (typeof navigator !== "undefined" && navigator.storage && navigator.storage.g
 
 // ============================================================================
 // Hook: preRun - runs after runtime init, before main()
+// Fallback in case onRuntimeInitialized didn't work
 // ============================================================================
 if (typeof navigator !== "undefined" && navigator.storage && navigator.storage.getDirectory) {
   Module["preRun"] = Module["preRun"] || []
   Module["preRun"].push(function () {
     console.log("[WasmFS preRun] Hook called")
-
-    // If mount hasn't been attempted yet, try it now with dependency blocking
-    if (!_opfsMountState.attempted) {
-      console.log("[WasmFS preRun] Mount not attempted yet, trying now")
-
-      if (typeof Module["addRunDependency"] === "function") {
-        Module["addRunDependency"]("opfs-mount-preRun")
-
-        _attemptOPFSMount("preRun").finally(function () {
-          console.log("[WasmFS preRun] Removing dependency")
-          Module["removeRunDependency"]("opfs-mount-preRun")
-        })
-      } else {
-        // No dependency function, just try async
-        _attemptOPFSMount("preRun")
-      }
-    } else {
-      console.log("[WasmFS preRun] Mount already attempted, result:", _opfsMountState.succeeded)
-    }
-
-    // Log final state
     console.log("[WasmFS preRun] Mount state:", {
       attempted: _opfsMountState.attempted,
       succeeded: _opfsMountState.succeeded,
       paths: _opfsMountState.mountedPaths,
       errors: _opfsMountState.errors.length,
     })
+
+    // Only try if onRuntimeInitialized hasn't succeeded
+    if (!_opfsMountState.succeeded && !_opfsMountState.attempted) {
+      console.log("[WasmFS preRun] Mount not attempted yet, trying now as fallback")
+
+      if (typeof Module["addRunDependency"] === "function") {
+        Module["addRunDependency"]("opfs-mount-preRun")
+        _attemptOPFSMount("preRun").finally(function () {
+          Module["removeRunDependency"]("opfs-mount-preRun")
+        })
+      } else {
+        _attemptOPFSMount("preRun")
+      }
+    }
   })
 }
 
