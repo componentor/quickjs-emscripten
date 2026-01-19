@@ -12,9 +12,10 @@
 // ============================================================================
 // Automatic OPFS Mounting During Initialization
 // This runs during preRun when wasmfsOPFSGetOrCreateDir actually works
+// We use addRunDependency/removeRunDependency to make Emscripten wait for async ops
 // ============================================================================
 Module["preRun"] = Module["preRun"] || []
-Module["preRun"].push(async function () {
+Module["preRun"].push(function () {
   if (typeof navigator === "undefined" || !navigator.storage || !navigator.storage.getDirectory) {
     console.log("[WasmFS] OPFS not available (not in browser or no storage API)")
     return
@@ -25,48 +26,58 @@ Module["preRun"].push(async function () {
     return
   }
 
-  try {
-    var opfsRoot = await navigator.storage.getDirectory()
-    var mounted = []
+  // Add a run dependency to block module execution until OPFS mounting completes
+  Module["addRunDependency"]("opfs-mount")
 
-    // Mount each top-level OPFS directory at matching WasmFS paths (1-to-1 mapping)
-    // e.g., OPFS "home" -> WasmFS "/home", OPFS "usr" -> WasmFS "/usr"
-    for await (var entry of opfsRoot.entries()) {
-      var name = entry[0]
-      var handle = entry[1]
-      if (handle.kind === "directory") {
-        var wasmfsPath = "/" + name
-        try {
-          // Check if this path already exists in WasmFS (skip /dev, /tmp, etc.)
+  async function mountOPFSDirectories() {
+    try {
+      var opfsRoot = await navigator.storage.getDirectory()
+      var mounted = []
+
+      // Mount each top-level OPFS directory at matching WasmFS paths (1-to-1 mapping)
+      // e.g., OPFS "home" -> WasmFS "/home", OPFS "usr" -> WasmFS "/usr"
+      for await (var entry of opfsRoot.entries()) {
+        var name = entry[0]
+        var handle = entry[1]
+        if (handle.kind === "directory") {
+          var wasmfsPath = "/" + name
           try {
-            Module["FS"].stat(wasmfsPath)
-            console.log("[WasmFS preRun] Skipping existing:", wasmfsPath)
-            continue
-          } catch (e) {
-            // Doesn't exist, we can mount
-          }
+            // Check if this path already exists in WasmFS (skip /dev, /tmp, etc.)
+            try {
+              Module["FS"].stat(wasmfsPath)
+              console.log("[WasmFS preRun] Skipping existing:", wasmfsPath)
+              continue
+            } catch (e) {
+              // Doesn't exist, we can mount
+            }
 
-          var result = await Module["wasmfsOPFSGetOrCreateDir"](handle, wasmfsPath)
-          if (result === 0 || result === undefined) {
-            mounted.push(wasmfsPath)
-            console.log("[WasmFS preRun] Mounted OPFS", name, "at", wasmfsPath)
-          } else {
-            console.warn("[WasmFS preRun] Failed to mount", name, "error code:", result)
+            var result = await Module["wasmfsOPFSGetOrCreateDir"](handle, wasmfsPath)
+            if (result === 0 || result === undefined) {
+              mounted.push(wasmfsPath)
+              console.log("[WasmFS preRun] Mounted OPFS", name, "at", wasmfsPath)
+            } else {
+              console.warn("[WasmFS preRun] Failed to mount", name, "error code:", result)
+            }
+          } catch (e) {
+            console.warn("[WasmFS preRun] Error mounting", name, ":", e.message)
           }
-        } catch (e) {
-          console.warn("[WasmFS preRun] Error mounting", name, ":", e.message)
         }
       }
-    }
 
-    if (mounted.length > 0) {
-      console.log("[WasmFS preRun] Successfully mounted:", mounted)
-      Module["_opfsMounted"] = true
-      Module["_opfsMountedPaths"] = mounted
+      if (mounted.length > 0) {
+        console.log("[WasmFS preRun] Successfully mounted:", mounted)
+        Module["_opfsMounted"] = true
+        Module["_opfsMountedPaths"] = mounted
+      }
+    } catch (e) {
+      console.error("[WasmFS preRun] OPFS initialization failed:", e)
+    } finally {
+      // Remove the run dependency to allow module execution to continue
+      Module["removeRunDependency"]("opfs-mount")
     }
-  } catch (e) {
-    console.error("[WasmFS preRun] OPFS initialization failed:", e)
   }
+
+  mountOPFSDirectories()
 })
 
 // Add OPFS mounting function to Module (for manual mounting - may not work after init)

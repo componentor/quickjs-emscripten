@@ -8,5 +8,7 @@
   "PATH",
   "ERRNO_CODES",
   "wasmfsOPFSGetOrCreateFile",
-  "wasmfsOPFSGetOrCreateDir"
+  "wasmfsOPFSGetOrCreateDir",
+  "addRunDependency",
+  "removeRunDependency"
 ]
