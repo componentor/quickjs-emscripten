@@ -326,6 +326,23 @@ export class QuickJSWASMModule {
   }
 
   /**
+   * Get the underlying Emscripten WASM module.
+   *
+   * For WasmFS variants, this provides access to the FS API:
+   * ```typescript
+   * const wasmModule = quickjs.getWasmModule();
+   * // Access WasmFS filesystem
+   * wasmModule.FS.readFile('/path/to/file');
+   * wasmModule.FS.writeFile('/path/to/file', data);
+   * // Mount OPFS (browser only)
+   * await wasmModule.mountOPFS?.('/opfs');
+   * ```
+   */
+  getWasmModule(): EitherModule {
+    return this.module
+  }
+
+  /**
    * Create a runtime.
    * Use the runtime to set limits on CPU and memory usage and configure module
    * loading for one or more {@link QuickJSContext}s inside the runtime.

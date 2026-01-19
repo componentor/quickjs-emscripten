@@ -80,6 +80,10 @@ export class TestQuickJSWASMModule implements Pick<QuickJSWASMModule, keyof Quic
     return this.parent.getWasmMemory()
   }
 
+  getWasmModule() {
+    return this.parent.getWasmModule()
+  }
+
   /** @private */
   getFFI() {
     return this.parent.getFFI()
