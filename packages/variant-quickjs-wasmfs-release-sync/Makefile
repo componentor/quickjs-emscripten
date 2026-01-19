@@ -79,9 +79,19 @@ CFLAGS_WASM+=-s NODEJS_CATCH_EXIT=0
 CFLAGS_MJS+=-s EXPORT_ES6=1
 CFLAGS_BROWSER+=-s EXPORT_ES6=1
 
-# VARIANT
-SYNC=SYNC
+# VARIANT - Use ASYNCIFY because WasmFS OPFS backend requires async support
+# wasmfs_create_opfs_backend() blocks waiting for OPFS worker spawn, causing deadlock without asyncify
+SYNC=ASYNCIFY
 CFLAGS_WASM_BROWSER=$(CFLAGS_WASM)
+
+# Emscripten options - ASYNCIFY (required for OPFS backend)
+CFLAGS_WASM+=-s ASYNCIFY=1
+CFLAGS_WASM+=-DQTS_ASYNCIFY=1
+CFLAGS_WASM+=-DQTS_ASYNCIFY_DEFAULT_STACK_SIZE=81920
+CFLAGS_WASM+=-s ASYNCIFY_STACK_SIZE=81920
+CFLAGS_WASM+=-s ASYNCIFY_REMOVE=@$(BUILD_WRAPPER)/asyncify-remove.json
+CFLAGS_WASM+=-s ASYNCIFY_IMPORTS=@$(BUILD_WRAPPER)/asyncify-imports.json
+CFLAGS_WASM+=-lasync.js
 
 # Emscripten options - variant & target specific
 CFLAGS_WASM+=-Oz
@@ -99,7 +109,7 @@ CFLAGS_BROWSER+=-s ENVIRONMENT=web,worker
 CFLAGS_CLOUDFLARE+=-s ENVIRONMENT=web
 
 # GENERATE_TS options - variant specific
-
+GENERATE_TS_ENV+=ASYNCIFY=true
 
 
 ifdef DEBUG_MAKE
