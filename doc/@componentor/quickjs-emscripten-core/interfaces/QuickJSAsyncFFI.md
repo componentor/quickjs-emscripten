@@ -32,7 +32,7 @@ Set at compile time.
 
 > **QTS\_ArgvGetJSValueConstPointer**: (`argv`, `index`) => [`JSValueConstPointer`](../README.md#jsvalueconstpointer)
 
-Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:250](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L250)
+Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:251](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L251)
 
 #### Parameters
 
@@ -54,7 +54,7 @@ Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:250](https://github.com
 
 > **QTS\_bjson\_decode**: (`ctx`, `data`) => [`JSValuePointer`](../README.md#jsvaluepointer)
 
-Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:262](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L262)
+Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:263](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L263)
 
 #### Parameters
 
@@ -76,7 +76,7 @@ Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:262](https://github.com
 
 > **QTS\_bjson\_encode**: (`ctx`, `val`) => [`JSValuePointer`](../README.md#jsvaluepointer)
 
-Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:258](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L258)
+Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:259](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L259)
 
 #### Parameters
 
@@ -98,7 +98,7 @@ Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:258](https://github.com
 
 > **QTS\_BuildIsAsyncify**: () => `number`
 
-Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:248](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L248)
+Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:249](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L249)
 
 #### Returns
 
@@ -110,7 +110,7 @@ Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:248](https://github.com
 
 > **QTS\_BuildIsDebug**: () => `number`
 
-Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:247](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L247)
+Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:248](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L248)
 
 #### Returns
 
@@ -202,7 +202,7 @@ Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:180](https://github.com
 
 > **QTS\_DecodeBytecode**: (`ctx`, `data`) => [`JSValuePointer`](../README.md#jsvaluepointer)
 
-Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:278](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L278)
+Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:279](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L279)
 
 #### Parameters
 
@@ -274,7 +274,7 @@ Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:148](https://github.com
 
 > **QTS\_Dump**: (`ctx`, `obj`) => [`JSBorrowedCharPointer`](../README.md#jsborrowedcharpointer)
 
-Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:188](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L188)
+Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:189](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L189)
 
 #### Parameters
 
@@ -296,7 +296,7 @@ Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:188](https://github.com
 
 > **QTS\_Dump\_MaybeAsync**: (`ctx`, `obj`) => [`JSBorrowedCharPointer`](../README.md#jsborrowedcharpointer) \| `Promise`\<[`JSBorrowedCharPointer`](../README.md#jsborrowedcharpointer)\>
 
-Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:192](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L192)
+Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:193](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L193)
 
 #### Parameters
 
@@ -340,7 +340,7 @@ Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:61](https://github.com/
 
 > **QTS\_EncodeBytecode**: (`ctx`, `val`) => [`JSValuePointer`](../README.md#jsvaluepointer)
 
-Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:274](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L274)
+Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:275](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L275)
 
 #### Parameters
 
@@ -362,7 +362,7 @@ Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:274](https://github.com
 
 > **QTS\_Eval**: (`ctx`, `js_code`, `js_code_length`, `filename`, `detectModule`, `evalFlags`) => [`JSValuePointer`](../README.md#jsvaluepointer)
 
-Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:196](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L196)
+Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:197](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L197)
 
 #### Parameters
 
@@ -400,7 +400,7 @@ Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:196](https://github.com
 
 > **QTS\_Eval\_MaybeAsync**: (`ctx`, `js_code`, `js_code_length`, `filename`, `detectModule`, `evalFlags`) => [`JSValuePointer`](../README.md#jsvaluepointer) \| `Promise`\<[`JSValuePointer`](../README.md#jsvaluepointer)\>
 
-Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:204](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L204)
+Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:205](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L205)
 
 #### Parameters
 
@@ -438,7 +438,7 @@ Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:204](https://github.com
 
 > **QTS\_EvalFunction**: (`ctx`, `fun_obj`) => [`JSValuePointer`](../README.md#jsvaluepointer)
 
-Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:266](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L266)
+Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:267](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L267)
 
 #### Parameters
 
@@ -460,7 +460,7 @@ Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:266](https://github.com
 
 > **QTS\_EvalFunction\_MaybeAsync**: (`ctx`, `fun_obj`) => [`JSValuePointer`](../README.md#jsvaluepointer) \| `Promise`\<[`JSValuePointer`](../README.md#jsvaluepointer)\>
 
-Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:270](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L270)
+Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:271](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L271)
 
 #### Parameters
 
@@ -702,7 +702,7 @@ Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:87](https://github.com/
 
 > **QTS\_GetDebugLogEnabled**: (`rt`) => `number`
 
-Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:245](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L245)
+Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:246](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L246)
 
 #### Parameters
 
@@ -713,6 +713,24 @@ Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:245](https://github.com
 #### Returns
 
 `number`
+
+***
+
+### QTS\_GetException()
+
+> **QTS\_GetException**: (`ctx`) => [`JSValuePointer`](../README.md#jsvaluepointer)
+
+Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:188](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L188)
+
+#### Parameters
+
+##### ctx
+
+[`JSContextPointer`](../README.md#jscontextpointer)
+
+#### Returns
+
+[`JSValuePointer`](../README.md#jsvaluepointer)
 
 ***
 
@@ -754,7 +772,7 @@ Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:77](https://github.com/
 
 > **QTS\_GetGlobalObject**: (`ctx`) => [`JSValuePointer`](../README.md#jsvaluepointer)
 
-Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:231](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L231)
+Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:232](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L232)
 
 #### Parameters
 
@@ -772,7 +790,7 @@ Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:231](https://github.com
 
 > **QTS\_GetLength**: (`ctx`, `out_len`, `value`) => `number`
 
-Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:220](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L220)
+Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:221](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L221)
 
 #### Parameters
 
@@ -798,7 +816,7 @@ Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:220](https://github.com
 
 > **QTS\_GetModuleNamespace**: (`ctx`, `module_func_obj`) => [`JSValuePointer`](../README.md#jsvaluepointer)
 
-Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:212](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L212)
+Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:213](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L213)
 
 #### Parameters
 
@@ -1094,7 +1112,7 @@ Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:49](https://github.com/
 
 > **QTS\_IsEqual**: (`ctx`, `a`, `b`, `op`) => `number`
 
-Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:225](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L225)
+Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:226](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L226)
 
 #### Parameters
 
@@ -1270,7 +1288,7 @@ Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:76](https://github.com/
 
 > **QTS\_NewFunction**: (`ctx`, `func_id`, `name`) => [`JSValuePointer`](../README.md#jsvaluepointer)
 
-Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:249](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L249)
+Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:250](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L250)
 
 #### Parameters
 
@@ -1336,7 +1354,7 @@ Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:66](https://github.com/
 
 > **QTS\_NewPromiseCapability**: (`ctx`, `resolve_funcs_out`) => [`JSValuePointer`](../README.md#jsvaluepointer)
 
-Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:232](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L232)
+Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:233](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L233)
 
 #### Parameters
 
@@ -1418,7 +1436,7 @@ Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:91](https://github.com/
 
 > **QTS\_PromiseResult**: (`ctx`, `promise`) => [`JSValuePointer`](../README.md#jsvaluepointer)
 
-Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:240](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L240)
+Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:241](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L241)
 
 #### Parameters
 
@@ -1440,7 +1458,7 @@ Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:240](https://github.com
 
 > **QTS\_PromiseState**: (`ctx`, `promise`) => [`JSPromiseStateEnum`](../README.md#jspromisestateenum)
 
-Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:236](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L236)
+Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:237](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L237)
 
 #### Parameters
 
@@ -1492,6 +1510,28 @@ Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:187](https://github.com
 
 ***
 
+### QTS\_ResolveModule()
+
+> **QTS\_ResolveModule**: (`ctx`, `obj`) => `number`
+
+Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:283](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L283)
+
+#### Parameters
+
+##### ctx
+
+[`JSContextPointer`](../README.md#jscontextpointer)
+
+##### obj
+
+[`JSValuePointer`](../README.md#jsvaluepointer) | [`JSValueConstPointer`](../README.md#jsvalueconstpointer)
+
+#### Returns
+
+`number`
+
+***
+
 ### QTS\_RuntimeComputeMemoryUsage()
 
 > **QTS\_RuntimeComputeMemoryUsage**: (`rt`, `ctx`) => [`JSValuePointer`](../README.md#jsvaluepointer)
@@ -1518,7 +1558,7 @@ Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:44](https://github.com/
 
 > **QTS\_RuntimeDisableInterruptHandler**: (`rt`) => `void`
 
-Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:255](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L255)
+Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:256](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L256)
 
 #### Parameters
 
@@ -1536,7 +1576,7 @@ Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:255](https://github.com
 
 > **QTS\_RuntimeDisableModuleLoader**: (`rt`) => `void`
 
-Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:257](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L257)
+Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:258](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L258)
 
 #### Parameters
 
@@ -1572,7 +1612,7 @@ Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:45](https://github.com/
 
 > **QTS\_RuntimeEnableInterruptHandler**: (`rt`) => `void`
 
-Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:254](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L254)
+Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:255](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L255)
 
 #### Parameters
 
@@ -1590,7 +1630,7 @@ Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:254](https://github.com
 
 > **QTS\_RuntimeEnableModuleLoader**: (`rt`, `use_custom_normalize`) => `void`
 
-Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:256](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L256)
+Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:257](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L257)
 
 #### Parameters
 
@@ -1656,7 +1696,7 @@ Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:43](https://github.com/
 
 > **QTS\_SetDebugLogEnabled**: (`rt`, `is_enabled`) => `void`
 
-Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:246](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L246)
+Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:247](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L247)
 
 #### Parameters
 
@@ -1738,7 +1778,7 @@ Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:142](https://github.com
 
 > **QTS\_TestStringArg**: (`string`) => `void`
 
-Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:244](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L244)
+Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:245](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L245)
 
 #### Parameters
 
@@ -1778,7 +1818,7 @@ Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:41](https://github.com/
 
 > **QTS\_Typeof**: (`ctx`, `value`) => [`OwnedHeapCharPointer`](../README.md#ownedheapcharpointer)
 
-Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:216](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L216)
+Defined in: [packages/quickjs-ffi-types/src/ffi-async.ts:217](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-ffi-types/src/ffi-async.ts#L217)
 
 #### Parameters
 

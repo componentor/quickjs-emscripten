@@ -6,7 +6,7 @@
 
 # Interface: QuickJSAsyncVariant
 
-Defined in: packages/quickjs-ffi-types/dist/index.d.ts:539
+Defined in: packages/quickjs-ffi-types/dist/index.d.ts:543
 
 An ASYNCIFY build variant.
 
@@ -22,7 +22,7 @@ build variant to [newQuickJSWASMModule](../README.md#newquickjswasmmodule) or [n
 
 > `readonly` **importFFI**: () => `Promise`\<(`module`) => [`QuickJSAsyncFFI`](QuickJSAsyncFFI.md)\>
 
-Defined in: packages/quickjs-ffi-types/dist/index.d.ts:541
+Defined in: packages/quickjs-ffi-types/dist/index.d.ts:545
 
 #### Returns
 
@@ -34,7 +34,7 @@ Defined in: packages/quickjs-ffi-types/dist/index.d.ts:541
 
 > `readonly` **importModuleLoader**: () => `Promise`\<`EmscriptenImport`\<[`QuickJSAsyncEmscriptenModule`](QuickJSAsyncEmscriptenModule.md)\>\>
 
-Defined in: packages/quickjs-ffi-types/dist/index.d.ts:542
+Defined in: packages/quickjs-ffi-types/dist/index.d.ts:546
 
 #### Returns
 
@@ -46,4 +46,4 @@ Defined in: packages/quickjs-ffi-types/dist/index.d.ts:542
 
 > `readonly` **type**: `"async"`
 
-Defined in: packages/quickjs-ffi-types/dist/index.d.ts:540
+Defined in: packages/quickjs-ffi-types/dist/index.d.ts:544

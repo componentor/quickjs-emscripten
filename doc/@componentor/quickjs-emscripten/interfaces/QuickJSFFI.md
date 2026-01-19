@@ -32,7 +32,7 @@ Set at compile time.
 
 > **QTS\_ArgvGetJSValueConstPointer**: (`argv`, `index`) => [`JSValueConstPointer`](../README.md#jsvalueconstpointer)
 
-Defined in: packages/quickjs-ffi-types/dist/index.d.ts:406
+Defined in: packages/quickjs-ffi-types/dist/index.d.ts:407
 
 #### Parameters
 
@@ -54,7 +54,7 @@ Defined in: packages/quickjs-ffi-types/dist/index.d.ts:406
 
 > **QTS\_bjson\_decode**: (`ctx`, `data`) => [`JSValuePointer`](../README.md#jsvaluepointer)
 
-Defined in: packages/quickjs-ffi-types/dist/index.d.ts:412
+Defined in: packages/quickjs-ffi-types/dist/index.d.ts:413
 
 #### Parameters
 
@@ -76,7 +76,7 @@ Defined in: packages/quickjs-ffi-types/dist/index.d.ts:412
 
 > **QTS\_bjson\_encode**: (`ctx`, `val`) => [`JSValuePointer`](../README.md#jsvaluepointer)
 
-Defined in: packages/quickjs-ffi-types/dist/index.d.ts:411
+Defined in: packages/quickjs-ffi-types/dist/index.d.ts:412
 
 #### Parameters
 
@@ -98,7 +98,7 @@ Defined in: packages/quickjs-ffi-types/dist/index.d.ts:411
 
 > **QTS\_BuildIsAsyncify**: () => `number`
 
-Defined in: packages/quickjs-ffi-types/dist/index.d.ts:404
+Defined in: packages/quickjs-ffi-types/dist/index.d.ts:405
 
 #### Returns
 
@@ -110,7 +110,7 @@ Defined in: packages/quickjs-ffi-types/dist/index.d.ts:404
 
 > **QTS\_BuildIsDebug**: () => `number`
 
-Defined in: packages/quickjs-ffi-types/dist/index.d.ts:403
+Defined in: packages/quickjs-ffi-types/dist/index.d.ts:404
 
 #### Returns
 
@@ -168,7 +168,7 @@ Defined in: packages/quickjs-ffi-types/dist/index.d.ts:388
 
 > **QTS\_DecodeBytecode**: (`ctx`, `data`) => [`JSValuePointer`](../README.md#jsvaluepointer)
 
-Defined in: packages/quickjs-ffi-types/dist/index.d.ts:415
+Defined in: packages/quickjs-ffi-types/dist/index.d.ts:416
 
 #### Parameters
 
@@ -240,7 +240,7 @@ Defined in: packages/quickjs-ffi-types/dist/index.d.ts:386
 
 > **QTS\_Dump**: (`ctx`, `obj`) => [`JSBorrowedCharPointer`](../README.md#jsborrowedcharpointer)
 
-Defined in: packages/quickjs-ffi-types/dist/index.d.ts:390
+Defined in: packages/quickjs-ffi-types/dist/index.d.ts:391
 
 #### Parameters
 
@@ -284,7 +284,7 @@ Defined in: packages/quickjs-ffi-types/dist/index.d.ts:367
 
 > **QTS\_EncodeBytecode**: (`ctx`, `val`) => [`JSValuePointer`](../README.md#jsvaluepointer)
 
-Defined in: packages/quickjs-ffi-types/dist/index.d.ts:414
+Defined in: packages/quickjs-ffi-types/dist/index.d.ts:415
 
 #### Parameters
 
@@ -306,7 +306,7 @@ Defined in: packages/quickjs-ffi-types/dist/index.d.ts:414
 
 > **QTS\_Eval**: (`ctx`, `js_code`, `js_code_length`, `filename`, `detectModule`, `evalFlags`) => [`JSValuePointer`](../README.md#jsvaluepointer)
 
-Defined in: packages/quickjs-ffi-types/dist/index.d.ts:391
+Defined in: packages/quickjs-ffi-types/dist/index.d.ts:392
 
 #### Parameters
 
@@ -344,7 +344,7 @@ Defined in: packages/quickjs-ffi-types/dist/index.d.ts:391
 
 > **QTS\_EvalFunction**: (`ctx`, `fun_obj`) => [`JSValuePointer`](../README.md#jsvaluepointer)
 
-Defined in: packages/quickjs-ffi-types/dist/index.d.ts:413
+Defined in: packages/quickjs-ffi-types/dist/index.d.ts:414
 
 #### Parameters
 
@@ -560,7 +560,7 @@ Defined in: packages/quickjs-ffi-types/dist/index.d.ts:377
 
 > **QTS\_GetDebugLogEnabled**: (`rt`) => `number`
 
-Defined in: packages/quickjs-ffi-types/dist/index.d.ts:401
+Defined in: packages/quickjs-ffi-types/dist/index.d.ts:402
 
 #### Parameters
 
@@ -571,6 +571,24 @@ Defined in: packages/quickjs-ffi-types/dist/index.d.ts:401
 #### Returns
 
 `number`
+
+***
+
+### QTS\_GetException()
+
+> **QTS\_GetException**: (`ctx`) => [`JSValuePointer`](../README.md#jsvaluepointer)
+
+Defined in: packages/quickjs-ffi-types/dist/index.d.ts:390
+
+#### Parameters
+
+##### ctx
+
+[`JSContextPointer`](../README.md#jscontextpointer)
+
+#### Returns
+
+[`JSValuePointer`](../README.md#jsvaluepointer)
 
 ***
 
@@ -612,7 +630,7 @@ Defined in: packages/quickjs-ffi-types/dist/index.d.ts:373
 
 > **QTS\_GetGlobalObject**: (`ctx`) => [`JSValuePointer`](../README.md#jsvaluepointer)
 
-Defined in: packages/quickjs-ffi-types/dist/index.d.ts:396
+Defined in: packages/quickjs-ffi-types/dist/index.d.ts:397
 
 #### Parameters
 
@@ -630,7 +648,7 @@ Defined in: packages/quickjs-ffi-types/dist/index.d.ts:396
 
 > **QTS\_GetLength**: (`ctx`, `out_len`, `value`) => `number`
 
-Defined in: packages/quickjs-ffi-types/dist/index.d.ts:394
+Defined in: packages/quickjs-ffi-types/dist/index.d.ts:395
 
 #### Parameters
 
@@ -656,7 +674,7 @@ Defined in: packages/quickjs-ffi-types/dist/index.d.ts:394
 
 > **QTS\_GetModuleNamespace**: (`ctx`, `module_func_obj`) => [`JSValuePointer`](../README.md#jsvaluepointer)
 
-Defined in: packages/quickjs-ffi-types/dist/index.d.ts:392
+Defined in: packages/quickjs-ffi-types/dist/index.d.ts:393
 
 #### Parameters
 
@@ -844,7 +862,7 @@ Defined in: packages/quickjs-ffi-types/dist/index.d.ts:355
 
 > **QTS\_IsEqual**: (`ctx`, `a`, `b`, `op`) => `number`
 
-Defined in: packages/quickjs-ffi-types/dist/index.d.ts:395
+Defined in: packages/quickjs-ffi-types/dist/index.d.ts:396
 
 #### Parameters
 
@@ -1020,7 +1038,7 @@ Defined in: packages/quickjs-ffi-types/dist/index.d.ts:372
 
 > **QTS\_NewFunction**: (`ctx`, `func_id`, `name`) => [`JSValuePointer`](../README.md#jsvaluepointer)
 
-Defined in: packages/quickjs-ffi-types/dist/index.d.ts:405
+Defined in: packages/quickjs-ffi-types/dist/index.d.ts:406
 
 #### Parameters
 
@@ -1086,7 +1104,7 @@ Defined in: packages/quickjs-ffi-types/dist/index.d.ts:369
 
 > **QTS\_NewPromiseCapability**: (`ctx`, `resolve_funcs_out`) => [`JSValuePointer`](../README.md#jsvaluepointer)
 
-Defined in: packages/quickjs-ffi-types/dist/index.d.ts:397
+Defined in: packages/quickjs-ffi-types/dist/index.d.ts:398
 
 #### Parameters
 
@@ -1168,7 +1186,7 @@ Defined in: packages/quickjs-ffi-types/dist/index.d.ts:378
 
 > **QTS\_PromiseResult**: (`ctx`, `promise`) => [`JSValuePointer`](../README.md#jsvaluepointer)
 
-Defined in: packages/quickjs-ffi-types/dist/index.d.ts:399
+Defined in: packages/quickjs-ffi-types/dist/index.d.ts:400
 
 #### Parameters
 
@@ -1190,7 +1208,7 @@ Defined in: packages/quickjs-ffi-types/dist/index.d.ts:399
 
 > **QTS\_PromiseState**: (`ctx`, `promise`) => [`JSPromiseStateEnum`](../README.md#jspromisestateenum)
 
-Defined in: packages/quickjs-ffi-types/dist/index.d.ts:398
+Defined in: packages/quickjs-ffi-types/dist/index.d.ts:399
 
 #### Parameters
 
@@ -1242,6 +1260,28 @@ Defined in: packages/quickjs-ffi-types/dist/index.d.ts:389
 
 ***
 
+### QTS\_ResolveModule()
+
+> **QTS\_ResolveModule**: (`ctx`, `obj`) => `number`
+
+Defined in: packages/quickjs-ffi-types/dist/index.d.ts:417
+
+#### Parameters
+
+##### ctx
+
+[`JSContextPointer`](../README.md#jscontextpointer)
+
+##### obj
+
+[`JSValuePointer`](../README.md#jsvaluepointer) | [`JSValueConstPointer`](../README.md#jsvalueconstpointer)
+
+#### Returns
+
+`number`
+
+***
+
 ### QTS\_RuntimeComputeMemoryUsage()
 
 > **QTS\_RuntimeComputeMemoryUsage**: (`rt`, `ctx`) => [`JSValuePointer`](../README.md#jsvaluepointer)
@@ -1268,7 +1308,7 @@ Defined in: packages/quickjs-ffi-types/dist/index.d.ts:350
 
 > **QTS\_RuntimeDisableInterruptHandler**: (`rt`) => `void`
 
-Defined in: packages/quickjs-ffi-types/dist/index.d.ts:408
+Defined in: packages/quickjs-ffi-types/dist/index.d.ts:409
 
 #### Parameters
 
@@ -1286,7 +1326,7 @@ Defined in: packages/quickjs-ffi-types/dist/index.d.ts:408
 
 > **QTS\_RuntimeDisableModuleLoader**: (`rt`) => `void`
 
-Defined in: packages/quickjs-ffi-types/dist/index.d.ts:410
+Defined in: packages/quickjs-ffi-types/dist/index.d.ts:411
 
 #### Parameters
 
@@ -1322,7 +1362,7 @@ Defined in: packages/quickjs-ffi-types/dist/index.d.ts:351
 
 > **QTS\_RuntimeEnableInterruptHandler**: (`rt`) => `void`
 
-Defined in: packages/quickjs-ffi-types/dist/index.d.ts:407
+Defined in: packages/quickjs-ffi-types/dist/index.d.ts:408
 
 #### Parameters
 
@@ -1340,7 +1380,7 @@ Defined in: packages/quickjs-ffi-types/dist/index.d.ts:407
 
 > **QTS\_RuntimeEnableModuleLoader**: (`rt`, `use_custom_normalize`) => `void`
 
-Defined in: packages/quickjs-ffi-types/dist/index.d.ts:409
+Defined in: packages/quickjs-ffi-types/dist/index.d.ts:410
 
 #### Parameters
 
@@ -1406,7 +1446,7 @@ Defined in: packages/quickjs-ffi-types/dist/index.d.ts:349
 
 > **QTS\_SetDebugLogEnabled**: (`rt`, `is_enabled`) => `void`
 
-Defined in: packages/quickjs-ffi-types/dist/index.d.ts:402
+Defined in: packages/quickjs-ffi-types/dist/index.d.ts:403
 
 #### Parameters
 
@@ -1458,7 +1498,7 @@ Defined in: packages/quickjs-ffi-types/dist/index.d.ts:385
 
 > **QTS\_TestStringArg**: (`string`) => `void`
 
-Defined in: packages/quickjs-ffi-types/dist/index.d.ts:400
+Defined in: packages/quickjs-ffi-types/dist/index.d.ts:401
 
 #### Parameters
 
@@ -1498,7 +1538,7 @@ Defined in: packages/quickjs-ffi-types/dist/index.d.ts:347
 
 > **QTS\_Typeof**: (`ctx`, `value`) => [`OwnedHeapCharPointer`](../README.md#ownedheapcharpointer)
 
-Defined in: packages/quickjs-ffi-types/dist/index.d.ts:393
+Defined in: packages/quickjs-ffi-types/dist/index.d.ts:394
 
 #### Parameters
 

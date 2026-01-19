@@ -801,7 +801,7 @@ See [EvalFlags](../README.md#evalflags) for number semantics
 
 > `protected` **fail**(`error`): [`DisposableFail`](DisposableFail.md)\<[`QuickJSHandle`](../README.md#quickjshandle)\>
 
-Defined in: [packages/quickjs-emscripten-core/src/context.ts:1532](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L1532)
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:1556](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L1556)
 
 #### Parameters
 
@@ -1642,6 +1642,42 @@ No two symbols created with this function will be the same value.
 
 ***
 
+### resolveModule()
+
+> **resolveModule**(`handle`): `QuickJSContextResult`\<`void`\>
+
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:1542](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L1542)
+
+Resolve module dependencies after loading module bytecode.
+
+When loading ES module bytecode via [decodeBytecode](QuickJSContext.md#decodebytecode), the module's
+import dependencies are not automatically resolved. Call this method
+after decoding module bytecode and before [evalBytecode](QuickJSContext.md#evalbytecode) to resolve
+all imports.
+
+For non-module bytecode (scripts), this is a no-op.
+
+#### Parameters
+
+##### handle
+
+[`QuickJSHandle`](../README.md#quickjshandle)
+
+A handle to a module (from [decodeBytecode](QuickJSContext.md#decodebytecode))
+
+#### Returns
+
+`QuickJSContextResult`\<`void`\>
+
+A result. If resolution failed, `result.error` will be a handle
+  to the exception. Otherwise `result.value` will be undefined.
+
+#### Inherited from
+
+[`QuickJSContext`](QuickJSContext.md).[`resolveModule`](QuickJSContext.md#resolvemodule)
+
+***
+
 ### resolvePromise()
 
 > **resolvePromise**(`promiseLikeHandle`): `Promise`\<`QuickJSContextResult`\<[`QuickJSHandle`](../README.md#quickjshandle)\>\>
@@ -1777,7 +1813,7 @@ properties.
 
 > `protected` **success**\<`S`\>(`value`): [`DisposableSuccess`](DisposableSuccess.md)\<`S`\>
 
-Defined in: [packages/quickjs-emscripten-core/src/context.ts:1528](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L1528)
+Defined in: [packages/quickjs-emscripten-core/src/context.ts:1552](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/context.ts#L1552)
 
 #### Type Parameters
 

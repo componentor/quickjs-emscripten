@@ -287,8 +287,11 @@ export class QuickJSFFI {
   QTS_ResolveException: (ctx: JSContextPointer, maybe_exception: JSValuePointer) => JSValuePointer =
     this.module.cwrap("QTS_ResolveException", "number", ["number", "number"])
 
-  QTS_GetException: (ctx: JSContextPointer) => JSValuePointer =
-    this.module.cwrap("QTS_GetException", "number", ["number"])
+  QTS_GetException: (ctx: JSContextPointer) => JSValuePointer = this.module.cwrap(
+    "QTS_GetException",
+    "number",
+    ["number"],
+  )
 
   QTS_Dump: (
     ctx: JSContextPointer,
@@ -435,8 +438,6 @@ export class QuickJSFFI {
     data: JSValuePointer | JSValueConstPointer,
   ) => JSValuePointer = this.module.cwrap("QTS_DecodeBytecode", "number", ["number", "number"])
 
-  QTS_ResolveModule: (
-    ctx: JSContextPointer,
-    obj: JSValuePointer | JSValueConstPointer,
-  ) => number = this.module.cwrap("QTS_ResolveModule", "number", ["number", "number"])
+  QTS_ResolveModule: (ctx: JSContextPointer, obj: JSValuePointer | JSValueConstPointer) => number =
+    this.module.cwrap("QTS_ResolveModule", "number", ["number", "number"])
 }

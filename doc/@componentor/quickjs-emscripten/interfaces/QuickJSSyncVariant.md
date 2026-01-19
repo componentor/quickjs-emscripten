@@ -6,7 +6,7 @@
 
 # Interface: QuickJSSyncVariant
 
-Defined in: packages/quickjs-ffi-types/dist/index.d.ts:525
+Defined in: packages/quickjs-ffi-types/dist/index.d.ts:529
 
 A standard (sync) build variant.
 
@@ -22,7 +22,7 @@ build variant to [newQuickJSWASMModule](../README.md#newquickjswasmmodule) or [n
 
 > `readonly` **importFFI**: () => `Promise`\<(`module`) => [`QuickJSFFI`](QuickJSFFI.md)\>
 
-Defined in: packages/quickjs-ffi-types/dist/index.d.ts:527
+Defined in: packages/quickjs-ffi-types/dist/index.d.ts:531
 
 #### Returns
 
@@ -34,7 +34,7 @@ Defined in: packages/quickjs-ffi-types/dist/index.d.ts:527
 
 > `readonly` **importModuleLoader**: () => `Promise`\<`EmscriptenImport`\<[`QuickJSEmscriptenModule`](QuickJSEmscriptenModule.md)\>\>
 
-Defined in: packages/quickjs-ffi-types/dist/index.d.ts:528
+Defined in: packages/quickjs-ffi-types/dist/index.d.ts:532
 
 #### Returns
 
@@ -46,4 +46,4 @@ Defined in: packages/quickjs-ffi-types/dist/index.d.ts:528
 
 > `readonly` **type**: `"sync"`
 
-Defined in: packages/quickjs-ffi-types/dist/index.d.ts:526
+Defined in: packages/quickjs-ffi-types/dist/index.d.ts:530

@@ -34,7 +34,7 @@ inside QuickJS, create a context with [newContext](#newcontext) or a runtime wit
 
 > **evalCode**(`code`, `options`): `unknown`
 
-Defined in: [packages/quickjs-emscripten-core/src/module.ts:395](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/module.ts#L395)
+Defined in: [packages/quickjs-emscripten-core/src/module.ts:412](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/module.ts#L412)
 
 One-off evaluate code without needing to create a [QuickJSRuntime](QuickJSRuntime.md) or
 [QuickJSContext](QuickJSContext.md) explicitly.
@@ -84,7 +84,7 @@ with name `"InternalError"` and  message `"interrupted"`.
 
 > **getWasmMemory**(): `Memory`
 
-Defined in: [packages/quickjs-emscripten-core/src/module.ts:426](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/module.ts#L426)
+Defined in: [packages/quickjs-emscripten-core/src/module.ts:443](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/module.ts#L443)
 
 **`Experimental`**
 
@@ -100,11 +100,35 @@ and provide the [CustomizeVariantOptions#wasmMemory](../interfaces/CustomizeVari
 
 ***
 
+### getWasmModule()
+
+> **getWasmModule**(): [`EitherModule`](../README.md#eithermodule)
+
+Defined in: [packages/quickjs-emscripten-core/src/module.ts:341](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/module.ts#L341)
+
+Get the underlying Emscripten WASM module.
+
+For WasmFS variants, this provides access to the FS API:
+```typescript
+const wasmModule = quickjs.getWasmModule();
+// Access WasmFS filesystem
+wasmModule.FS.readFile('/path/to/file');
+wasmModule.FS.writeFile('/path/to/file', data);
+// Mount OPFS (browser only)
+await wasmModule.mountOPFS?.('/opfs');
+```
+
+#### Returns
+
+[`EitherModule`](../README.md#eithermodule)
+
+***
+
 ### newContext()
 
 > **newContext**(`options`): [`QuickJSContext`](QuickJSContext.md)
 
-Defined in: [packages/quickjs-emscripten-core/src/module.ts:360](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/module.ts#L360)
+Defined in: [packages/quickjs-emscripten-core/src/module.ts:377](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/module.ts#L377)
 
 A simplified API to create a new [QuickJSRuntime](QuickJSRuntime.md) and a
 [QuickJSContext](QuickJSContext.md) inside that runtime at the same time. The runtime will
@@ -126,7 +150,7 @@ be disposed when the context is disposed.
 
 > **newRuntime**(`options`): [`QuickJSRuntime`](QuickJSRuntime.md)
 
-Defined in: [packages/quickjs-emscripten-core/src/module.ts:333](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/module.ts#L333)
+Defined in: [packages/quickjs-emscripten-core/src/module.ts:350](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/module.ts#L350)
 
 Create a runtime.
 Use the runtime to set limits on CPU and memory usage and configure module

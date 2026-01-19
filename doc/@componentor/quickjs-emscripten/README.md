@@ -1058,7 +1058,7 @@ Defined in: [packages/quickjs-emscripten-core/src/lifetime.ts:478](https://githu
 
 > **EitherFFI** = [`QuickJSFFI`](interfaces/QuickJSFFI.md) \| [`QuickJSAsyncFFI`](interfaces/QuickJSAsyncFFI.md)
 
-Defined in: packages/quickjs-ffi-types/dist/index.d.ts:545
+Defined in: packages/quickjs-ffi-types/dist/index.d.ts:549
 
 ***
 
@@ -1570,7 +1570,7 @@ Property key for getting or setting a property on a handle with
 
 > **QuickJSVariant** = [`QuickJSSyncVariant`](interfaces/QuickJSSyncVariant.md) \| [`QuickJSAsyncVariant`](interfaces/QuickJSAsyncVariant.md)
 
-Defined in: packages/quickjs-ffi-types/dist/index.d.ts:544
+Defined in: packages/quickjs-ffi-types/dist/index.d.ts:548
 
 ***
 

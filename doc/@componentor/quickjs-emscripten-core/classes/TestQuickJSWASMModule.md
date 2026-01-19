@@ -159,6 +159,34 @@ and provide the [CustomizeVariantOptions#wasmMemory](../interfaces/CustomizeVari
 
 ***
 
+### getWasmModule()
+
+> **getWasmModule**(): [`EitherModule`](../README.md#eithermodule)
+
+Defined in: [packages/quickjs-emscripten-core/src/module-test.ts:83](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten-core/src/module-test.ts#L83)
+
+Get the underlying Emscripten WASM module.
+
+For WasmFS variants, this provides access to the FS API:
+```typescript
+const wasmModule = quickjs.getWasmModule();
+// Access WasmFS filesystem
+wasmModule.FS.readFile('/path/to/file');
+wasmModule.FS.writeFile('/path/to/file', data);
+// Mount OPFS (browser only)
+await wasmModule.mountOPFS?.('/opfs');
+```
+
+#### Returns
+
+[`EitherModule`](../README.md#eithermodule)
+
+#### Implementation of
+
+[`QuickJSWASMModule`](QuickJSWASMModule.md).[`getWasmModule`](QuickJSWASMModule.md#getwasmmodule)
+
+***
+
 ### newContext()
 
 > **newContext**(`options?`): [`QuickJSContext`](QuickJSContext.md)
