@@ -4,10 +4,76 @@
  * This pre-js file adds OPFS mounting functionality to the QuickJS module.
  * It provides methods to mount the browser's Origin Private File System
  * as a WasmFS backend, enabling fast filesystem access without JS boundary crossing.
+ *
+ * IMPORTANT: OPFS directories must be mounted during module initialization (preRun phase).
+ * Calling wasmfsOPFSGetOrCreateDir after initialization returns error -29.
  */
 
-// Add OPFS mounting function to Module
-Module["mountOPFS"] = async function (mountPoint = "/opfs") {
+// ============================================================================
+// Automatic OPFS Mounting During Initialization
+// This runs during preRun when wasmfsOPFSGetOrCreateDir actually works
+// ============================================================================
+Module["preRun"] = Module["preRun"] || []
+Module["preRun"].push(async function () {
+  if (typeof navigator === "undefined" || !navigator.storage || !navigator.storage.getDirectory) {
+    console.log("[WasmFS] OPFS not available (not in browser or no storage API)")
+    return
+  }
+
+  if (typeof Module["wasmfsOPFSGetOrCreateDir"] !== "function") {
+    console.log("[WasmFS] wasmfsOPFSGetOrCreateDir not available")
+    return
+  }
+
+  try {
+    var opfsRoot = await navigator.storage.getDirectory()
+    var mounted = []
+
+    // Mount each top-level OPFS directory at matching WasmFS paths (1-to-1 mapping)
+    // e.g., OPFS "home" -> WasmFS "/home", OPFS "usr" -> WasmFS "/usr"
+    for await (var entry of opfsRoot.entries()) {
+      var name = entry[0]
+      var handle = entry[1]
+      if (handle.kind === "directory") {
+        var wasmfsPath = "/" + name
+        try {
+          // Check if this path already exists in WasmFS (skip /dev, /tmp, etc.)
+          try {
+            Module["FS"].stat(wasmfsPath)
+            console.log("[WasmFS preRun] Skipping existing:", wasmfsPath)
+            continue
+          } catch (e) {
+            // Doesn't exist, we can mount
+          }
+
+          var result = await Module["wasmfsOPFSGetOrCreateDir"](handle, wasmfsPath)
+          if (result === 0 || result === undefined) {
+            mounted.push(wasmfsPath)
+            console.log("[WasmFS preRun] Mounted OPFS", name, "at", wasmfsPath)
+          } else {
+            console.warn("[WasmFS preRun] Failed to mount", name, "error code:", result)
+          }
+        } catch (e) {
+          console.warn("[WasmFS preRun] Error mounting", name, ":", e.message)
+        }
+      }
+    }
+
+    if (mounted.length > 0) {
+      console.log("[WasmFS preRun] Successfully mounted:", mounted)
+      Module["_opfsMounted"] = true
+      Module["_opfsMountedPaths"] = mounted
+    }
+  } catch (e) {
+    console.error("[WasmFS preRun] OPFS initialization failed:", e)
+  }
+})
+
+// Add OPFS mounting function to Module (for manual mounting - may not work after init)
+// mountPoint: where to mount in WasmFS (e.g., "/home")
+// opfsPath: which OPFS directory to mount (e.g., "home" for OPFS's /home directory)
+//           If not specified or "/", mounts each top-level OPFS directory
+Module["mountOPFS"] = async function (mountPoint = "/opfs", opfsPath = null) {
   if (!navigator.storage || !navigator.storage.getDirectory) {
     throw new Error("OPFS is not supported in this browser")
   }
@@ -15,45 +81,83 @@ Module["mountOPFS"] = async function (mountPoint = "/opfs") {
   // Get the OPFS root
   const opfsRoot = await navigator.storage.getDirectory()
 
-  // Mount OPFS using WasmFS OPFS backend
-  // The wasmfsOPFSGetOrCreateDir function is provided by Emscripten's OPFS support
-  // It handles creating the directory and backing it with OPFS - no need to mkdir first
-  if (typeof Module["wasmfsOPFSGetOrCreateDir"] === "function") {
-    // WasmFS OPFS API - creates the directory backed by OPFS
-    // This handles both creating the mount point and connecting it to OPFS
-    try {
-      await Module["wasmfsOPFSGetOrCreateDir"](opfsRoot, mountPoint)
-    } catch (e) {
-      // Check if directory already exists and is properly mounted
+  // Helper to mount a single OPFS directory at a WasmFS path
+  async function mountSingleDir(opfsDir, wasmfsPath) {
+    if (typeof Module["wasmfsOPFSGetOrCreateDir"] === "function") {
       try {
-        const stat = Module["FS"].stat(mountPoint)
-        if (stat && typeof stat.mode !== "undefined") {
-          // Directory exists, might already be mounted
-          console.log("[WasmFS] Mount point already exists at", mountPoint)
-          return mountPoint
+        await Module["wasmfsOPFSGetOrCreateDir"](opfsDir, wasmfsPath)
+        return true
+      } catch (e) {
+        // Check if directory already exists
+        try {
+          const stat = Module["FS"].stat(wasmfsPath)
+          if (stat && typeof stat.mode !== "undefined") {
+            console.log("[WasmFS] Mount point already exists at", wasmfsPath)
+            return true
+          }
+        } catch (statErr) {
+          // Directory doesn't exist
         }
-      } catch (statErr) {
-        // Directory doesn't exist, re-throw original error
-      }
-      throw e
-    }
-  } else if (Module["FS"] && Module["FS"].filesystems && Module["FS"].filesystems.OPFS) {
-    // Fallback to FS.mount if available (older Emscripten API)
-    try {
-      // Use Module-level mkdir wrapper (handles minification)
-      Module["mkdir"](mountPoint)
-    } catch (e) {
-      // Directory might already exist, ignore EEXIST
-      if (e.code !== "EEXIST" && e.errno !== 20) {
         throw e
       }
+    } else if (Module["FS"] && Module["FS"].filesystems && Module["FS"].filesystems.OPFS) {
+      try {
+        Module["mkdir"](wasmfsPath)
+      } catch (e) {
+        if (e.code !== "EEXIST" && e.errno !== 20) {
+          throw e
+        }
+      }
+      Module["FS"].mount(Module["FS"].filesystems.OPFS, { root: opfsDir }, wasmfsPath)
+      return true
     }
-    Module["FS"].mount(Module["FS"].filesystems.OPFS, { root: opfsRoot }, mountPoint)
-  } else {
+    return false
+  }
+
+  // If mounting at root ("/"), mount each top-level OPFS directory
+  if (mountPoint === "/" && (opfsPath === null || opfsPath === "/" || opfsPath === "")) {
+    const mounted = []
+    for await (const [name, handle] of opfsRoot.entries()) {
+      if (handle.kind === "directory") {
+        const wasmfsPath = "/" + name
+        try {
+          // Skip directories that already exist in WasmFS (like /dev, /tmp)
+          try {
+            Module["FS"].stat(wasmfsPath)
+            console.log("[WasmFS] Skipping existing directory:", wasmfsPath)
+            continue
+          } catch (e) {
+            // Directory doesn't exist, we can mount
+          }
+          await mountSingleDir(handle, wasmfsPath)
+          mounted.push(wasmfsPath)
+          console.log("[WasmFS] Mounted OPFS", name, "at", wasmfsPath)
+        } catch (e) {
+          console.warn("[WasmFS] Failed to mount", name, ":", e.message)
+        }
+      }
+    }
+    console.log("[WasmFS] OPFS mounted directories:", mounted)
+    return mounted.length > 0 ? "/" : null
+  }
+
+  // If opfsPath is specified, get that subdirectory from OPFS
+  let opfsDir = opfsRoot
+  if (opfsPath && opfsPath !== "/" && opfsPath !== "") {
+    // Navigate to the specified OPFS subdirectory
+    const parts = opfsPath.split("/").filter(Boolean)
+    for (const part of parts) {
+      opfsDir = await opfsDir.getDirectoryHandle(part, { create: true })
+    }
+  }
+
+  // Mount the OPFS directory at the WasmFS mount point
+  const success = await mountSingleDir(opfsDir, mountPoint)
+  if (!success) {
     throw new Error("WasmFS OPFS backend not available. Ensure -lopfs.js is in build flags.")
   }
 
-  console.log("[WasmFS] OPFS mounted at", mountPoint)
+  console.log("[WasmFS] OPFS mounted at", mountPoint, opfsPath ? "(OPFS path: " + opfsPath + ")" : "")
   return mountPoint
 }
 
