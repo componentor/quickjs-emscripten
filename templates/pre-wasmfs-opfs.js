@@ -15,23 +15,38 @@ Module["mountOPFS"] = async function (mountPoint = "/opfs") {
   // Get the OPFS root
   const opfsRoot = await navigator.storage.getDirectory()
 
-  // Create mount point if it doesn't exist
-  try {
-    Module["FS"].mkdir(mountPoint)
-  } catch (e) {
-    // Directory might already exist
-    if (e.code !== "EEXIST") {
-      console.warn("[WasmFS] Mount point creation warning:", e)
-    }
-  }
-
   // Mount OPFS using WasmFS OPFS backend
   // The wasmfsOPFSGetOrCreateDir function is provided by Emscripten's OPFS support
+  // It handles creating the directory and backing it with OPFS - no need to mkdir first
   if (typeof Module["wasmfsOPFSGetOrCreateDir"] === "function") {
-    // New Emscripten API
-    await Module["wasmfsOPFSGetOrCreateDir"](opfsRoot, mountPoint)
+    // WasmFS OPFS API - creates the directory backed by OPFS
+    // This handles both creating the mount point and connecting it to OPFS
+    try {
+      await Module["wasmfsOPFSGetOrCreateDir"](opfsRoot, mountPoint)
+    } catch (e) {
+      // Check if directory already exists and is properly mounted
+      try {
+        const stat = Module["FS"].stat(mountPoint)
+        if (stat && typeof stat.mode !== "undefined") {
+          // Directory exists, might already be mounted
+          console.log("[WasmFS] Mount point already exists at", mountPoint)
+          return mountPoint
+        }
+      } catch (statErr) {
+        // Directory doesn't exist, re-throw original error
+      }
+      throw e
+    }
   } else if (Module["FS"] && Module["FS"].filesystems && Module["FS"].filesystems.OPFS) {
-    // Fallback to FS.mount if available
+    // Fallback to FS.mount if available (older Emscripten API)
+    try {
+      Module["FS"].mkdir(mountPoint)
+    } catch (e) {
+      // Directory might already exist, ignore EEXIST
+      if (e.code !== "EEXIST" && e.errno !== 20) {
+        throw e
+      }
+    }
     Module["FS"].mount(Module["FS"].filesystems.OPFS, { root: opfsRoot }, mountPoint)
   } else {
     throw new Error("WasmFS OPFS backend not available. Ensure -lopfs.js is in build flags.")

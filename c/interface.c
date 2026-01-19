@@ -550,7 +550,7 @@ int QTS_IsJobPending(JSRuntime *rt) {
   Returns the executed number of jobs or the exception encountered
 */
 MaybeAsync(JSValue *) QTS_ExecutePendingJob(JSRuntime *rt, int maxJobsToExecute, JSContext **lastJobContext) {
-  JSContext *pctx;
+  JSContext *pctx = NULL;
   int status = 1;
   int executed = 0;
   while (executed != maxJobsToExecute && status == 1) {
@@ -563,10 +563,22 @@ MaybeAsync(JSValue *) QTS_ExecutePendingJob(JSRuntime *rt, int maxJobsToExecute,
       executed++;
     }
   }
+  // If no jobs were executed, pctx may be NULL. Set lastJobContext to NULL in this case.
+  if (pctx == NULL) {
+    *lastJobContext = NULL;
+  }
   IF_DEBUG_RT {
     char msg[LOG_LEN];
     snprintf(msg, LOG_LEN, "QTS_ExecutePendingJob(executed: %d, pctx: %p, lastJobExecuted: %p)", executed, pctx, *lastJobContext);
     qts_log(msg);
+  }
+  // If pctx is NULL (no jobs executed), we can't create a JSValue.
+  // Return the executed count as a raw integer encoded in the pointer.
+  // The TypeScript side handles this by checking if the context is NULL.
+  if (pctx == NULL) {
+    // Return a special value indicating no context available.
+    // We use JS_MKVAL to create a tagged integer that doesn't require a context.
+    return jsvalue_to_heap(JS_NewInt32(NULL, executed));
   }
   return jsvalue_to_heap(JS_NewFloat64(pctx, executed));
 }
@@ -656,7 +668,7 @@ MaybeAsync(JSValue *) QTS_GetOwnPropertyNames(JSContext *ctx, JSValue ***out_ptr
     }
     return jsvalue_to_heap(JS_GetException(ctx));
   }
-  *out_ptrs = malloc(sizeof(JSValue) * *out_len);
+  *out_ptrs = malloc(sizeof(JSValue *) * total_props);
   for (int i = 0; i < total_props; i++) {
     JSAtom atom = tab[i].atom;
 
@@ -826,8 +838,10 @@ MaybeAsync(JSValue *) QTS_Eval(JSContext *ctx, BorrowedHeapChar *js_code, size_t
       // Error - nothing more to do.
       JS_IsException(eval_result)
       // Non-module eval - return the result
-      || (evalFlags & JS_EVAL_TYPE_MODULE) == 0) {
-    QTS_DEBUG("QTS_Eval: non-module or exception")
+      || (evalFlags & JS_EVAL_TYPE_MODULE) == 0
+      // Compile-only - return the compiled function/module directly
+      || (evalFlags & JS_EVAL_FLAG_COMPILE_ONLY) != 0) {
+    QTS_DEBUG("QTS_Eval: non-module or exception or compile-only")
     return jsvalue_to_heap(eval_result);
   }
 
