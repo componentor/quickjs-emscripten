@@ -157,7 +157,11 @@ Module["mountOPFS"] = async function (mountPoint = "/opfs", opfsPath = null) {
     throw new Error("WasmFS OPFS backend not available. Ensure -lopfs.js is in build flags.")
   }
 
-  console.log("[WasmFS] OPFS mounted at", mountPoint, opfsPath ? "(OPFS path: " + opfsPath + ")" : "")
+  console.log(
+    "[WasmFS] OPFS mounted at",
+    mountPoint,
+    opfsPath ? "(OPFS path: " + opfsPath + ")" : "",
+  )
   return mountPoint
 }
 
