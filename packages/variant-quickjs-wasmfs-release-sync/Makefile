@@ -41,6 +41,9 @@ WRAPPER_DEFINES+=-DQTS_WASMFS=1         # Enable WasmFS-specific code paths
 EMCC_EXPORTED_FUNCS+=-s EXPORTED_FUNCTIONS=@$(BUILD_WRAPPER)/symbols.json
 EMCC_EXPORTED_FUNCS_ASYNCIFY+=-s EXPORTED_FUNCTIONS=@$(BUILD_WRAPPER)/symbols.asyncify.json
 
+# OPFS initialization object (for early OPFS setup during runtime init)
+OPFS_INIT_OBJ=$(BUILD_WRAPPER)/opfs-init.o
+
 # Emscripten options - base
 CFLAGS_WASM+=-s EXPORTED_RUNTIME_METHODS=@../../exportedRuntimeMethods.wasmfs.json
 CFLAGS_WASM+=-s MODULARIZE=1
@@ -130,14 +133,21 @@ $(DIST)/emscripten-module.browser.d.ts: $(TEMPLATES)/emscripten-module.$(SYNC).d
 	cat $< >> $@
 
 $(BUILD_WRAPPER)/browser/emscripten-module.js: CFLAGS_WASM+=$(CFLAGS_BROWSER)
-$(BUILD_WRAPPER)/browser/emscripten-module.js: $(BUILD_WRAPPER)/interface.o $(VARIANT_QUICKJS_OBJS) $(WASM_SYMBOLS) | $(EMCC_SRC)
+$(BUILD_WRAPPER)/browser/emscripten-module.js: $(BUILD_WRAPPER)/interface.o $(OPFS_INIT_OBJ) $(VARIANT_QUICKJS_OBJS) $(WASM_SYMBOLS) | $(EMCC_SRC)
 	$(MKDIRP)
-	$(EMCC) $(CFLAGS_WASM) $(LDFLAGS_WASM) $(WRAPPER_DEFINES) $(EMCC_EXPORTED_FUNCS) -o $@ $< $(VARIANT_QUICKJS_OBJS)
+	$(EMCC) $(CFLAGS_WASM) $(LDFLAGS_WASM) $(WRAPPER_DEFINES) $(EMCC_EXPORTED_FUNCS) -o $@ $< $(OPFS_INIT_OBJ) $(VARIANT_QUICKJS_OBJS)
 
 ###############################################################################
 # Emscripten intermediate files
 WASM_SYMBOLS=$(BUILD_WRAPPER)/symbols.json $(BUILD_WRAPPER)/asyncify-remove.json $(BUILD_WRAPPER)/asyncify-imports.json
+
+# Generic wrapper object files
 $(BUILD_WRAPPER)/%.o: $(WRAPPER_ROOT)/%.c $(WASM_SYMBOLS) | $(EMCC_SRC)
+	$(MKDIRP)
+	$(EMCC) $(CFLAGS_WASM) $(WRAPPER_DEFINES) -c -o $@ $<
+
+# OPFS init object (needs WRAPPER_DEFINES for QTS_WASMFS define)
+$(BUILD_WRAPPER)/opfs-init.o: $(WRAPPER_ROOT)/opfs-init.c | $(EMCC_SRC)
 	$(MKDIRP)
 	$(EMCC) $(CFLAGS_WASM) $(WRAPPER_DEFINES) -c -o $@ $<
 
