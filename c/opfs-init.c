@@ -22,9 +22,9 @@
 
 /**
  * This hook is called by WasmFS during startup, before file preloading.
- * We use it to create the OPFS backend and mount it at /home.
+ * We use it to create the OPFS backend and mount it at /root.
  *
- * The path /home is chosen to match the @componentor/fs OPFS storage location,
+ * The path /root is chosen to match the @componentor/fs OPFS storage location,
  * allowing both WasmFS and @componentor/fs to access the same OPFS files.
  */
 void wasmfs_before_preload(void) {
@@ -41,22 +41,22 @@ void wasmfs_before_preload(void) {
     }
     emscripten_console_log("[WasmFS] OPFS backend created successfully");
 
-    // Mount the OPFS backend at /home
-    // This creates a directory at /home backed by OPFS storage
-    err = wasmfs_create_directory("/home", 0777, opfs);
+    // Mount the OPFS backend at /root
+    // This creates a directory at /root backed by OPFS storage
+    err = wasmfs_create_directory("/root", 0777, opfs);
     if (err != 0) {
         char msg[128];
-        snprintf(msg, sizeof(msg), "[WasmFS] ERROR: Failed to mount OPFS at /home, error: %d (errno: %d)", err, errno);
+        snprintf(msg, sizeof(msg), "[WasmFS] ERROR: Failed to mount OPFS at /root, error: %d (errno: %d)", err, errno);
         emscripten_console_error(msg);
         return;
     }
-    emscripten_console_log("[WasmFS] OPFS mounted at /home successfully");
+    emscripten_console_log("[WasmFS] OPFS mounted at /root successfully");
 
     // Signal success to JavaScript
     EM_ASM({
         if (typeof Module !== 'undefined') {
             Module._wasmfsOPFSMounted = true;
-            Module._wasmfsOPFSMountPath = '/home';
+            Module._wasmfsOPFSMountPath = '/root';
         }
     });
 }

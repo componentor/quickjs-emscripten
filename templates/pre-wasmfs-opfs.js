@@ -8,7 +8,7 @@
  * - wasmfs_create_opfs_backend() blocks waiting for OPFS worker to spawn
  * - Without ASYNCIFY, this causes deadlock on the main thread
  *
- * The C code in opfs-init.c mounts OPFS at /home automatically during
+ * The C code in opfs-init.c mounts OPFS at /root automatically during
  * WasmFS startup, before file preloading occurs.
  */
 
@@ -23,19 +23,19 @@ if (typeof navigator !== "undefined" && navigator.storage && navigator.storage.g
   Module["onRuntimeInitialized"] = function () {
     // Check if C code successfully mounted OPFS
     if (Module["_wasmfsOPFSMounted"]) {
-      console.log("[WasmFS] OPFS mounted at", Module["_wasmfsOPFSMountPath"] || "/home", "(via C)")
+      console.log("[WasmFS] OPFS mounted at", Module["_wasmfsOPFSMountPath"] || "/root", "(via C)")
     } else {
       console.log("[WasmFS] OPFS mount status unknown - may have been done by C code")
     }
 
-    // Verify /home exists and is accessible
+    // Verify /root exists and is accessible
     try {
       if (typeof Module["FS"] !== "undefined") {
-        var stat = Module["FS"].stat("/home")
-        console.log("[WasmFS] /home directory exists, mode:", stat.mode)
+        var stat = Module["FS"].stat("/root")
+        console.log("[WasmFS] /root directory exists, mode:", stat.mode)
       }
     } catch (e) {
-      console.log("[WasmFS] Note: /home not yet accessible:", e.message)
+      console.log("[WasmFS] Note: /root not yet accessible:", e.message)
     }
 
     // Call original handler if any
