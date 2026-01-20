@@ -87,11 +87,18 @@ CFLAGS_WASM_BROWSER=$(CFLAGS_WASM)
 
 # Emscripten options - JSPI/ASYNCIFY=2 (required for WasmFS OPFS backend)
 # Note: ASYNCIFY=1 does NOT work with WasmFS OPFS, only JSPI (ASYNCIFY=2) or pthreads do
+# See https://github.com/nicbarker/clay/issues/231 and https://github.com/nicbarker/clay/issues/240
 CFLAGS_WASM+=-sASYNCIFY=2
 CFLAGS_WASM+=-DQTS_ASYNCIFY=1
 CFLAGS_WASM+=-DQTS_ASYNCIFY_DEFAULT_STACK_SIZE=81920
 CFLAGS_WASM+=-sASYNCIFY_STACK_SIZE=81920
 CFLAGS_WASM+=-sASYNCIFY_IMPORTS=@$(BUILD_WRAPPER)/asyncify-imports.json
+# JSPI requires __wasm_call_ctors to be exported for proper initialization
+CFLAGS_WASM+=-sJSPI_EXPORTS=__wasm_call_ctors
+# Ignore indirect calls for JSPI (avoids wrapping issues)
+CFLAGS_WASM+=-sASYNCIFY_IGNORE_INDIRECT=1
+# Use wasm exceptions instead of legacy JS exceptions (required for JSPI)
+CFLAGS_WASM+=-fwasm-exceptions
 
 # Emscripten options - variant & target specific
 CFLAGS_WASM+=-Oz

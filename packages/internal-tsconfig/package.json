@@ -1,7 +1,7 @@
 {
   "name": "@jitl/tsconfig",
   "private": true,
-  "version": "0.31.20",
+  "version": "0.31.21",
   "scripts": {
     "build": "pnpm run build:tsc && echo built $npm_package_json && ls -l",
     "build:tsc": "npx tsc --project tsconfig.tsup.json",
