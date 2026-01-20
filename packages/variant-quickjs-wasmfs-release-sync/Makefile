@@ -138,6 +138,12 @@ $(DIST)/emscripten-module.browser.mjs: $(BUILD_WRAPPER)/browser/emscripten-modul
 	$(MKDIRP)
 	if [ -e $(basename $<).wasm ] ; then cp -v $(basename $<).wasm* $(dir $@); fi
 	cp $< $@
+	# Patch the worker URL to use absolute path /wasm/ for bundler compatibility
+	# This allows the worker to load from a known location instead of relative to import.meta.url
+	sed -i.bak 's|new URL("emscripten-module.js",import.meta.url)|"/wasm/quickjs-wasmfs-worker.js"|g' $(DIST)/emscripten-module.browser.mjs
+	rm -f $(DIST)/emscripten-module.browser.mjs.bak
+	# Copy the worker file with the expected name for npm distribution
+	cp $< $(DIST)/quickjs-wasmfs-worker.js
 
 $(DIST)/emscripten-module.browser.d.ts: $(TEMPLATES)/emscripten-module.$(SYNC).d.ts
 	$(MKDIRP)
