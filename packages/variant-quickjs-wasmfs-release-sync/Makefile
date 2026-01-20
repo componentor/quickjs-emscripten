@@ -88,8 +88,8 @@ CFLAGS_WASM_BROWSER=$(CFLAGS_WASM)
 
 # Emscripten options - pthreads (required for WasmFS OPFS backend)
 # With pthreads, WasmFS proxies OPFS operations to a dedicated worker thread
+# Note: Don't use PROXY_TO_PTHREAD since this is a library, not an executable with main()
 CFLAGS_WASM+=-pthread
-CFLAGS_WASM+=-sPROXY_TO_PTHREAD
 # Pool size for pthread workers (WasmFS OPFS needs at least 1)
 CFLAGS_WASM+=-sPTHREAD_POOL_SIZE=2
 # SharedArrayBuffer is required for pthreads
