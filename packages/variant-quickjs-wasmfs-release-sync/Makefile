@@ -79,19 +79,20 @@ CFLAGS_WASM+=-s NODEJS_CATCH_EXIT=0
 CFLAGS_MJS+=-s EXPORT_ES6=1
 CFLAGS_BROWSER+=-s EXPORT_ES6=1
 
-# VARIANT - Use ASYNCIFY because WasmFS OPFS backend requires async support
-# wasmfs_create_opfs_backend() blocks waiting for OPFS worker spawn, causing deadlock without asyncify
+# VARIANT - Use JSPI because WasmFS OPFS backend requires it
+# Plain ASYNCIFY=1 does NOT work with WasmFS OPFS - see https://github.com/emscripten-core/emscripten/issues/23133
+# wasmfs_create_opfs_backend() blocks waiting for OPFS worker spawn, causing deadlock without async support
 SYNC=ASYNCIFY
 CFLAGS_WASM_BROWSER=$(CFLAGS_WASM)
 
-# Emscripten options - ASYNCIFY (required for OPFS backend)
-CFLAGS_WASM+=-s ASYNCIFY=1
+# Emscripten options - JSPI (required for WasmFS OPFS backend)
+# Note: ASYNCIFY=1 does NOT work with WasmFS OPFS, only JSPI or pthreads do
+CFLAGS_WASM+=-sJSPI
 CFLAGS_WASM+=-DQTS_ASYNCIFY=1
-CFLAGS_WASM+=-DQTS_ASYNCIFY_DEFAULT_STACK_SIZE=81920
-CFLAGS_WASM+=-s ASYNCIFY_STACK_SIZE=81920
-CFLAGS_WASM+=-s ASYNCIFY_REMOVE=@$(BUILD_WRAPPER)/asyncify-remove.json
-CFLAGS_WASM+=-s ASYNCIFY_IMPORTS=@$(BUILD_WRAPPER)/asyncify-imports.json
-CFLAGS_WASM+=-lasync.js
+# JSPI imports - functions that may suspend (return promises from JS)
+CFLAGS_WASM+=-sJSPI_IMPORTS=@$(BUILD_WRAPPER)/asyncify-imports.json
+# JSPI exports - functions that may be async
+CFLAGS_WASM+=-sJSPI_EXPORTS=['*']
 
 # Emscripten options - variant & target specific
 CFLAGS_WASM+=-Oz
