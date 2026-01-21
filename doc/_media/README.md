@@ -90,12 +90,12 @@ pool.dispose()
 
 ### Variant Comparison
 
-| Feature | `singlefile` (default) | `wasmfs` |
-|---------|------------------------|----------|
-| Worker isolation | Full isolation | Shared OPFS filesystem |
-| SharedArrayBuffer required | Yes (for multi-threading) | Yes |
-| Use case | Sandboxed execution | File-based communication |
-| Performance | Fastest | Slightly slower (file I/O) |
+| Feature                    | `singlefile` (default)    | `wasmfs`                   |
+| -------------------------- | ------------------------- | -------------------------- |
+| Worker isolation           | Full isolation            | Shared OPFS filesystem     |
+| SharedArrayBuffer required | Yes (for multi-threading) | Yes                        |
+| Use case                   | Sandboxed execution       | File-based communication   |
+| Performance                | Fastest                   | Slightly slower (file I/O) |
 
 ## Sessions (Persistent State)
 
@@ -110,10 +110,10 @@ const pool = await newWorkerPool({ poolSize: 4, verbose: true })
 const session = await pool.createSession()
 
 // State persists across evaluations
-await session.evalCode('globalThis.counter = 0')
-await session.evalCode('counter++')
-await session.evalCode('counter++')
-const result = await session.evalCode('counter')
+await session.evalCode("globalThis.counter = 0")
+await session.evalCode("counter++")
+await session.evalCode("counter++")
+const result = await session.evalCode("counter")
 console.log(result.value) // 2
 
 // Define functions that persist
@@ -177,8 +177,8 @@ const session2 = await pool.createSession()
 await session1.evalCode('globalThis.name = "Alice"')
 await session2.evalCode('globalThis.name = "Bob"')
 
-const r1 = await session1.evalCode('name') // "Alice"
-const r2 = await session2.evalCode('name') // "Bob"
+const r1 = await session1.evalCode("name") // "Alice"
+const r2 = await session2.evalCode("name") // "Bob"
 
 session1.release()
 session2.release()
