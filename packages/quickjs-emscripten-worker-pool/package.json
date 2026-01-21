@@ -36,9 +36,7 @@
       "require": "./dist/index.js"
     },
     "./worker": {
-      "types": "./dist/worker-scripts/worker-entry.d.ts",
-      "import": "./dist/worker-scripts/worker-entry.mjs",
-      "require": "./dist/worker-scripts/worker-entry.js"
+      "import": "./dist/worker/worker-entry.mjs"
     }
   },
   "scripts": {
