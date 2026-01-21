@@ -5,6 +5,7 @@ A Worker Pool for parallel QuickJS execution with **graceful degradation** to si
 ## Features
 
 - **Parallel Execution** - Run multiple QuickJS evaluations concurrently across Web Workers
+- **Async Support** - Support for promises and async operations via executePendingJobs() loops
 - **Shared Filesystem** - Optional WasmFS variant enables shared OPFS filesystem across workers
 - **Graceful Degradation** - Automatically falls back to single-threaded mode when SharedArrayBuffer is unavailable (no COOP/COEP headers)
 - **Cross-Platform** - Works in both browsers (Web Workers) and Node.js (worker_threads)
@@ -16,11 +17,7 @@ A Worker Pool for parallel QuickJS execution with **graceful degradation** to si
 ## Installation
 
 ```bash
-# Basic installation (isolated workers)
 npm install @componentor/quickjs-emscripten-worker-pool @componentor/quickjs-singlefile-cjs-release-sync
-
-# For shared filesystem support
-npm install @componentor/quickjs-emscripten-worker-pool @componentor/quickjs-wasmfs-release-sync
 ```
 
 ## Quick Start
@@ -52,6 +49,42 @@ const results = await Promise.all([
 // Clean up
 pool.dispose()
 ```
+
+## Async Operations Support
+
+The worker pool handles promises and async operations using sync variants with `executePendingJobs()` loops. This allows async functions and promises to resolve properly:
+
+```typescript
+const pool = await newWorkerPool({ poolSize: 4 })
+
+// Async functions work - promises are executed via pending jobs loop
+const result = await pool.evalCode(`
+  async function compute() {
+    return new Promise(resolve => {
+      setTimeout(() => resolve(42), 100)
+    })
+  }
+
+  // Note: The result here is a Promise, not the resolved value
+  // because sync variants don't support true top-level await
+  compute()
+`)
+
+// For synchronous computations, results work directly
+const result2 = await pool.evalCode(`
+  function fibonacci(n) {
+    if (n <= 1) return n
+    return fibonacci(n - 1) + fibonacci(n - 2)
+  }
+  fibonacci(20)
+`)
+
+console.log(result2.value) // 6765
+
+pool.dispose()
+```
+
+**Note:** Sync variants use `executePendingJobs()` loops to process promises, but don't support true top-level await like asyncify variants do. For full async/TLA support, consider using asyncify variants directly.
 
 ## Shared Filesystem (WasmFS Variant)
 

@@ -11,6 +11,9 @@ import type { Logger } from "./logger"
 /**
  * Single-threaded executor that runs tasks sequentially on the main thread.
  * Used as a fallback when SharedArrayBuffer is not available.
+ *
+ * Uses sync variant with executePendingJobs() loops for async operations,
+ * matching how the worker-entry.ts handles promises and async work.
  */
 export class SingleThreadExecutor implements TaskExecutor {
   private module: QuickJSWASMModule | null = null
@@ -26,7 +29,7 @@ export class SingleThreadExecutor implements TaskExecutor {
 
   /**
    * Create a new SingleThreadExecutor.
-   * Initializes the QuickJS module and context.
+   * Initializes the QuickJS sync module and context.
    */
   static async create(
     contextOptions: ContextOptions = {},
@@ -40,14 +43,14 @@ export class SingleThreadExecutor implements TaskExecutor {
   }
 
   private async initialize(): Promise<void> {
-    this.logger.log("Loading QuickJS WASM module (single-threaded mode)...")
-    // Dynamically import the variant to support different environments
+    this.logger.log("Loading QuickJS sync WASM module (single-threaded mode)...")
+    // Dynamically import the sync variant
     const variantModule = await import("@componentor/quickjs-singlefile-cjs-release-sync")
     // Handle both ESM default export and CJS module.exports patterns
     const variant = (variantModule.default ?? variantModule) as unknown as QuickJSSyncVariant
     this.module = await newQuickJSWASMModuleFromVariant(variant)
     this.context = this.module.newContext(this.contextOptions)
-    this.logger.log("QuickJS context initialized")
+    this.logger.log("QuickJS sync context initialized")
 
     // Run bootstrap code if provided
     if (this.bootstrapCode && this.context) {
@@ -61,8 +64,44 @@ export class SingleThreadExecutor implements TaskExecutor {
         )
       }
       result.value.dispose()
+      // Execute any pending jobs from bootstrap
+      this.executePendingJobsLoop(100)
       this.logger.log("Bootstrap code completed")
     }
+  }
+
+  /**
+   * Execute pending jobs (promises, microtasks) in a loop.
+   * This handles async operations with sync QuickJS variants.
+   */
+  private executePendingJobsLoop(maxIterations: number = 1000): boolean {
+    if (!this.context) return false
+
+    let hadJobs = false
+    let iterations = 0
+    let noJobIterations = 0
+    const maxNoJobIterations = 10
+
+    while (iterations < maxIterations && noJobIterations < maxNoJobIterations) {
+      const result = this.context.runtime.executePendingJobs()
+
+      if (result.error) {
+        const errorValue = this.context.dump(result.error)
+        result.error.dispose()
+        this.logger.error("Error in pending job:", errorValue)
+        hadJobs = true
+        noJobIterations = 0
+      } else if (result.value > 0) {
+        hadJobs = true
+        noJobIterations = 0
+      } else {
+        noJobIterations++
+      }
+
+      iterations++
+    }
+
+    return hadJobs
   }
 
   get alive(): boolean {
@@ -121,6 +160,7 @@ export class SingleThreadExecutor implements TaskExecutor {
       }
 
       try {
+        // Use evalCode with executePendingJobs() loop for async operations
         const result = this.context.evalCode(task.code, task.filename ?? "eval.js")
 
         if (result.error) {
@@ -156,6 +196,10 @@ export class SingleThreadExecutor implements TaskExecutor {
           }
         }
 
+        // Execute pending jobs (promises, async work) in a loop
+        const maxIterations = task.timeout ? Math.max(task.timeout / 10, 100) : 1000
+        this.executePendingJobsLoop(maxIterations)
+
         const value = this.context.dump(result.value)
         result.value.dispose()
 
@@ -176,12 +220,6 @@ export class SingleThreadExecutor implements TaskExecutor {
       }
     } finally {
       this.busy = false
-    }
-  }
-
-  private clearInterruptHandler(): void {
-    if (this.context) {
-      this.context.runtime.removeInterruptHandler()
     }
   }
 

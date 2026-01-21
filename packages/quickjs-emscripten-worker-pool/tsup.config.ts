@@ -11,9 +11,15 @@ export default defineConfig([
     minifySyntax: true,
     minifyWhitespace: true,
     tsconfig: "./tsconfig.build.json",
+    // Mark QuickJS variants as external - they are loaded dynamically at runtime
+    external: [
+      "@componentor/quickjs-wasmfs-release-sync",
+      "@componentor/quickjs-singlefile-cjs-release-sync",
+      "@componentor/quickjs-singlefile-cjs-release-asyncify",
+    ],
   },
-  // Worker script - FULLY self-contained bundle for browser Web Workers
-  // This bundles ALL dependencies so the worker can load as a standalone file
+  // Worker script - bundle for browser Web Workers
+  // QuickJS variants are dynamically imported at runtime based on configuration
   {
     entry: ["src/worker-scripts/worker-entry.ts"],
     outDir: "dist/worker",
@@ -23,8 +29,13 @@ export default defineConfig([
     minifySyntax: true,
     minifyWhitespace: true,
     tsconfig: "./tsconfig.build.json",
-    // Bundle EVERYTHING into the worker - make it fully self-contained
-    noExternal: [/.*/],
+    // Mark QuickJS variants as external - they are loaded dynamically at runtime
+    external: [
+      "@componentor/quickjs-wasmfs-release-sync",
+      "@componentor/quickjs-singlefile-cjs-release-sync",
+      "@componentor/quickjs-singlefile-cjs-release-asyncify",
+      "@componentor/quickjs-emscripten-core",
+    ],
     // Don't split into chunks - single file
     splitting: false,
   },
