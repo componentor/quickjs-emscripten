@@ -1,6 +1,6 @@
 {
   "name": "@componentor/quickjs-emscripten-core",
-  "version": "0.31.25",
+  "version": "0.31.26",
   "sideEffects": false,
   "license": "MIT",
   "type": "commonjs",

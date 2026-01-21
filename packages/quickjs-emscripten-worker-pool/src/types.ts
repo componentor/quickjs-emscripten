@@ -1,4 +1,5 @@
 import type { ContextOptions, Disposable } from "@componentor/quickjs-emscripten-core"
+import type { Logger } from "./logger"
 
 /**
  * Available QuickJS variants for the worker pool.
@@ -86,6 +87,58 @@ export interface WorkerPoolOptions {
    * Default is false.
    */
   verbose?: boolean
+
+  /**
+   * JavaScript code to run when initializing each worker's QuickJS context.
+   * Use this to set up polyfills, globals, or other initialization code
+   * that should be available in all worker evaluations.
+   *
+   * The code runs once per worker when the worker is initialized.
+   * It has access to the bare QuickJS context (no Node.js APIs by default).
+   *
+   * @example
+   * ```typescript
+   * const pool = await newWorkerPool({
+   *   bootstrapCode: `
+   *     globalThis.myHelper = function(x) { return x * 2; };
+   *     globalThis.Buffer = // ... Buffer polyfill
+   *   `
+   * })
+   * ```
+   */
+  bootstrapCode?: string
+
+  /**
+   * URL or path to the WASM file for workers to load.
+   * Required when workers can't resolve the WASM file from their context.
+   *
+   * For browser environments, this should be an absolute URL accessible
+   * from the worker (e.g., "/wasm/quickjs-wasmfs.wasm").
+   */
+  wasmLocation?: string
+}
+
+/**
+ * Options for creating a WorkerPoolExecutor.
+ * @internal
+ */
+export interface WorkerPoolExecutorOptions {
+  /** Number of workers in the pool */
+  poolSize: number
+  /** Context options for QuickJS */
+  contextOptions?: ContextOptions
+  /** QuickJS variant to use */
+  variant?: WorkerPoolVariant
+  /** OPFS mount path for wasmfs variant */
+  opfsMountPath?: string
+  /** Whether to pre-warm workers */
+  preWarm?: boolean
+  /** Bootstrap code to run on initialization */
+  bootstrapCode?: string
+  /** URL/path to the WASM file */
+  wasmLocation?: string
+  /** Logger instance */
+  logger?: Logger
 }
 
 /**

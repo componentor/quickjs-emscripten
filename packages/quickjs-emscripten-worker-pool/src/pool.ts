@@ -70,6 +70,7 @@ export class QuickJSWorkerPool implements Disposable {
       preWarm: boolean
       defaultTimeout: number
       maxQueueSize: number
+      bootstrapCode?: string
     },
   ) {
     this.executor = executor
@@ -98,6 +99,8 @@ export class QuickJSWorkerPool implements Disposable {
       preWarm: options.preWarm ?? false,
       defaultTimeout: options.defaultTimeout ?? 0,
       maxQueueSize: options.maxQueueSize ?? 0,
+      bootstrapCode: options.bootstrapCode,
+      wasmLocation: options.wasmLocation,
     }
 
     const multiThreadSupported = isMultiThreadingSupported()
@@ -132,21 +135,27 @@ export class QuickJSWorkerPool implements Disposable {
       logger.log(
         `Initializing multi-threaded executor with ${resolvedOptions.poolSize} workers (variant: ${resolvedOptions.variant})...`,
       )
-      executor = await WorkerPoolExecutor.create(
-        resolvedOptions.poolSize,
-        resolvedOptions.contextOptions,
-        resolvedOptions.variant,
-        resolvedOptions.opfsMountPath,
-        resolvedOptions.preWarm,
+      executor = await WorkerPoolExecutor.create({
+        poolSize: resolvedOptions.poolSize,
+        contextOptions: resolvedOptions.contextOptions,
+        variant: resolvedOptions.variant,
+        opfsMountPath: resolvedOptions.opfsMountPath,
+        preWarm: resolvedOptions.preWarm,
+        bootstrapCode: resolvedOptions.bootstrapCode,
+        wasmLocation: resolvedOptions.wasmLocation,
         logger,
-      )
+      })
       logger.log(
         `Multi-threaded executor ready in ${formatDuration(performance.now() - createStart)}`,
       )
     } else {
       // Graceful fallback to single-threaded execution
       logger.log("Initializing single-threaded executor (fallback mode)...")
-      executor = await SingleThreadExecutor.create(resolvedOptions.contextOptions, logger)
+      executor = await SingleThreadExecutor.create(
+        resolvedOptions.contextOptions,
+        resolvedOptions.bootstrapCode,
+        logger,
+      )
       logger.log(
         `Single-threaded executor ready in ${formatDuration(performance.now() - createStart)}`,
       )

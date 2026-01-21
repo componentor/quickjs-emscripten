@@ -5,6 +5,7 @@
 
 import {
   newQuickJSWASMModuleFromVariant,
+  newVariant,
   type QuickJSWASMModule,
   type QuickJSContext,
   type QuickJSSyncVariant,
@@ -81,12 +82,37 @@ function setupMessageListener(): void {
 /**
  * Load the appropriate QuickJS variant based on configuration.
  */
-async function loadVariant(variantName: WorkerPoolVariant): Promise<QuickJSSyncVariant> {
+async function loadVariant(
+  variantName: WorkerPoolVariant,
+  wasmLocation?: string,
+): Promise<QuickJSSyncVariant> {
   switch (variantName) {
     case "wasmfs": {
       // WasmFS variant with shared OPFS filesystem
       const variantModule = await import("@componentor/quickjs-wasmfs-release-sync")
-      return (variantModule.default ?? variantModule) as unknown as QuickJSSyncVariant
+      const baseVariant = (variantModule.default ?? variantModule) as unknown as QuickJSSyncVariant
+
+      // Configure WASM location if provided
+      if (wasmLocation) {
+        return newVariant(baseVariant, {
+          wasmLocation,
+          locateFile: (path: string) => {
+            // Handle WASM file
+            if (path.endsWith(".wasm")) {
+              return wasmLocation
+            }
+            // Handle pthread worker - typically in same directory as WASM
+            if (path.endsWith(".worker.js") || path.includes("worker")) {
+              return wasmLocation.replace(/\.wasm$/, "-worker.js")
+            }
+            // Default: use wasmLocation directory
+            const wasmDir = wasmLocation.substring(0, wasmLocation.lastIndexOf("/") + 1)
+            return wasmDir + path
+          },
+        })
+      }
+
+      return baseVariant
     }
     case "singlefile":
     default: {
@@ -101,19 +127,96 @@ async function handleInit(message: InitMessage): Promise<void> {
   try {
     currentVariant = message.variant ?? "singlefile"
 
-    // Load the appropriate variant
-    const variant = await loadVariant(currentVariant)
+    // Load the appropriate variant with WASM location if provided
+    const variant = await loadVariant(currentVariant, message.wasmLocation)
     module = await newQuickJSWASMModuleFromVariant(variant)
     context = module.newContext(message.contextOptions)
 
     // For wasmfs variant, the OPFS is automatically mounted at /root by the variant
     // Additional mounts can be configured via the variant's module if needed
 
+    // Run bootstrap code if provided (for setting up polyfills, globals, etc.)
+    if (message.bootstrapCode && context) {
+      const result = context.evalCode(message.bootstrapCode, "<bootstrap>")
+      if (result.error) {
+        const errorValue = context.dump(result.error)
+        result.error.dispose()
+        postToMain({
+          type: "init-error",
+          error: {
+            name: "BootstrapError",
+            message: `Bootstrap code failed: ${typeof errorValue === "object" && errorValue && "message" in errorValue ? (errorValue as { message: string }).message : String(errorValue)}`,
+            stack:
+              typeof errorValue === "object" && errorValue && "stack" in errorValue
+                ? (errorValue as { stack: string }).stack
+                : undefined,
+          },
+        })
+        return
+      }
+      result.value.dispose()
+
+      // Set up module loader for ES module imports (dynamic import() calls)
+      // This allows polyfilled modules to be loaded via import() syntax
+      // Known exports for common Node.js modules that need named ESM exports
+      const moduleExports: Record<string, string[]> = {
+        perf_hooks: ["performance", "PerformanceObserver", "PerformanceEntry", "monitorEventLoopDelay"],
+        path: ["join", "resolve", "dirname", "basename", "extname", "normalize", "relative", "isAbsolute", "parse", "format", "sep", "delimiter", "posix", "win32"],
+        fs: ["readFile", "readFileSync", "writeFile", "writeFileSync", "existsSync", "exists", "mkdir", "mkdirSync", "readdir", "readdirSync", "stat", "statSync", "unlink", "unlinkSync", "rmdir", "rmdirSync", "rename", "renameSync", "copyFile", "copyFileSync", "access", "accessSync", "open", "openSync", "close", "closeSync", "read", "readSync", "write", "writeSync", "appendFile", "appendFileSync", "createReadStream", "createWriteStream", "watch", "watchFile", "unwatchFile", "promises", "constants"],
+        url: ["URL", "URLSearchParams", "parse", "format", "resolve", "fileURLToPath", "pathToFileURL", "domainToASCII", "domainToUnicode", "urlToHttpOptions", "Url"],
+        util: ["promisify", "inherits", "inspect", "format", "debuglog", "deprecate", "callbackify", "types", "isDeepStrictEqual", "TextEncoder", "TextDecoder"],
+        events: ["EventEmitter", "once", "on", "getEventListeners", "setMaxListeners", "listenerCount"],
+        stream: ["Readable", "Writable", "Duplex", "Transform", "PassThrough", "Stream", "pipeline", "finished"],
+        buffer: ["Buffer", "constants", "kMaxLength", "kStringMaxLength", "SlowBuffer", "transcode"],
+        crypto: ["createHash", "createHmac", "randomBytes", "randomUUID", "randomInt", "randomFillSync", "getRandomValues", "subtle", "timingSafeEqual"],
+        os: ["platform", "arch", "cpus", "totalmem", "freemem", "homedir", "tmpdir", "hostname", "type", "release", "networkInterfaces", "userInfo", "EOL", "endianness"],
+        process: ["env", "cwd", "chdir", "exit", "nextTick", "argv", "platform", "arch", "version", "versions", "pid", "ppid", "hrtime", "memoryUsage", "uptime", "stdout", "stderr", "stdin", "on", "off", "once", "emit"],
+        timers: ["setTimeout", "setInterval", "setImmediate", "clearTimeout", "clearInterval", "clearImmediate"],
+        assert: ["ok", "equal", "notEqual", "deepEqual", "notDeepEqual", "strictEqual", "notStrictEqual", "deepStrictEqual", "notDeepStrictEqual", "fail", "throws", "doesNotThrow", "ifError", "rejects", "doesNotReject", "match", "doesNotMatch", "AssertionError"],
+        querystring: ["parse", "stringify", "escape", "unescape", "encode", "decode"],
+        zlib: ["createGzip", "createGunzip", "createDeflate", "createInflate", "gzip", "gunzip", "deflate", "inflate", "gzipSync", "gunzipSync", "deflateSync", "inflateSync", "constants"],
+      }
+
+      context.runtime.setModuleLoader((moduleName, _ctx) => {
+        console.log(`[Worker] Module loader called for: ${moduleName}`)
+        try {
+          // Strip node: prefix if present
+          const normalizedName = moduleName.startsWith("node:") ? moduleName.slice(5) : moduleName
+          console.log(`[Worker] Normalized module name: ${normalizedName}`)
+
+          // Get known exports for this module
+          const knownExports = moduleExports[normalizedName] || []
+          console.log(`[Worker] Known exports for ${normalizedName}:`, knownExports.length)
+
+          // Generate static named exports
+          const namedExports = knownExports
+            .map((name) => `export const ${name} = _mod?.${name};`)
+            .join("\n")
+
+          // Return module code that exports the polyfilled module
+          // The bootstrap code should have set up globalThis.__builtinModules
+          const moduleCode = `
+const _mod = globalThis.__builtinModules['${normalizedName}'];
+if (!_mod) {
+  throw new Error("Module '${moduleName}' not found in polyfills. Available: " + Object.keys(globalThis.__builtinModules || {}).join(', '));
+}
+export default _mod;
+${namedExports}
+`
+          console.log(`[Worker] Returning module code (${moduleCode.length} bytes)`)
+          return moduleCode
+        } catch (err) {
+          console.error(`[Worker] Module loader error:`, err)
+          // Return an error if something goes wrong in the loader itself
+          return err instanceof Error ? err : new Error(String(err))
+        }
+      })
+    }
+
     postToMain({ type: "ready" })
   } catch (error) {
     postToMain({
-      type: "error",
-      taskId: "init",
+      type: "init-error",
       error: {
         name: "InitializationError",
         message: error instanceof Error ? error.message : String(error),
@@ -135,6 +238,10 @@ async function handleEval(message: EvalMessage): Promise<void> {
     })
     return
   }
+
+  // Debug: log code length to see if we're receiving the bundled code
+  console.log(`[Worker] evalCode called with ${message.code.length} bytes, filename: ${message.filename}`)
+  console.log(`[Worker] Code preview (first 500 chars):`, message.code.slice(0, 500))
 
   // Check if this task was already cancelled
   if (cancelledTaskId === message.taskId) {

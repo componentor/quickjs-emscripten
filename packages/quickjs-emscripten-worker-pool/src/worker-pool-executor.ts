@@ -1,8 +1,15 @@
-import type { ContextOptions } from "@componentor/quickjs-emscripten-core"
-import type { TaskExecutor, InternalTask, WorkerPoolVariant, WorkerTaskResult } from "./types"
+import type {
+  TaskExecutor,
+  InternalTask,
+  WorkerPoolVariant,
+  WorkerTaskResult,
+  WorkerPoolExecutorOptions,
+} from "./types"
 import { WorkerWrapper } from "./worker-wrapper"
 import { getPlatformWorkerFactory, type PlatformWorkerFactory } from "./platform"
 import type { Logger } from "./logger"
+
+const noopLogger: Logger = { log: () => {}, warn: () => {}, error: () => {} }
 
 /**
  * Multi-threaded executor that runs tasks across multiple Web Workers.
@@ -15,44 +22,32 @@ export class WorkerPoolExecutor implements TaskExecutor {
   /** Worker IDs reserved for sessions (not available for pool tasks) */
   private reservedWorkerIds = new Set<number>()
 
-  private constructor(
-    private readonly poolSize: number,
-    private readonly contextOptions: ContextOptions,
-    private readonly variant: WorkerPoolVariant,
-    private readonly opfsMountPath: string | undefined,
-    private readonly logger: Logger,
-  ) {
+  private readonly poolSize: number
+  private readonly contextOptions: object
+  private readonly variant: WorkerPoolVariant
+  private readonly opfsMountPath: string | undefined
+  private readonly bootstrapCode: string | undefined
+  private readonly wasmLocation: string | undefined
+  private readonly logger: Logger
+
+  private constructor(options: WorkerPoolExecutorOptions) {
+    this.poolSize = options.poolSize
+    this.contextOptions = options.contextOptions ?? {}
+    this.variant = options.variant ?? "singlefile"
+    this.opfsMountPath = options.opfsMountPath
+    this.bootstrapCode = options.bootstrapCode
+    this.wasmLocation = options.wasmLocation
+    this.logger = options.logger ?? noopLogger
     this.factory = getPlatformWorkerFactory()
   }
 
   /**
    * Create a new WorkerPoolExecutor.
-   *
-   * @param poolSize Number of workers in the pool
-   * @param contextOptions Options to pass to each worker's QuickJS context
-   * @param variant Which QuickJS variant to use ("singlefile" or "wasmfs")
-   * @param opfsMountPath OPFS mount path for wasmfs variant
-   * @param preWarm If true, initialize all workers immediately
-   * @param logger Logger instance for verbose output
    */
-  static async create(
-    poolSize: number,
-    contextOptions: ContextOptions = {},
-    variant: WorkerPoolVariant = "singlefile",
-    opfsMountPath?: string,
-    preWarm = false,
-    logger?: Logger,
-  ): Promise<WorkerPoolExecutor> {
-    const noopLogger = { log: () => {}, warn: () => {}, error: () => {} }
-    const executor = new WorkerPoolExecutor(
-      poolSize,
-      contextOptions,
-      variant,
-      opfsMountPath,
-      logger ?? noopLogger,
-    )
+  static async create(options: WorkerPoolExecutorOptions): Promise<WorkerPoolExecutor> {
+    const executor = new WorkerPoolExecutor(options)
 
-    if (preWarm) {
+    if (options.preWarm) {
       await executor.warmUp()
     }
 
@@ -71,14 +66,16 @@ export class WorkerPoolExecutor implements TaskExecutor {
       const workerId = ++this.workerIdCounter
       this.logger.log(`Creating worker #${workerId}...`)
       initPromises.push(
-        WorkerWrapper.create(
-          workerId,
-          () => this.factory.createWorker(workerScriptUrl),
-          this.contextOptions,
-          this.variant,
-          this.opfsMountPath,
-          this.logger,
-        ),
+        WorkerWrapper.create({
+          id: workerId,
+          createWorker: () => this.factory.createWorker(workerScriptUrl),
+          contextOptions: this.contextOptions,
+          variant: this.variant,
+          opfsMountPath: this.opfsMountPath,
+          bootstrapCode: this.bootstrapCode,
+          wasmLocation: this.wasmLocation,
+          logger: this.logger,
+        }),
       )
     }
 
@@ -108,14 +105,16 @@ export class WorkerPoolExecutor implements TaskExecutor {
         `Creating new worker #${workerId} (lazy init, ${this.workers.length + 1}/${this.poolSize})`,
       )
       const workerScriptUrl = this.factory.getWorkerScriptUrl()
-      const worker = await WorkerWrapper.create(
-        workerId,
-        () => this.factory.createWorker(workerScriptUrl),
-        this.contextOptions,
-        this.variant,
-        this.opfsMountPath,
-        this.logger,
-      )
+      const worker = await WorkerWrapper.create({
+        id: workerId,
+        createWorker: () => this.factory.createWorker(workerScriptUrl),
+        contextOptions: this.contextOptions,
+        variant: this.variant,
+        opfsMountPath: this.opfsMountPath,
+        bootstrapCode: this.bootstrapCode,
+        wasmLocation: this.wasmLocation,
+        logger: this.logger,
+      })
       this.workers.push(worker)
       this.logger.log(`Worker #${workerId} ready`)
       return worker
@@ -144,14 +143,16 @@ export class WorkerPoolExecutor implements TaskExecutor {
       const workerId = ++this.workerIdCounter
       this.logger.log(`Creating worker #${workerId} for session...`)
       const workerScriptUrl = this.factory.getWorkerScriptUrl()
-      worker = await WorkerWrapper.create(
-        workerId,
-        () => this.factory.createWorker(workerScriptUrl),
-        this.contextOptions,
-        this.variant,
-        this.opfsMountPath,
-        this.logger,
-      )
+      worker = await WorkerWrapper.create({
+        id: workerId,
+        createWorker: () => this.factory.createWorker(workerScriptUrl),
+        contextOptions: this.contextOptions,
+        variant: this.variant,
+        opfsMountPath: this.opfsMountPath,
+        bootstrapCode: this.bootstrapCode,
+        wasmLocation: this.wasmLocation,
+        logger: this.logger,
+      })
       this.workers.push(worker)
     }
 

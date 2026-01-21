@@ -20,6 +20,7 @@ export class SingleThreadExecutor implements TaskExecutor {
 
   private constructor(
     private readonly contextOptions: ContextOptions,
+    private readonly bootstrapCode: string | undefined,
     private readonly logger: Logger,
   ) {}
 
@@ -29,10 +30,11 @@ export class SingleThreadExecutor implements TaskExecutor {
    */
   static async create(
     contextOptions: ContextOptions = {},
+    bootstrapCode?: string,
     logger?: Logger,
   ): Promise<SingleThreadExecutor> {
     const noopLogger = { log: () => {}, warn: () => {}, error: () => {} }
-    const executor = new SingleThreadExecutor(contextOptions, logger ?? noopLogger)
+    const executor = new SingleThreadExecutor(contextOptions, bootstrapCode, logger ?? noopLogger)
     await executor.initialize()
     return executor
   }
@@ -46,6 +48,21 @@ export class SingleThreadExecutor implements TaskExecutor {
     this.module = await newQuickJSWASMModuleFromVariant(variant)
     this.context = this.module.newContext(this.contextOptions)
     this.logger.log("QuickJS context initialized")
+
+    // Run bootstrap code if provided
+    if (this.bootstrapCode && this.context) {
+      this.logger.log("Running bootstrap code...")
+      const result = this.context.evalCode(this.bootstrapCode, "<bootstrap>")
+      if (result.error) {
+        const errorValue = this.context.dump(result.error)
+        result.error.dispose()
+        throw new Error(
+          `Bootstrap code failed: ${typeof errorValue === "object" && errorValue && "message" in errorValue ? (errorValue as { message: string }).message : String(errorValue)}`,
+        )
+      }
+      result.value.dispose()
+      this.logger.log("Bootstrap code completed")
+    }
   }
 
   get alive(): boolean {

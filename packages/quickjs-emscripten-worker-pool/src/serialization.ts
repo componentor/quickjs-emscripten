@@ -13,6 +13,10 @@ export interface InitMessage {
   variant: WorkerPoolVariant
   /** OPFS mount path (only for wasmfs variant) */
   opfsMountPath?: string
+  /** JavaScript code to run after context initialization */
+  bootstrapCode?: string
+  /** Location of the WASM file (used by workers to locate the WASM binary) */
+  wasmLocation?: string
 }
 
 export interface EvalMessage {
@@ -35,10 +39,15 @@ export interface TerminateMessage {
 /**
  * Messages sent from a worker to the main thread.
  */
-export type WorkerToMainMessage = ReadyMessage | ResultMessage | ErrorMessage
+export type WorkerToMainMessage = ReadyMessage | InitErrorMessage | ResultMessage | ErrorMessage
 
 export interface ReadyMessage {
   type: "ready"
+}
+
+export interface InitErrorMessage {
+  type: "init-error"
+  error: WorkerTaskError
 }
 
 export interface ResultMessage {

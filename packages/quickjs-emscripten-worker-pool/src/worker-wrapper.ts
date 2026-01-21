@@ -6,12 +6,37 @@ import type { PlatformWorker } from "./platform"
 import type { WorkerToMainMessage, InitMessage, EvalMessage } from "./serialization"
 import type { InternalTask, WorkerPoolVariant, WorkerTaskResult, WorkerTaskError } from "./types"
 
+/**
+ * Options for creating a WorkerWrapper.
+ * @internal
+ */
+export interface WorkerWrapperOptions {
+  /** Unique worker ID */
+  id: number
+  /** Factory function to create the platform worker */
+  createWorker: () => PlatformWorker
+  /** Context options for QuickJS */
+  contextOptions?: ContextOptions
+  /** QuickJS variant to use */
+  variant?: WorkerPoolVariant
+  /** OPFS mount path for wasmfs variant */
+  opfsMountPath?: string
+  /** Bootstrap code to run on initialization */
+  bootstrapCode?: string
+  /** URL/path to the WASM file */
+  wasmLocation?: string
+  /** Logger instance */
+  logger?: Logger
+}
+
 interface PendingTask {
   taskId: string
   resolve: (result: WorkerTaskResult) => void
   reject: (error: Error) => void
   timeoutHandle?: ReturnType<typeof setTimeout>
 }
+
+const noopLogger: Logger = { log: () => {}, warn: () => {}, error: () => {} }
 
 /**
  * Manages a single worker's lifecycle and task execution.
@@ -24,35 +49,31 @@ export class WorkerWrapper implements Disposable {
   private initResolve: (() => void) | null = null
   private initReject: ((error: Error) => void) | null = null
 
-  private constructor(
-    private readonly _id: number,
-    private readonly createWorkerFn: () => PlatformWorker,
-    private readonly contextOptions: ContextOptions,
-    private readonly variant: WorkerPoolVariant,
-    private readonly opfsMountPath: string | undefined,
-    private readonly logger: Logger,
-  ) {}
+  private readonly _id: number
+  private readonly createWorkerFn: () => PlatformWorker
+  private readonly contextOptions: object
+  private readonly variant: WorkerPoolVariant
+  private readonly opfsMountPath: string | undefined
+  private readonly bootstrapCode: string | undefined
+  private readonly wasmLocation: string | undefined
+  private readonly logger: Logger
+
+  private constructor(options: WorkerWrapperOptions) {
+    this._id = options.id
+    this.createWorkerFn = options.createWorker
+    this.contextOptions = options.contextOptions ?? {}
+    this.variant = options.variant ?? "singlefile"
+    this.opfsMountPath = options.opfsMountPath
+    this.bootstrapCode = options.bootstrapCode
+    this.wasmLocation = options.wasmLocation
+    this.logger = options.logger ?? noopLogger
+  }
 
   /**
    * Create and initialize a new WorkerWrapper.
    */
-  static async create(
-    id: number,
-    createWorker: () => PlatformWorker,
-    contextOptions: ContextOptions = {},
-    variant: WorkerPoolVariant = "singlefile",
-    opfsMountPath?: string,
-    logger?: Logger,
-  ): Promise<WorkerWrapper> {
-    const noopLogger = { log: () => {}, warn: () => {}, error: () => {} }
-    const wrapper = new WorkerWrapper(
-      id,
-      createWorker,
-      contextOptions,
-      variant,
-      opfsMountPath,
-      logger ?? noopLogger,
-    )
+  static async create(options: WorkerWrapperOptions): Promise<WorkerWrapper> {
+    const wrapper = new WorkerWrapper(options)
     await wrapper.initialize()
     return wrapper
   }
@@ -80,6 +101,8 @@ export class WorkerWrapper implements Disposable {
         contextOptions: this.contextOptions,
         variant: this.variant,
         opfsMountPath: this.opfsMountPath,
+        bootstrapCode: this.bootstrapCode,
+        wasmLocation: this.wasmLocation,
       }
       this.worker!.postMessage(initMessage)
     })
@@ -98,6 +121,19 @@ export class WorkerWrapper implements Disposable {
         }
         break
 
+      case "init-error":
+        // Handle initialization errors (bootstrap code failures, WASM load errors, etc.)
+        this.logger.error(`Worker #${this._id}: Initialization failed:`, message.error.message)
+        if (message.error.stack) {
+          this.logger.error(`Worker #${this._id}: Stack:`, message.error.stack)
+        }
+        if (this.initReject) {
+          this.initReject(new Error(`Worker initialization failed: ${message.error.message}`))
+          this.initResolve = null
+          this.initReject = null
+        }
+        break
+
       case "result":
         if (this.currentTask && this.currentTask.taskId === message.taskId) {
           this.logger.log(`Worker #${this._id}: Task ${message.taskId} completed`)
@@ -108,6 +144,7 @@ export class WorkerWrapper implements Disposable {
         break
 
       case "error":
+        // Handle task errors
         if (this.currentTask && this.currentTask.taskId === message.taskId) {
           this.logger.warn(
             `Worker #${this._id}: Task ${message.taskId} errored:`,
