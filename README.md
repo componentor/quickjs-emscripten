@@ -63,6 +63,10 @@ main()
       - [Asyncify](#asyncify)
         - [Async module loader](#async-module-loader)
         - [Async on host, sync in QuickJS](#async-on-host-sync-in-quickjs)
+    - [Worker Pool (Parallel Execution)](#worker-pool-parallel-execution)
+      - [Browser Setup for Multi-Threading](#browser-setup-for-multi-threading)
+    - [WasmFS with OPFS (Native Filesystem)](#wasmfs-with-opfs-native-filesystem)
+      - [File Watching for HMR](#file-watching-for-hmr)
     - [Testing your code](#testing-your-code)
     - [Packaging](#packaging)
       - [Reducing package size](#reducing-package-size)
@@ -554,6 +558,133 @@ data.map(x => x.toUpperCase()).join(' ')
 const upperCaseData = context.unwrapResult(result).consume(context.getString)
 console.log(upperCaseData) // 'VERY USEFUL DATA'
 ```
+
+### Worker Pool (Parallel Execution)
+
+For applications that need to run many QuickJS evaluations, the `@componentor/quickjs-emscripten-worker-pool` package provides a worker pool that can run tasks in parallel across multiple Web Workers.
+
+**Key features:**
+
+- **Parallel execution** across multiple workers for CPU-bound tasks
+- **Graceful degradation** to single-threaded mode when SharedArrayBuffer is unavailable
+- **Same API** regardless of threading mode
+- **Verbose logging** to verify multi-threading is working
+
+```bash
+npm install @componentor/quickjs-emscripten-worker-pool @componentor/quickjs-singlefile-cjs-release-sync
+```
+
+```typescript
+import {
+  newWorkerPool,
+  isMultiThreadingSupported,
+} from "@componentor/quickjs-emscripten-worker-pool"
+
+// Check if multi-threading is available
+console.log("Multi-threading:", isMultiThreadingSupported())
+
+// Create pool with verbose logging to verify workers
+const pool = await newWorkerPool({
+  poolSize: 4,
+  verbose: true, // Logs worker creation and task dispatch
+})
+
+console.log("Using real workers:", pool.isMultiThreaded)
+
+// Execute tasks in parallel (or sequentially if SharedArrayBuffer unavailable)
+const results = await Promise.all([
+  pool.evalCode("1 + 1"),
+  pool.evalCode("2 * 2"),
+  pool.evalCode("Math.sqrt(16)"),
+])
+
+pool.dispose()
+```
+
+#### Browser Setup for Multi-Threading
+
+Multi-threaded mode requires **Cross-Origin Isolation** via HTTP headers:
+
+```
+Cross-Origin-Opener-Policy: same-origin
+Cross-Origin-Embedder-Policy: require-corp
+```
+
+**Vite example:**
+
+```typescript
+// vite.config.ts
+export default defineConfig({
+  server: {
+    headers: {
+      "Cross-Origin-Opener-Policy": "same-origin",
+      "Cross-Origin-Embedder-Policy": "require-corp",
+    },
+  },
+})
+```
+
+Without these headers, the pool automatically falls back to single-threaded mode (sequential execution on the main thread).
+
+See the [worker-pool package documentation](./packages/quickjs-emscripten-worker-pool/README.md) for full API reference.
+
+### WasmFS with OPFS (Native Filesystem)
+
+For applications that need high-performance filesystem access, the `@componentor/quickjs-wasmfs-release-sync` variant provides native filesystem operations via [WasmFS](https://emscripten.org/docs/api_reference/Filesystem-API.html#wasmfs) with [OPFS](https://developer.mozilla.org/en-US/docs/Web/API/File_System_API/Origin_private_file_system) (Origin Private File System) backend.
+
+**Key benefits:**
+
+- **No JS boundary crossing** - filesystem operations run entirely inside Wasm
+- **Persistent storage** - files persist across sessions via OPFS
+- **Faster I/O** - eliminates ~1-5ms overhead per filesystem call
+
+```bash
+npm install @componentor/quickjs-wasmfs-release-sync quickjs-emscripten-core
+```
+
+```typescript
+import variant from "@componentor/quickjs-wasmfs-release-sync"
+import { newQuickJSWASMModuleFromVariant } from "quickjs-emscripten-core"
+
+const QuickJS = await newQuickJSWASMModuleFromVariant(variant)
+
+// Mount OPFS at /opfs
+await QuickJS.getWasmModule().mountOPFS("/opfs")
+
+// Filesystem operations inside QuickJS now access /opfs/* directly
+// without crossing the JS↔Wasm boundary
+const vm = QuickJS.newContext()
+vm.evalCode(`
+  const fs = require('fs')
+  fs.writeFileSync('/opfs/hello.txt', 'Hello from Wasm!')
+  const content = fs.readFileSync('/opfs/hello.txt', 'utf-8')
+  console.log(content)
+`)
+```
+
+#### File Watching for HMR
+
+WasmFS includes a polling-based directory watcher for Hot Module Replacement:
+
+```typescript
+const wasm = QuickJS.getWasmModule()
+
+// Watch directory for changes
+const stopWatching = wasm.watchDirectory(
+  "/opfs/src",
+  (changes) => {
+    for (const { path, type } of changes) {
+      console.log(`${type}: ${path}`)
+    }
+  },
+  100, // poll every 100ms
+)
+
+// Stop watching when done
+stopWatching()
+```
+
+**Note:** WasmFS with OPFS is browser-only (OPFS is a browser API). For more details, see the [WasmFS variant documentation](./packages/variant-quickjs-wasmfs-release-sync/README.md) and [WasmFS Integration Guide](./WASMFS_INTEGRATION.md).
 
 ### Testing your code
 

@@ -1,18 +1,17 @@
 {
-  "name": "@componentor/quickjs-emscripten-core",
+  "name": "@componentor/quickjs-emscripten-worker-pool",
   "version": "0.31.24",
   "sideEffects": false,
   "license": "MIT",
   "type": "commonjs",
   "keywords": [
-    "eval",
     "quickjs",
-    "vm",
-    "interpreter",
-    "runtime",
-    "safe",
-    "emscripten",
-    "wasm"
+    "worker",
+    "pool",
+    "parallel",
+    "threading",
+    "wasm",
+    "emscripten"
   ],
   "author": {
     "name": "Componentor"
@@ -35,6 +34,11 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
       "require": "./dist/index.js"
+    },
+    "./worker": {
+      "types": "./dist/worker-scripts/worker-entry.d.ts",
+      "import": "./dist/worker-scripts/worker-entry.mjs",
+      "require": "./dist/worker-scripts/worker-entry.js"
     }
   },
   "scripts": {
@@ -43,9 +47,18 @@
     "build": "npx tsup"
   },
   "dependencies": {
-    "@componentor/quickjs-ffi-types": "workspace:*"
+    "@componentor/quickjs-emscripten-core": "workspace:*"
+  },
+  "peerDependencies": {
+    "@componentor/quickjs-singlefile-cjs-release-sync": "workspace:*"
+  },
+  "peerDependenciesMeta": {
+    "@componentor/quickjs-singlefile-cjs-release-sync": {
+      "optional": true
+    }
   },
   "devDependencies": {
-    "@jitl/tsconfig": "workspace:*"
+    "@jitl/tsconfig": "workspace:*",
+    "@componentor/quickjs-singlefile-cjs-release-sync": "workspace:*"
   }
 }

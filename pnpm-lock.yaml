@@ -159,6 +159,19 @@ importers:
         specifier: workspace:*
         version: link:../internal-tsconfig
 
+  packages/quickjs-emscripten-worker-pool:
+    dependencies:
+      "@componentor/quickjs-emscripten-core":
+        specifier: workspace:*
+        version: link:../quickjs-emscripten-core
+    devDependencies:
+      "@componentor/quickjs-singlefile-cjs-release-sync":
+        specifier: workspace:*
+        version: link:../variant-quickjs-singlefile-cjs-release-sync
+      "@jitl/tsconfig":
+        specifier: workspace:*
+        version: link:../internal-tsconfig
+
   packages/quickjs-ffi-types:
     devDependencies:
       "@jitl/tsconfig":

@@ -1,0 +1,10 @@
+{
+  "extends": "@jitl/tsconfig/tsconfig.json",
+  "include": ["src/**/*"],
+  "compilerOptions": {
+    "paths": {
+      "@componentor/quickjs-emscripten-core": ["../quickjs-emscripten-core/src"],
+      "@componentor/quickjs-emscripten-core/*": ["../quickjs-emscripten-core/src/*"]
+    }
+  }
+}

@@ -1,7 +1,7 @@
 {
   "name": "@componentor/quickjs-ng-wasmfile-debug-sync",
   "license": "MIT",
-  "version": "0.31.23",
+  "version": "0.31.24",
   "description": "Variant of quickjs library: Variant with separate .WASM file. Supports browser ESM, NodeJS ESM, and NodeJS CommonJS.",
   "sideEffects": false,
   "repository": {
