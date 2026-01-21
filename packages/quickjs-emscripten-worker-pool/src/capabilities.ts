@@ -52,7 +52,8 @@ export function getDefaultPoolSize(): number {
   if (typeof process !== "undefined" && process.versions?.node != null) {
     try {
       // Dynamic import to avoid bundling issues
-      const os = require("os")
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const os = require("os") as { cpus: () => unknown[] }
       return os.cpus().length
     } catch {
       // Fallback if os module is not available

@@ -1,15 +1,10 @@
-import type { Disposable } from "@componentor/quickjs-emscripten-core"
-import type { PlatformWorker } from "./platform"
-import type {
-  MainToWorkerMessage,
-  WorkerToMainMessage,
-  InitMessage,
-  EvalMessage,
-} from "./serialization"
-import type { InternalTask, WorkerTaskResult, WorkerTaskError } from "./types"
-import { WorkerCrashError, WorkerTaskTimeoutError } from "./errors"
-import type { ContextOptions } from "@componentor/quickjs-emscripten-core"
+import type { ContextOptions, Disposable } from "@componentor/quickjs-emscripten-core"
+
+import { WorkerCrashError } from "./errors"
 import type { Logger } from "./logger"
+import type { PlatformWorker } from "./platform"
+import type { WorkerToMainMessage, InitMessage, EvalMessage } from "./serialization"
+import type { InternalTask, WorkerTaskResult, WorkerTaskError } from "./types"
 
 interface PendingTask {
   taskId: string

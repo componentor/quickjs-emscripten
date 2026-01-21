@@ -13,12 +13,7 @@ import { TaskQueue } from "./task-queue"
 import { SingleThreadExecutor } from "./single-thread-executor"
 import { WorkerPoolExecutor } from "./worker-pool-executor"
 import { isMultiThreadingSupported, getDefaultPoolSize } from "./capabilities"
-import {
-  MultiThreadingNotSupportedError,
-  PoolDisposedError,
-  QueueFullError,
-  WorkerTaskCancelledError,
-} from "./errors"
+import { MultiThreadingNotSupportedError, PoolDisposedError, QueueFullError } from "./errors"
 import { createLogger, formatDuration, truncateCode, type Logger } from "./logger"
 
 /**

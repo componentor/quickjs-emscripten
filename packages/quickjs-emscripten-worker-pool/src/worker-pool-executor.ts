@@ -1,4 +1,4 @@
-import type { Disposable, ContextOptions } from "@componentor/quickjs-emscripten-core"
+import type { ContextOptions } from "@componentor/quickjs-emscripten-core"
 import type { TaskExecutor, InternalTask, WorkerTaskResult } from "./types"
 import { WorkerWrapper } from "./worker-wrapper"
 import { getPlatformWorkerFactory, type PlatformWorkerFactory } from "./platform"

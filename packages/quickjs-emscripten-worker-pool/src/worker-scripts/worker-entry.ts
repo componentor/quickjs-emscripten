@@ -31,7 +31,8 @@ function postToMain(message: WorkerToMainMessage): void {
     self.postMessage(message)
   } else if (typeof require !== "undefined" && typeof process !== "undefined") {
     // Node.js worker_threads
-    const { parentPort } = require("worker_threads")
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { parentPort } = require("worker_threads") as { parentPort?: { postMessage: (msg: unknown) => void } }
     parentPort?.postMessage(message)
   }
 }
@@ -66,7 +67,8 @@ function setupMessageListener(): void {
     self.addEventListener("message", (event) => handler(event.data))
   } else if (typeof require !== "undefined" && typeof process !== "undefined") {
     // Node.js worker_threads
-    const { parentPort } = require("worker_threads")
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { parentPort } = require("worker_threads") as { parentPort?: { on: (event: string, handler: unknown) => void } }
     parentPort?.on("message", handler)
   }
 }

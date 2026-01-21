@@ -1,8 +1,9 @@
-import type { MainToWorkerMessage, WorkerToMainMessage } from "../serialization"
-import { detectPlatform } from "../capabilities"
 import { createRequire } from "module"
-import { fileURLToPath } from "url"
 import { dirname, resolve } from "path"
+import { fileURLToPath } from "url"
+
+import { detectPlatform } from "../capabilities"
+import type { MainToWorkerMessage, WorkerToMainMessage } from "../serialization"
 
 /**
  * Platform-agnostic worker interface.
