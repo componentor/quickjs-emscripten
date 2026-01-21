@@ -4,7 +4,7 @@ import { WorkerCrashError } from "./errors"
 import type { Logger } from "./logger"
 import type { PlatformWorker } from "./platform"
 import type { WorkerToMainMessage, InitMessage, EvalMessage } from "./serialization"
-import type { InternalTask, WorkerTaskResult, WorkerTaskError } from "./types"
+import type { InternalTask, WorkerPoolVariant, WorkerTaskResult, WorkerTaskError } from "./types"
 
 interface PendingTask {
   taskId: string
@@ -28,6 +28,8 @@ export class WorkerWrapper implements Disposable {
     private readonly _id: number,
     private readonly createWorkerFn: () => PlatformWorker,
     private readonly contextOptions: ContextOptions,
+    private readonly variant: WorkerPoolVariant,
+    private readonly opfsMountPath: string | undefined,
     private readonly logger: Logger,
   ) {}
 
@@ -38,10 +40,19 @@ export class WorkerWrapper implements Disposable {
     id: number,
     createWorker: () => PlatformWorker,
     contextOptions: ContextOptions = {},
+    variant: WorkerPoolVariant = "singlefile",
+    opfsMountPath?: string,
     logger?: Logger,
   ): Promise<WorkerWrapper> {
     const noopLogger = { log: () => {}, warn: () => {}, error: () => {} }
-    const wrapper = new WorkerWrapper(id, createWorker, contextOptions, logger ?? noopLogger)
+    const wrapper = new WorkerWrapper(
+      id,
+      createWorker,
+      contextOptions,
+      variant,
+      opfsMountPath,
+      logger ?? noopLogger,
+    )
     await wrapper.initialize()
     return wrapper
   }
@@ -67,6 +78,8 @@ export class WorkerWrapper implements Disposable {
       const initMessage: InitMessage = {
         type: "init",
         contextOptions: this.contextOptions,
+        variant: this.variant,
+        opfsMountPath: this.opfsMountPath,
       }
       this.worker!.postMessage(initMessage)
     })

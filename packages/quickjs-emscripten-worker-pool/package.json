@@ -1,6 +1,6 @@
 {
   "name": "@componentor/quickjs-emscripten-worker-pool",
-  "version": "0.31.24",
+  "version": "0.31.25",
   "sideEffects": false,
   "license": "MIT",
   "type": "commonjs",
@@ -48,15 +48,20 @@
     "@componentor/quickjs-emscripten-core": "workspace:*"
   },
   "peerDependencies": {
-    "@componentor/quickjs-singlefile-cjs-release-sync": "workspace:*"
+    "@componentor/quickjs-singlefile-cjs-release-sync": "workspace:*",
+    "@componentor/quickjs-wasmfs-release-sync": "workspace:*"
   },
   "peerDependenciesMeta": {
     "@componentor/quickjs-singlefile-cjs-release-sync": {
+      "optional": true
+    },
+    "@componentor/quickjs-wasmfs-release-sync": {
       "optional": true
     }
   },
   "devDependencies": {
     "@jitl/tsconfig": "workspace:*",
-    "@componentor/quickjs-singlefile-cjs-release-sync": "workspace:*"
+    "@componentor/quickjs-singlefile-cjs-release-sync": "workspace:*",
+    "@componentor/quickjs-wasmfs-release-sync": "workspace:*"
   }
 }

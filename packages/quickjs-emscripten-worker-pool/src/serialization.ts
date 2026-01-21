@@ -1,5 +1,5 @@
 import type { ContextOptions } from "@componentor/quickjs-emscripten-core"
-import type { WorkerTaskError } from "./types"
+import type { WorkerPoolVariant, WorkerTaskError } from "./types"
 
 /**
  * Messages sent from the main thread to a worker.
@@ -9,6 +9,10 @@ export type MainToWorkerMessage = InitMessage | EvalMessage | CancelMessage | Te
 export interface InitMessage {
   type: "init"
   contextOptions: ContextOptions
+  /** Which QuickJS variant to use */
+  variant: WorkerPoolVariant
+  /** OPFS mount path (only for wasmfs variant) */
+  opfsMountPath?: string
 }
 
 export interface EvalMessage {

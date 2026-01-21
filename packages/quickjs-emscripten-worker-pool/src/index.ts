@@ -7,11 +7,14 @@ export { isMultiThreadingSupported, getDefaultPoolSize, detectPlatform } from ".
 // Types
 export type {
   WorkerPoolOptions,
+  WorkerPoolVariant,
   WorkerTask,
   WorkerTaskResult,
   WorkerTaskError,
   TaskHandle,
   PoolStats,
+  WorkerSession,
+  SessionEvalOptions,
 } from "./types"
 
 // Errors

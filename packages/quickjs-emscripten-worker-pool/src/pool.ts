@@ -1,6 +1,7 @@
 import type { Disposable } from "@componentor/quickjs-emscripten-core"
 import type {
   WorkerPoolOptions,
+  WorkerPoolVariant,
   WorkerTask,
   WorkerTaskResult,
   TaskHandle,
@@ -8,10 +9,12 @@ import type {
   TaskExecutor,
   InternalTask,
   QueuedTask,
+  WorkerSession,
 } from "./types"
 import { TaskQueue } from "./task-queue"
 import { SingleThreadExecutor } from "./single-thread-executor"
 import { WorkerPoolExecutor } from "./worker-pool-executor"
+import { WorkerSessionImpl } from "./worker-session"
 import { isMultiThreadingSupported, getDefaultPoolSize } from "./capabilities"
 import { MultiThreadingNotSupportedError, PoolDisposedError, QueueFullError } from "./errors"
 import { createLogger, formatDuration, truncateCode, type Logger } from "./logger"
@@ -48,18 +51,26 @@ export class QuickJSWorkerPool implements Disposable {
   private readonly executor: TaskExecutor
   private readonly logger: Logger
   private taskIdCounter = 0
+  private sessionIdCounter = 0
   private completedTasks = 0
   private failedTasks = 0
   private totalExecutionTime = 0
   private _alive = true
   private pendingExecutions = new Map<string, { task: QueuedTask; startTime: number }>()
+  private activeSessions = new Map<string, WorkerSessionImpl>()
 
   private constructor(
     executor: TaskExecutor,
     logger: Logger,
-    options: Required<
-      Omit<WorkerPoolOptions, "forceMultiThreaded" | "forceSingleThreaded" | "verbose">
-    >,
+    options: {
+      poolSize: number
+      variant: WorkerPoolVariant
+      opfsMountPath: string
+      contextOptions: object
+      preWarm: boolean
+      defaultTimeout: number
+      maxQueueSize: number
+    },
   ) {
     this.executor = executor
     this.logger = logger
@@ -81,6 +92,8 @@ export class QuickJSWorkerPool implements Disposable {
 
     const resolvedOptions = {
       poolSize: options.poolSize ?? getDefaultPoolSize(),
+      variant: (options.variant ?? "singlefile") as WorkerPoolVariant,
+      opfsMountPath: options.opfsMountPath ?? "/data",
       contextOptions: options.contextOptions ?? {},
       preWarm: options.preWarm ?? false,
       defaultTimeout: options.defaultTimeout ?? 0,
@@ -92,6 +105,9 @@ export class QuickJSWorkerPool implements Disposable {
 
     logger.log("Creating pool with options:", {
       poolSize: resolvedOptions.poolSize,
+      variant: resolvedOptions.variant,
+      opfsMountPath:
+        resolvedOptions.variant === "wasmfs" ? resolvedOptions.opfsMountPath : undefined,
       preWarm: resolvedOptions.preWarm,
       defaultTimeout: resolvedOptions.defaultTimeout,
       maxQueueSize: resolvedOptions.maxQueueSize,
@@ -103,14 +119,24 @@ export class QuickJSWorkerPool implements Disposable {
       throw new MultiThreadingNotSupportedError()
     }
 
+    // WasmFS variant requires multi-threading support (SharedArrayBuffer)
+    if (resolvedOptions.variant === "wasmfs" && !multiThreadSupported) {
+      logger.warn("WasmFS variant requires SharedArrayBuffer. Falling back to singlefile variant.")
+      resolvedOptions.variant = "singlefile"
+    }
+
     let executor: TaskExecutor
     const createStart = performance.now()
 
     if (useMultiThreaded) {
-      logger.log(`Initializing multi-threaded executor with ${resolvedOptions.poolSize} workers...`)
+      logger.log(
+        `Initializing multi-threaded executor with ${resolvedOptions.poolSize} workers (variant: ${resolvedOptions.variant})...`,
+      )
       executor = await WorkerPoolExecutor.create(
         resolvedOptions.poolSize,
         resolvedOptions.contextOptions,
+        resolvedOptions.variant,
+        resolvedOptions.opfsMountPath,
         resolvedOptions.preWarm,
         logger,
       )
@@ -127,7 +153,7 @@ export class QuickJSWorkerPool implements Disposable {
     }
 
     logger.log(
-      `Pool created successfully. Mode: ${useMultiThreaded ? "MULTI-THREADED" : "SINGLE-THREADED"}`,
+      `Pool created successfully. Mode: ${useMultiThreaded ? "MULTI-THREADED" : "SINGLE-THREADED"}, Variant: ${resolvedOptions.variant}`,
     )
 
     return new QuickJSWorkerPool(executor, logger, resolvedOptions)
@@ -166,6 +192,78 @@ export class QuickJSWorkerPool implements Disposable {
    */
   get queuedTasks(): number {
     return this.taskQueue.length
+  }
+
+  /**
+   * Number of active sessions.
+   */
+  get activeSessionCount(): number {
+    return this.activeSessions.size
+  }
+
+  /**
+   * Create a session for persistent state across multiple evaluations.
+   *
+   * A session pins all evaluations to a single worker, preserving:
+   * - Global variables
+   * - Defined functions
+   * - Module state
+   * - Filesystem state (when using wasmfs variant)
+   *
+   * @returns A session object for persistent evaluations
+   * @throws {PoolDisposedError} If the pool has been disposed
+   * @throws {Error} If no workers are available
+   *
+   * @example
+   * ```typescript
+   * const session = await pool.createSession()
+   *
+   * await session.evalCode('globalThis.counter = 0')
+   * await session.evalCode('counter++')
+   * const result = await session.evalCode('counter')
+   * console.log(result.value) // 1
+   *
+   * session.release() // Return worker to pool
+   * ```
+   */
+  async createSession(): Promise<WorkerSession> {
+    if (!this._alive) {
+      throw new PoolDisposedError()
+    }
+
+    // Sessions only work with multi-threaded executor
+    if (!(this.executor instanceof WorkerPoolExecutor)) {
+      throw new Error(
+        "Sessions are only supported in multi-threaded mode. " +
+          "Ensure SharedArrayBuffer is available (COOP/COEP headers set).",
+      )
+    }
+
+    const worker = await this.executor.reserveWorkerForSession()
+    if (!worker) {
+      throw new Error(
+        "No workers available for session. " +
+          "All workers are reserved or busy. Try releasing existing sessions or increasing pool size.",
+      )
+    }
+
+    const sessionId = `session-${++this.sessionIdCounter}`
+    this.logger.log(`Creating session ${sessionId} on worker #${worker.id}`)
+
+    const session = new WorkerSessionImpl(
+      sessionId,
+      worker,
+      (releasedSession) => {
+        this.activeSessions.delete(releasedSession.sessionId)
+        if (this.executor instanceof WorkerPoolExecutor) {
+          this.executor.releaseReservedWorker(releasedSession.workerId)
+        }
+      },
+      this.logger,
+    )
+
+    this.activeSessions.set(sessionId, session)
+    return session
   }
 
   /**
@@ -369,7 +467,7 @@ export class QuickJSWorkerPool implements Disposable {
 
   /**
    * Dispose of the pool and all its workers.
-   * Rejects any pending tasks.
+   * Rejects any pending tasks and releases all sessions.
    */
   dispose(): void {
     if (!this._alive) {
@@ -377,6 +475,12 @@ export class QuickJSWorkerPool implements Disposable {
     }
 
     this._alive = false
+
+    // Release all active sessions
+    for (const session of this.activeSessions.values()) {
+      session.release()
+    }
+    this.activeSessions.clear()
 
     // Reject all queued tasks
     const queuedTasks = this.taskQueue.clear()

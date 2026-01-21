@@ -1,5 +1,5 @@
 import type { ContextOptions } from "@componentor/quickjs-emscripten-core"
-import type { TaskExecutor, InternalTask, WorkerTaskResult } from "./types"
+import type { TaskExecutor, InternalTask, WorkerPoolVariant, WorkerTaskResult } from "./types"
 import { WorkerWrapper } from "./worker-wrapper"
 import { getPlatformWorkerFactory, type PlatformWorkerFactory } from "./platform"
 import type { Logger } from "./logger"
@@ -12,10 +12,14 @@ export class WorkerPoolExecutor implements TaskExecutor {
   private _alive = true
   private readonly factory: PlatformWorkerFactory
   private workerIdCounter = 0
+  /** Worker IDs reserved for sessions (not available for pool tasks) */
+  private reservedWorkerIds = new Set<number>()
 
   private constructor(
     private readonly poolSize: number,
     private readonly contextOptions: ContextOptions,
+    private readonly variant: WorkerPoolVariant,
+    private readonly opfsMountPath: string | undefined,
     private readonly logger: Logger,
   ) {
     this.factory = getPlatformWorkerFactory()
@@ -26,17 +30,27 @@ export class WorkerPoolExecutor implements TaskExecutor {
    *
    * @param poolSize Number of workers in the pool
    * @param contextOptions Options to pass to each worker's QuickJS context
+   * @param variant Which QuickJS variant to use ("singlefile" or "wasmfs")
+   * @param opfsMountPath OPFS mount path for wasmfs variant
    * @param preWarm If true, initialize all workers immediately
    * @param logger Logger instance for verbose output
    */
   static async create(
     poolSize: number,
     contextOptions: ContextOptions = {},
+    variant: WorkerPoolVariant = "singlefile",
+    opfsMountPath?: string,
     preWarm = false,
     logger?: Logger,
   ): Promise<WorkerPoolExecutor> {
     const noopLogger = { log: () => {}, warn: () => {}, error: () => {} }
-    const executor = new WorkerPoolExecutor(poolSize, contextOptions, logger ?? noopLogger)
+    const executor = new WorkerPoolExecutor(
+      poolSize,
+      contextOptions,
+      variant,
+      opfsMountPath,
+      logger ?? noopLogger,
+    )
 
     if (preWarm) {
       await executor.warmUp()
@@ -61,6 +75,8 @@ export class WorkerPoolExecutor implements TaskExecutor {
           workerId,
           () => this.factory.createWorker(workerScriptUrl),
           this.contextOptions,
+          this.variant,
+          this.opfsMountPath,
           this.logger,
         ),
       )
@@ -73,10 +89,13 @@ export class WorkerPoolExecutor implements TaskExecutor {
   /**
    * Get or create an available worker.
    * Returns null if all workers are busy and pool is at capacity.
+   * Skips workers that are reserved for sessions.
    */
   private async getOrCreateWorker(): Promise<WorkerWrapper | null> {
-    // Find an available worker
-    const available = this.workers.find((w) => w.alive && !w.busy)
+    // Find an available worker (not reserved for a session)
+    const available = this.workers.find(
+      (w) => w.alive && !w.busy && !this.reservedWorkerIds.has(w.id),
+    )
     if (available) {
       this.logger.log(`Reusing worker #${available.id}`)
       return available
@@ -93,6 +112,8 @@ export class WorkerPoolExecutor implements TaskExecutor {
         workerId,
         () => this.factory.createWorker(workerScriptUrl),
         this.contextOptions,
+        this.variant,
+        this.opfsMountPath,
         this.logger,
       )
       this.workers.push(worker)
@@ -103,6 +124,54 @@ export class WorkerPoolExecutor implements TaskExecutor {
     // All workers busy and at capacity
     this.logger.log("All workers busy, task will wait")
     return null
+  }
+
+  /**
+   * Reserve a worker for exclusive use by a session.
+   * Creates a new worker if needed and pool isn't full.
+   * @returns The reserved worker, or null if no workers available
+   */
+  async reserveWorkerForSession(): Promise<WorkerWrapper | null> {
+    if (!this._alive) {
+      return null
+    }
+
+    // Find an available worker that's not reserved
+    let worker = this.workers.find((w) => w.alive && !w.busy && !this.reservedWorkerIds.has(w.id))
+
+    // If no available worker, try to create one
+    if (!worker && this.workers.length < this.poolSize) {
+      const workerId = ++this.workerIdCounter
+      this.logger.log(`Creating worker #${workerId} for session...`)
+      const workerScriptUrl = this.factory.getWorkerScriptUrl()
+      worker = await WorkerWrapper.create(
+        workerId,
+        () => this.factory.createWorker(workerScriptUrl),
+        this.contextOptions,
+        this.variant,
+        this.opfsMountPath,
+        this.logger,
+      )
+      this.workers.push(worker)
+    }
+
+    if (worker) {
+      this.reservedWorkerIds.add(worker.id)
+      this.logger.log(`Reserved worker #${worker.id} for session`)
+      return worker
+    }
+
+    return null
+  }
+
+  /**
+   * Release a reserved worker back to the pool.
+   */
+  releaseReservedWorker(workerId: number): void {
+    if (this.reservedWorkerIds.has(workerId)) {
+      this.reservedWorkerIds.delete(workerId)
+      this.logger.log(`Released worker #${workerId} from session reservation`)
+    }
   }
 
   get alive(): boolean {
@@ -118,9 +187,17 @@ export class WorkerPoolExecutor implements TaskExecutor {
   }
 
   get availableCount(): number {
-    const aliveAndFree = this.workers.filter((w) => w.alive && !w.busy).length
+    // Count workers that are alive, not busy, and not reserved for sessions
+    const aliveAndFree = this.workers.filter(
+      (w) => w.alive && !w.busy && !this.reservedWorkerIds.has(w.id),
+    ).length
     const canCreate = this.poolSize - this.workers.length
     return aliveAndFree + canCreate
+  }
+
+  /** Number of workers reserved for sessions */
+  get reservedCount(): number {
+    return this.reservedWorkerIds.size
   }
 
   get maxConcurrency(): number {
@@ -175,9 +252,13 @@ export class WorkerPoolExecutor implements TaskExecutor {
 
   /**
    * Check if an available worker exists (without waiting).
+   * Excludes workers reserved for sessions.
    */
   hasAvailableWorker(): boolean {
-    return this.workers.some((w) => w.alive && !w.busy) || this.workers.length < this.poolSize
+    return (
+      this.workers.some((w) => w.alive && !w.busy && !this.reservedWorkerIds.has(w.id)) ||
+      this.workers.length < this.poolSize
+    )
   }
 
   dispose(): void {

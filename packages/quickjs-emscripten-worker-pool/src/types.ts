@@ -1,6 +1,18 @@
 import type { ContextOptions, Disposable } from "@componentor/quickjs-emscripten-core"
 
 /**
+ * Available QuickJS variants for the worker pool.
+ *
+ * - `"singlefile"` (default): Isolated workers with no shared state.
+ *   Best for sandboxed execution where workers don't need to share data.
+ *
+ * - `"wasmfs"`: Workers with shared OPFS filesystem.
+ *   All workers mount the same OPFS directory, enabling file-based communication.
+ *   Requires SharedArrayBuffer (COOP/COEP headers in browsers).
+ */
+export type WorkerPoolVariant = "singlefile" | "wasmfs"
+
+/**
  * Configuration options for creating a worker pool.
  */
 export interface WorkerPoolOptions {
@@ -9,6 +21,25 @@ export interface WorkerPoolOptions {
    * Defaults to `navigator.hardwareConcurrency` in browsers, or 4 in Node.js.
    */
   poolSize?: number
+
+  /**
+   * QuickJS variant to use in workers.
+   *
+   * - `"singlefile"` (default): Isolated workers, no shared filesystem.
+   * - `"wasmfs"`: Workers share an OPFS-backed filesystem.
+   *
+   * When using `"wasmfs"`, you can configure the mount path with `opfsMountPath`.
+   */
+  variant?: WorkerPoolVariant
+
+  /**
+   * OPFS mount path when using the "wasmfs" variant.
+   * All workers will mount the same OPFS directory at this path.
+   * Default is "/data".
+   *
+   * Only used when `variant` is `"wasmfs"`.
+   */
+  opfsMountPath?: string
 
   /**
    * Context options applied to each worker's QuickJS context.
@@ -191,4 +222,61 @@ export interface QueuedTask {
   resolve: (result: WorkerTaskResult) => void
   reject: (error: Error) => void
   cancelled: boolean
+}
+
+/**
+ * A session provides persistent state across multiple evaluations.
+ *
+ * Unlike regular pool tasks which may execute on any available worker,
+ * a session pins all evaluations to a single worker, preserving:
+ * - Global variables
+ * - Defined functions
+ * - Module state
+ * - Filesystem state (when using wasmfs variant)
+ *
+ * @example
+ * ```typescript
+ * const session = await pool.createSession()
+ *
+ * await session.evalCode('globalThis.counter = 0')
+ * await session.evalCode('counter++')
+ * await session.evalCode('counter++')
+ * const result = await session.evalCode('counter')
+ * console.log(result.value) // 2
+ *
+ * session.release() // Return worker to pool
+ * ```
+ */
+export interface WorkerSession extends Disposable {
+  /** Unique session identifier */
+  readonly sessionId: string
+
+  /** The worker ID this session is pinned to */
+  readonly workerId: number
+
+  /** Whether the session is still active */
+  readonly alive: boolean
+
+  /**
+   * Evaluate code in this session's persistent context.
+   * All evaluations share the same global state.
+   */
+  evalCode(code: string, options?: SessionEvalOptions): Promise<WorkerTaskResult>
+
+  /**
+   * Release the session and return the worker to the pool.
+   * After calling release(), the session can no longer be used.
+   */
+  release(): void
+}
+
+/**
+ * Options for session evaluation.
+ */
+export interface SessionEvalOptions {
+  /** Optional filename for error stack traces */
+  filename?: string
+
+  /** Timeout in milliseconds for this evaluation */
+  timeout?: number
 }

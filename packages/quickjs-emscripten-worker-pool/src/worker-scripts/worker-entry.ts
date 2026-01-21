@@ -15,11 +15,12 @@ import type {
   InitMessage,
   EvalMessage,
 } from "../serialization"
-import type { WorkerTaskError } from "../types"
+import type { WorkerPoolVariant, WorkerTaskError } from "../types"
 
 let module: QuickJSWASMModule | null = null
 let context: QuickJSContext | null = null
 let cancelledTaskId: string | null = null
+let currentVariant: WorkerPoolVariant = "singlefile"
 
 /**
  * Post a message to the main thread.
@@ -77,14 +78,36 @@ function setupMessageListener(): void {
   }
 }
 
+/**
+ * Load the appropriate QuickJS variant based on configuration.
+ */
+async function loadVariant(variantName: WorkerPoolVariant): Promise<QuickJSSyncVariant> {
+  switch (variantName) {
+    case "wasmfs": {
+      // WasmFS variant with shared OPFS filesystem
+      const variantModule = await import("@componentor/quickjs-wasmfs-release-sync")
+      return (variantModule.default ?? variantModule) as unknown as QuickJSSyncVariant
+    }
+    case "singlefile":
+    default: {
+      // Default singlefile variant - isolated, no shared state
+      const variantModule = await import("@componentor/quickjs-singlefile-cjs-release-sync")
+      return (variantModule.default ?? variantModule) as unknown as QuickJSSyncVariant
+    }
+  }
+}
+
 async function handleInit(message: InitMessage): Promise<void> {
   try {
-    // Import the variant - using singlefile to ensure it works in workers
-    const variantModule = await import("@componentor/quickjs-singlefile-cjs-release-sync")
-    // Handle both ESM default export and CJS module.exports patterns
-    const variant = (variantModule.default ?? variantModule) as unknown as QuickJSSyncVariant
+    currentVariant = message.variant ?? "singlefile"
+
+    // Load the appropriate variant
+    const variant = await loadVariant(currentVariant)
     module = await newQuickJSWASMModuleFromVariant(variant)
     context = module.newContext(message.contextOptions)
+
+    // For wasmfs variant, the OPFS is automatically mounted at /root by the variant
+    // Additional mounts can be configured via the variant's module if needed
 
     postToMain({ type: "ready" })
   } catch (error) {
