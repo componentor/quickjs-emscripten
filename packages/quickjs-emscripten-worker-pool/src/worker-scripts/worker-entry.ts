@@ -361,9 +361,6 @@ const moduleExports: Record<string, string[]> = {
 }
 
 /**
- * Set up module loader for ES module imports.
- */
-/**
  * WasmFS module interface (Emscripten Module-level wrappers)
  */
 interface WasmFSModule {
@@ -548,6 +545,11 @@ function readFileFromWasmFS(path: string): string | null {
   }
 
   try {
+    // Check if file exists before reading to prevent WASM abort on missing files
+    if (module.exists && !module.exists(translatedPath)) {
+      return null
+    }
+
     if (module.readFileString) {
       const content = module.readFileString(translatedPath)
       if (content !== null && content !== undefined) {
@@ -559,6 +561,30 @@ function readFileFromWasmFS(path: string): string | null {
   }
 
   return null
+}
+
+/**
+ * Check if a file exists in WasmFS without reading its content.
+ * More efficient than readFileFromWasmFS for existence checks.
+ */
+function fileExistsInWasmFS(path: string): boolean {
+  const module = syncModule?.getWasmModule() as unknown as WasmFSModule | undefined
+  if (!module?.exists) {
+    // Fallback: try to read the file (less efficient)
+    return readFileFromWasmFS(path) !== null
+  }
+
+  // WasmFS path translation
+  let translatedPath = path
+  if (path.startsWith("/") && !path.startsWith("/root/")) {
+    translatedPath = "/root" + path
+  }
+
+  try {
+    return module.exists(translatedPath)
+  } catch {
+    return false
+  }
 }
 
 /**
@@ -616,21 +642,40 @@ function resolveModulePath(importPath: string, currentModulePath: string | undef
 }
 
 /**
- * Find the nearest node_modules directory by walking up from a given path
+ * Find the nearest node_modules directory by walking up from a given path.
+ * Actually checks if node_modules exists at each level.
  */
 function findNodeModulesDir(fromPath: string): string | null {
   let dir = fromPath
-  // Walk up looking for node_modules
-  while (dir && dir !== "/") {
+
+  // First, check if fromPath itself is a file - get its directory
+  if (!dir.endsWith("/")) {
     const lastSlash = dir.lastIndexOf("/")
     dir = lastSlash >= 0 ? dir.substring(0, lastSlash) : ""
-    // Check if this directory might have node_modules
-    // For now, assume /home/user/node_modules exists as the primary location
-    if (dir === "/home/user" || dir === "") {
-      return "/home/user/node_modules"
-    }
   }
-  return "/home/user/node_modules" // Default fallback
+
+  // Walk up looking for node_modules
+  while (dir && dir !== "/") {
+    const nodeModulesPath = `${dir}/node_modules`
+    // Check if node_modules exists at this level
+    if (
+      fileExistsInWasmFS(nodeModulesPath) ||
+      fileExistsInWasmFS(`${nodeModulesPath}/.package-lock.json`)
+    ) {
+      return nodeModulesPath
+    }
+
+    const lastSlash = dir.lastIndexOf("/")
+    dir = lastSlash >= 0 ? dir.substring(0, lastSlash) : ""
+  }
+
+  // Check root level
+  if (fileExistsInWasmFS("/node_modules")) {
+    return "/node_modules"
+  }
+
+  // Default fallback to /home/user/node_modules
+  return "/home/user/node_modules"
 }
 
 /**
@@ -745,17 +790,59 @@ function resolveExportsMap(
   }
 
   // Look for the subpath in exports
-  const exportEntry = exports[subpath] || exports[subpath === "." ? "." : `./${subpath}`]
+  const normalizedSubpath = subpath === "." ? "." : `./${subpath.replace(/^\.\//, "")}`
+  const exportEntry = exports[subpath] || exports[normalizedSubpath]
 
-  if (!exportEntry) {
-    // Try default export for "."
-    if (subpath === "." && exports.default) {
-      return resolveExportCondition(exports.default, packageDir)
-    }
-    return null
+  if (exportEntry) {
+    return resolveExportCondition(exportEntry, packageDir)
   }
 
-  return resolveExportCondition(exportEntry, packageDir)
+  // Try default export for "."
+  if (subpath === "." && exports.default) {
+    return resolveExportCondition(exports.default, packageDir)
+  }
+
+  // Check for wildcard exports (e.g., "./dist/*": "./dist/*")
+  const wildcardPatterns: Array<{ patternPrefix: string; targetPrefix: string }> = []
+
+  for (const [pattern, target] of Object.entries(exports)) {
+    if (pattern.endsWith("/*") && typeof target === "string" && target.endsWith("/*")) {
+      const patternPrefix = pattern.slice(0, -1) // "./dist/" from "./dist/*"
+      const targetPrefix = target.slice(0, -1) // "./dist/" from "./dist/*"
+
+      wildcardPatterns.push({ patternPrefix, targetPrefix })
+
+      // Check if the subpath matches the pattern
+      if (normalizedSubpath.startsWith(patternPrefix)) {
+        const remainder = normalizedSubpath.slice(patternPrefix.length)
+        const resolvedPath = `${packageDir}/${targetPrefix}${remainder}`
+        const result = resolveFilePath(resolvedPath)
+        if (result) return result
+      }
+    }
+  }
+
+  // Fallback: try prepending wildcard target directories to unmatched subpaths
+  // This handles cases like "rollup/shared/x" -> "rollup/dist/shared/x"
+  if (wildcardPatterns.length > 0 && normalizedSubpath.startsWith("./")) {
+    const subpathWithoutPrefix = normalizedSubpath.slice(2) // Remove "./"
+    for (const { targetPrefix } of wildcardPatterns) {
+      // Skip if subpath already starts with this target
+      if (normalizedSubpath.startsWith(targetPrefix)) continue
+
+      const targetDir = targetPrefix.slice(2, -1) // "./dist/" -> "dist"
+      const resolvedPath = `${packageDir}/${targetDir}/${subpathWithoutPrefix}`
+      const result = resolveFilePath(resolvedPath)
+      if (result) {
+        console.log(
+          `[Worker] Wildcard export fallback: ${normalizedSubpath} -> ${targetDir}/${subpathWithoutPrefix}`,
+        )
+        return result
+      }
+    }
+  }
+
+  return null
 }
 
 /**
@@ -781,7 +868,8 @@ function resolveExportCondition(condition: unknown, packageDir: string): string 
 }
 
 /**
- * Resolve a file path, trying different extensions
+ * Resolve a file path, trying different extensions.
+ * Uses existence checks instead of reading files for better performance.
  */
 function resolveFilePath(filePath: string): string | null {
   // Normalize path (remove ./ prefix if present)
@@ -791,14 +879,14 @@ function resolveFilePath(filePath: string): string | null {
   }
 
   // Try the exact path first
-  if (readFileFromWasmFS(normalized) !== null) {
+  if (fileExistsInWasmFS(normalized)) {
     return normalized
   }
 
   // Try with extensions
   for (const ext of [".js", ".mjs", ".cjs", ".json"]) {
     const withExt = normalized + ext
-    if (readFileFromWasmFS(withExt) !== null) {
+    if (fileExistsInWasmFS(withExt)) {
       return withExt
     }
   }
@@ -806,7 +894,7 @@ function resolveFilePath(filePath: string): string | null {
   // Try as directory with index
   for (const indexFile of ["/index.js", "/index.mjs", "/index.cjs"]) {
     const indexPath = normalized + indexFile
-    if (readFileFromWasmFS(indexPath) !== null) {
+    if (fileExistsInWasmFS(indexPath)) {
       return indexPath
     }
   }
@@ -816,6 +904,9 @@ function resolveFilePath(filePath: string): string | null {
 
 // Stack to track module loading for proper relative path resolution
 const moduleLoadStack: string[] = []
+
+// Set to track modules currently being loaded (for circular import detection)
+const loadingModules = new Set<string>()
 
 /**
  * Get the current module path from the stack
@@ -828,6 +919,14 @@ function getCurrentModulePath(): string | undefined {
  * Load a file module and return its source code
  */
 function loadFileModule(resolvedPath: string): string | { error: Error } {
+  // Check for circular imports
+  if (loadingModules.has(resolvedPath)) {
+    console.warn(`[Worker] Circular import detected: ${resolvedPath}`)
+    // Return empty module to break the cycle (similar to Node.js behavior)
+    // This allows partial exports from the circular dependency
+    return `/* Circular import: ${resolvedPath} */ export default undefined;`
+  }
+
   const content = readFileFromWasmFS(resolvedPath)
   if (content === null) {
     console.error(`[Worker] Failed to load file module: ${resolvedPath}`)
@@ -836,17 +935,30 @@ function loadFileModule(resolvedPath: string): string | { error: Error } {
 
   console.log(`[Worker] Loaded file module: ${resolvedPath} (${content.length} bytes)`)
 
+  // Mark as loading (for circular import detection)
+  loadingModules.add(resolvedPath)
+
   // Push to stack for nested imports
   moduleLoadStack.push(resolvedPath)
 
-  // Strip shebang if present
-  let source = content
-  if (source.startsWith("#!")) {
-    const newlineIndex = source.indexOf("\n")
-    if (newlineIndex !== -1) {
-      source = source.substring(newlineIndex + 1)
-    }
+  // Handle JSON files - wrap as ES module with default export
+  if (resolvedPath.endsWith(".json")) {
+    const jsonSource = `export default ${content};`
+    // Clean up after module loads
+    Promise.resolve().then(() => {
+      loadingModules.delete(resolvedPath)
+      if (
+        moduleLoadStack.length > 0 &&
+        moduleLoadStack[moduleLoadStack.length - 1] === resolvedPath
+      ) {
+        moduleLoadStack.pop()
+      }
+    })
+    return jsonSource
   }
+
+  // Strip shebang if present (use helper function)
+  const source = stripShebang(content)
 
   // Inject import.meta properties for ES modules
   // QuickJS sets up import.meta BEFORE module evaluation begins, so we need to
@@ -863,7 +975,8 @@ function loadFileModule(resolvedPath: string): string | { error: Error } {
   // Pop from stack after module is loaded (synchronous)
   // Note: For proper nested import handling, we pop after returning
   // QuickJS processes modules synchronously, so this works
-  queueMicrotask(() => {
+  Promise.resolve().then(() => {
+    loadingModules.delete(resolvedPath)
     if (
       moduleLoadStack.length > 0 &&
       moduleLoadStack[moduleLoadStack.length - 1] === resolvedPath
@@ -892,14 +1005,32 @@ function setupModuleLoader(runtime: QuickJSRuntime): void {
         return loadFileModule(resolvedPath)
       }
 
-      // 2. Check for node: built-in modules
+      // 2. Check if module is available in __builtinModules (polyfills from bootstrap)
+      // This prevents WasmFS crashes when trying to read non-existent package.json files
+      // Supports both 'fs' and 'node:fs' forms
+      const builtins = (globalThis as Record<string, unknown>).__builtinModules as
+        | Record<string, unknown>
+        | undefined
+      if (builtins) {
+        // Normalize: remove 'node:' prefix if present
+        const normalizedName = moduleName.startsWith("node:") ? moduleName.slice(5) : moduleName
+        // Check both the normalized name and original name
+        if (builtins[normalizedName] || builtins[moduleName]) {
+          console.log(
+            `[Worker] Found in __builtinModules: ${moduleName} (normalized: ${normalizedName})`,
+          )
+          return generateBuiltinModule(normalizedName, moduleName)
+        }
+      }
+
+      // 3. Fallback for node: prefix without __builtinModules entry
       if (moduleName.startsWith("node:")) {
         const normalizedName = moduleName.slice(5)
-        console.log(`[Worker] Node builtin: ${normalizedName}`)
+        console.log(`[Worker] Node builtin (fallback): ${normalizedName}`)
         return generateBuiltinModule(normalizedName, moduleName)
       }
 
-      // 3. Check if it's a bare specifier (npm package)
+      // 4. Check if it's a bare specifier (npm package)
       if (isBareSpecifier(moduleName)) {
         console.log(`[Worker] Bare specifier: ${moduleName}`)
         const resolvedPath = resolveBareModule(moduleName, currentModule)
@@ -911,7 +1042,7 @@ function setupModuleLoader(runtime: QuickJSRuntime): void {
         console.log(`[Worker] Could not resolve as npm package, trying as builtin: ${moduleName}`)
       }
 
-      // 4. Try as a builtin module (for things like 'fs', 'path', etc.)
+      // 5. Try as a builtin module (for things like 'fs', 'path', etc.)
       return generateBuiltinModule(moduleName, moduleName)
     } catch (err) {
       console.error(`[Worker] Module loader error:`, err)
@@ -1072,9 +1203,15 @@ function stripShebang(source: string): string {
 
 /**
  * Check if code appears to be an ES module.
+ * Looks for import/export statements not in comments.
  */
 function isESModule(source: string): boolean {
-  return /^\s*(import|export)\s/m.test(source)
+  // Remove single-line comments
+  const noSingleLineComments = source.replace(/\/\/.*$/gm, "")
+  // Remove multi-line comments
+  const noComments = noSingleLineComments.replace(/\/\*[\s\S]*?\*\//g, "")
+  // Check for import/export at start of line (after optional whitespace)
+  return /^\s*(import|export)\s/m.test(noComments)
 }
 
 async function handleEval(message: EvalMessage): Promise<void> {
