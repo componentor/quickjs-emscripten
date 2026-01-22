@@ -6,7 +6,7 @@
 
 # Interface: SessionEvalOptions
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:227
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:245
 
 Options for session evaluation.
 
@@ -16,7 +16,7 @@ Options for session evaluation.
 
 > `optional` **filename**: `string`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:229
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:247
 
 Optional filename for error stack traces
 
@@ -26,6 +26,6 @@ Optional filename for error stack traces
 
 > `optional` **timeout**: `number`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:231
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:249
 
 Timeout in milliseconds for this evaluation

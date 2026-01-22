@@ -6,7 +6,7 @@
 
 # Class: QuickJSWorkerPool
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:261
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:279
 
 A pool of workers for parallel QuickJS execution.
 
@@ -47,7 +47,7 @@ pool.dispose()
 
 > **get** **activeSessionCount**(): `number`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:307
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:325
 
 Number of active sessions.
 
@@ -63,7 +63,7 @@ Number of active sessions.
 
 > **get** **alive**(): `boolean`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:291
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:309
 
 Whether the pool is still alive (not disposed).
 
@@ -83,7 +83,7 @@ Whether the pool is still alive (not disposed).
 
 > **get** **availableWorkers**(): `number`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:299
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:317
 
 Number of workers available to accept tasks.
 
@@ -99,7 +99,7 @@ Number of workers available to accept tasks.
 
 > **get** **busyWorkers**(): `number`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:295
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:313
 
 Number of workers currently executing tasks.
 
@@ -115,7 +115,7 @@ Number of workers currently executing tasks.
 
 > **get** **isMultiThreaded**(): `boolean`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:287
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:305
 
 Whether the pool is using multi-threading (true) or single-threaded fallback (false).
 
@@ -131,7 +131,7 @@ Whether the pool is using multi-threading (true) or single-threaded fallback (fa
 
 > **get** **queuedTasks**(): `number`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:303
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:321
 
 Number of tasks waiting in the queue.
 
@@ -145,7 +145,7 @@ Number of tasks waiting in the queue.
 
 > **\[dispose\]**(): `void`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:370
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:388
 
 A method that is used to release resources held by an object. Called by the semantics of the `using` statement.
 
@@ -163,7 +163,7 @@ A method that is used to release resources held by an object. Called by the sema
 
 > **createSession**(): `Promise`\<[`WorkerSession`](../interfaces/WorkerSession.md)\>
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:333
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:351
 
 Create a session for persistent state across multiple evaluations.
 
@@ -206,7 +206,7 @@ session.release() // Return worker to pool
 
 > **dispose**(): `void`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:369
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:387
 
 Dispose of the pool and all its workers.
 Rejects any pending tasks and releases all sessions.
@@ -225,7 +225,7 @@ Rejects any pending tasks and releases all sessions.
 
 > **evalCode**(`code`, `options?`): `Promise`\<[`WorkerTaskResult`](../README.md#workertaskresult)\<`unknown`\>\>
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:341
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:359
 
 Evaluate JavaScript code in an available worker.
 
@@ -255,7 +255,7 @@ The result of the evaluation
 
 > **evalCodeBatch**(`tasks`): `Promise`\<[`WorkerTaskResult`](../README.md#workertaskresult)\<`unknown`\>[]\>
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:348
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:366
 
 Execute multiple tasks and return when all complete.
 
@@ -279,7 +279,7 @@ Array of results in the same order as the input tasks
 
 > **getStats**(): [`PoolStats`](../interfaces/PoolStats.md)
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:364
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:382
 
 Get pool statistics.
 
@@ -293,7 +293,7 @@ Get pool statistics.
 
 > **submit**(`task`): [`TaskHandle`](../interfaces/TaskHandle.md)
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:358
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:376
 
 Submit a task and get a handle for status checking and cancellation.
 
@@ -325,7 +325,7 @@ If the queue is full
 
 > `static` **create**(`options?`): `Promise`\<`QuickJSWorkerPool`\>
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:283
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:301
 
 Create a new worker pool.
 

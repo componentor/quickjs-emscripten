@@ -6,7 +6,7 @@
 
 # Class: WorkerCrashError
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:918
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:936
 
 Thrown when a worker crashes unexpectedly.
 
@@ -20,7 +20,7 @@ Thrown when a worker crashes unexpectedly.
 
 > **new WorkerCrashError**(`taskId`, `originalError?`): `WorkerCrashError`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:923
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:941
 
 #### Parameters
 
@@ -46,7 +46,7 @@ Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:923
 
 > `readonly` **isWorkerCrash**: `true` = `true`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:922
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:940
 
 ***
 
@@ -54,7 +54,7 @@ Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:922
 
 > `readonly` **name**: `"WorkerCrashError"` = `"WorkerCrashError"`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:921
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:939
 
 #### Overrides
 
@@ -66,7 +66,7 @@ Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:921
 
 > `readonly` `optional` **originalError**: `Error`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:920
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:938
 
 ***
 
@@ -74,4 +74,4 @@ Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:920
 
 > `readonly` **taskId**: `string`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:919
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:937

@@ -6,7 +6,7 @@
 
 # Class: WorkerPoolContext
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:450
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:468
 
 A context-like wrapper around QuickJSWorkerPool that provides an API
 similar to QuickJSAsyncContext for seamless integration.
@@ -53,7 +53,7 @@ context.dispose()
 
 > **new WorkerPoolContext**(`pool`): `WorkerPoolContext`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:458
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:476
 
 Create a new WorkerPoolContext wrapping the given pool.
 
@@ -77,7 +77,7 @@ The worker pool to use for code execution
 
 > **get** **alive**(): `boolean`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:462
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:480
 
 Whether the context is still alive (not disposed).
 
@@ -97,7 +97,7 @@ Whether the context is still alive (not disposed).
 
 > **get** **isMultiThreaded**(): `boolean`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:466
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:484
 
 Whether the underlying pool is using multi-threading.
 
@@ -111,7 +111,7 @@ Whether the underlying pool is using multi-threading.
 
 > **\[dispose\]**(): `void`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:540
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:558
 
 A method that is used to release resources held by an object. Called by the semantics of the `using` statement.
 
@@ -129,7 +129,7 @@ A method that is used to release resources held by an object. Called by the sema
 
 > **dispose**(): `void`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:539
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:557
 
 Dispose of the context.
 
@@ -150,7 +150,7 @@ disposed separately when no longer needed.
 
 > **evalCodeAsync**(`code`, `filenameOrOptions?`): `Promise`\<[`WorkerPoolContextResult`](../README.md#workerpoolcontextresult)\<`unknown`\>\>
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:492
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:510
 
 Evaluate JavaScript code asynchronously.
 
@@ -199,7 +199,7 @@ const result = await context.evalCodeAsync('while(true){}', {
 
 > **evalCodeBatch**(`tasks`): `Promise`\<[`WorkerPoolContextResult`](../README.md#workerpoolcontextresult)\<`unknown`\>[]\>
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:518
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:536
 
 Evaluate multiple code snippets in parallel.
 
@@ -243,7 +243,7 @@ const results = await context.evalCodeBatch([
 
 > **unwrapResult**\<`T`\>(`result`): `T`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:532
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:550
 
 Unwrap a result, throwing if it's an error.
 

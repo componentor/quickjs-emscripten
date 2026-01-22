@@ -6,7 +6,7 @@
 
 # Class: WorkerEnabledContext
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:632
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:650
 
 A hybrid context that combines local QuickJSAsyncContext with worker pool execution.
 
@@ -59,7 +59,7 @@ ctx.dispose()
 
 > **get** **alive**(): `boolean`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:654
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:672
 
 Whether the context is still alive.
 
@@ -79,7 +79,7 @@ Whether the context is still alive.
 
 > **get** **false**(): [`QuickJSHandle`](../README.md#quickjshandle)
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:770
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:788
 
 Get the false value.
 
@@ -99,7 +99,7 @@ Error if in worker-only mode
 
 > **get** **global**(): [`QuickJSHandle`](../README.md#quickjshandle)
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:684
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:702
 
 The global object of the local context.
 
@@ -119,7 +119,7 @@ Error if in worker-only mode
 
 > **get** **hasWorkerPool**(): `boolean`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:658
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:676
 
 Whether workers are available for parallel execution.
 
@@ -135,7 +135,7 @@ Whether workers are available for parallel execution.
 
 > **get** **isMultiThreaded**(): `boolean`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:662
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:680
 
 Whether the worker pool is using real multi-threading.
 
@@ -151,7 +151,7 @@ Whether the worker pool is using real multi-threading.
 
 > **get** **localContext**(): [`QuickJSAsyncContext`](QuickJSAsyncContext.md) \| `null`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:667
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:685
 
 The underlying local context (null if worker-only mode).
 Use this for advanced handle operations.
@@ -168,7 +168,7 @@ Use this for advanced handle operations.
 
 > **get** **null**(): [`QuickJSHandle`](../README.md#quickjshandle)
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:760
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:778
 
 Get the null value.
 
@@ -188,7 +188,7 @@ Error if in worker-only mode
 
 > **get** **pool**(): [`QuickJSWorkerPool`](QuickJSWorkerPool.md) \| `null`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:671
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:689
 
 The underlying worker pool (null if not available).
 
@@ -204,7 +204,7 @@ The underlying worker pool (null if not available).
 
 > **get** **runtime**(): [`QuickJSAsyncRuntime`](QuickJSAsyncRuntime.md)
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:689
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:707
 
 The runtime of the local context.
 
@@ -224,7 +224,7 @@ Error if in worker-only mode
 
 > **get** **session**(): [`WorkerSession`](../interfaces/WorkerSession.md) \| `null`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:675
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:693
 
 The underlying worker session (null if not using sessions or unavailable).
 
@@ -240,7 +240,7 @@ The underlying worker session (null if not using sessions or unavailable).
 
 > **get** **true**(): [`QuickJSHandle`](../README.md#quickjshandle)
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:765
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:783
 
 Get the true value.
 
@@ -260,7 +260,7 @@ Error if in worker-only mode
 
 > **get** **undefined**(): [`QuickJSHandle`](../README.md#quickjshandle)
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:755
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:773
 
 Get the undefined value.
 
@@ -280,7 +280,7 @@ Error if in worker-only mode
 
 > **get** **usesSession**(): `boolean`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:679
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:697
 
 Whether this context uses a session for persistent state.
 
@@ -294,7 +294,7 @@ Whether this context uses a session for persistent state.
 
 > **\[dispose\]**(): `void`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:824
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:842
 
 A method that is used to release resources held by an object. Called by the semantics of the `using` statement.
 
@@ -312,7 +312,7 @@ A method that is used to release resources held by an object. Called by the sema
 
 > **callFunction**(`func`, `thisVal`, ...`args`): [`VmCallResult`](../README.md#vmcallresult)\<[`QuickJSHandle`](../README.md#quickjshandle)\>
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:800
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:818
 
 Call a function.
 
@@ -344,7 +344,7 @@ Error if in worker-only mode
 
 > **dispose**(): `void`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:823
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:841
 
 Dispose of the context and all resources.
 
@@ -362,7 +362,7 @@ Dispose of the context and all resources.
 
 > **dump**(`handle`): `unknown`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:805
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:823
 
 Dump a handle to a JavaScript value.
 
@@ -386,7 +386,7 @@ Error if in worker-only mode
 
 > **evalCodeAsync**(`code`, `filename?`, `options?`): `Promise`\<[`VmCallResult`](../README.md#vmcallresult)\<[`QuickJSHandle`](../README.md#quickjshandle)\>\>
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:704
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:722
 
 Evaluate JavaScript code asynchronously.
 
@@ -427,7 +427,7 @@ Optional evaluation options
 
 > **evalCodeBatch**(`tasks`): `Promise`\<[`WorkerTaskResult`](../README.md#workertaskresult)\<`unknown`\>[]\>
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:716
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:734
 
 Evaluate multiple code snippets in parallel across workers.
 
@@ -447,7 +447,7 @@ Evaluate multiple code snippets in parallel across workers.
 
 > **evalCodeOnWorkers**(`code`, `options?`): `Promise`\<[`WorkerTaskResult`](../README.md#workertaskresult)\<`unknown`\>\>
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:709
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:727
 
 Evaluate code on workers and return the raw worker result.
 Use this when you don't need QuickJS handles.
@@ -478,7 +478,7 @@ Use this when you don't need QuickJS handles.
 
 > **getBigInt**(`handle`): `bigint`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:785
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:803
 
 Get a BigInt from a handle.
 
@@ -502,7 +502,7 @@ Error if in worker-only mode
 
 > **getNumber**(`handle`): `number`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:780
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:798
 
 Get a number from a handle.
 
@@ -526,7 +526,7 @@ Error if in worker-only mode
 
 > **getProp**(`handle`, `key`): [`QuickJSHandle`](../README.md#quickjshandle)
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:790
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:808
 
 Get a property from an object.
 
@@ -554,7 +554,7 @@ Error if in worker-only mode
 
 > **getString**(`handle`): `string`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:775
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:793
 
 Get a string from a handle.
 
@@ -578,7 +578,7 @@ Error if in worker-only mode
 
 > **newArray**(): [`QuickJSHandle`](../README.md#quickjshandle)
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:735
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:753
 
 Create a new QuickJS array.
 
@@ -596,7 +596,7 @@ Error if in worker-only mode
 
 > **newBigInt**(`num`): [`QuickJSHandle`](../README.md#quickjshandle)
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:750
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:768
 
 Create a new QuickJS BigInt.
 
@@ -620,7 +620,7 @@ Error if in worker-only mode
 
 > **newFunction**(`name`, `fn`): [`QuickJSHandle`](../README.md#quickjshandle)
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:725
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:743
 
 Create a new QuickJS function.
 
@@ -648,7 +648,7 @@ Error if in worker-only mode
 
 > **newNumber**(`num`): [`QuickJSHandle`](../README.md#quickjshandle)
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:745
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:763
 
 Create a new QuickJS number.
 
@@ -672,7 +672,7 @@ Error if in worker-only mode
 
 > **newObject**(`prototype?`): [`QuickJSHandle`](../README.md#quickjshandle)
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:730
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:748
 
 Create a new QuickJS object.
 
@@ -696,7 +696,7 @@ Error if in worker-only mode
 
 > **newString**(`str`): [`QuickJSHandle`](../README.md#quickjshandle)
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:740
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:758
 
 Create a new QuickJS string.
 
@@ -720,7 +720,7 @@ Error if in worker-only mode
 
 > **setProp**(`handle`, `key`, `value`): `void`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:795
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:813
 
 Set a property on an object.
 
@@ -752,7 +752,7 @@ Error if in worker-only mode
 
 > **typeof**(`handle`): `string`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:810
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:828
 
 Get the type of a handle.
 
@@ -776,7 +776,7 @@ Error if in worker-only mode
 
 > `static` **create**(`options?`): `Promise`\<`WorkerEnabledContext`\>
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:650
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:668
 
 Create a new WorkerEnabledContext.
 

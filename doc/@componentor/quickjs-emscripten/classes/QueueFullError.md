@@ -6,7 +6,7 @@
 
 # Class: QueueFullError
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:935
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:953
 
 Thrown when the task queue is full and cannot accept more tasks.
 
@@ -20,7 +20,7 @@ Thrown when the task queue is full and cannot accept more tasks.
 
 > **new QueueFullError**(`maxSize`): `QueueFullError`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:938
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:956
 
 #### Parameters
 
@@ -42,7 +42,7 @@ Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:938
 
 > `readonly` **maxSize**: `number`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:936
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:954
 
 ***
 
@@ -50,7 +50,7 @@ Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:936
 
 > `readonly` **name**: `"QueueFullError"` = `"QueueFullError"`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:937
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:955
 
 #### Overrides
 

@@ -6,7 +6,7 @@
 
 # Interface: WorkerSession
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:206
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:224
 
 A session provides persistent state across multiple evaluations.
 
@@ -41,7 +41,7 @@ session.release() // Return worker to pool
 
 > `readonly` **alive**: `boolean`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:212
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:230
 
 Whether the session is still active
 
@@ -55,7 +55,7 @@ Whether the session is still active
 
 > `readonly` **sessionId**: `string`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:208
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:226
 
 Unique session identifier
 
@@ -65,7 +65,7 @@ Unique session identifier
 
 > `readonly` **workerId**: `number`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:210
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:228
 
 The worker ID this session is pinned to
 
@@ -111,7 +111,7 @@ Dispose of the underlying resources used by this object.
 
 > **evalCode**(`code`, `options?`): `Promise`\<[`WorkerTaskResult`](../README.md#workertaskresult)\<`unknown`\>\>
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:217
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:235
 
 Evaluate code in this session's persistent context.
 All evaluations share the same global state.
@@ -136,7 +136,7 @@ All evaluations share the same global state.
 
 > **release**(): `void`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:222
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:240
 
 Release the session and return the worker to the pool.
 After calling release(), the session can no longer be used.

@@ -6,7 +6,7 @@
 
 # Interface: PoolStats
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:165
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:183
 
 Statistics about the worker pool.
 
@@ -16,7 +16,7 @@ Statistics about the worker pool.
 
 > **availableWorkers**: `number`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:171
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:189
 
 Number of workers available to accept tasks
 
@@ -26,7 +26,7 @@ Number of workers available to accept tasks
 
 > **averageExecutionTimeMs**: `number`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:179
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:197
 
 Average execution time in milliseconds
 
@@ -36,7 +36,7 @@ Average execution time in milliseconds
 
 > **busyWorkers**: `number`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:169
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:187
 
 Number of workers currently executing tasks
 
@@ -46,7 +46,7 @@ Number of workers currently executing tasks
 
 > **completedTasks**: `number`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:175
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:193
 
 Total number of tasks completed successfully
 
@@ -56,7 +56,7 @@ Total number of tasks completed successfully
 
 > **failedTasks**: `number`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:177
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:195
 
 Total number of tasks that failed
 
@@ -66,7 +66,7 @@ Total number of tasks that failed
 
 > **isMultiThreaded**: `boolean`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:181
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:199
 
 Whether the pool is using multi-threading (true) or single-threaded fallback (false)
 
@@ -76,7 +76,7 @@ Whether the pool is using multi-threading (true) or single-threaded fallback (fa
 
 > **poolSize**: `number`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:167
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:185
 
 Total number of workers in the pool
 
@@ -86,6 +86,6 @@ Total number of workers in the pool
 
 > **queuedTasks**: `number`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:173
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:191
 
 Number of tasks waiting in the queue

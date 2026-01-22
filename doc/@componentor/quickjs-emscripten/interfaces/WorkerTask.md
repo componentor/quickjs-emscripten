@@ -6,7 +6,7 @@
 
 # Interface: WorkerTask
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:111
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:129
 
 A task to execute in a worker.
 
@@ -16,7 +16,7 @@ A task to execute in a worker.
 
 > **code**: `string`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:113
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:131
 
 JavaScript code to evaluate
 
@@ -26,7 +26,7 @@ JavaScript code to evaluate
 
 > `optional` **filename**: `string`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:115
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:133
 
 Optional filename for error stack traces
 
@@ -36,7 +36,7 @@ Optional filename for error stack traces
 
 > `optional` **priority**: `number`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:119
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:137
 
 Priority: higher numbers execute first. Default is 0.
 
@@ -46,6 +46,6 @@ Priority: higher numbers execute first. Default is 0.
 
 > `optional` **timeout**: `number`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:117
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:135
 
 Timeout in milliseconds for this specific task (overrides pool default)

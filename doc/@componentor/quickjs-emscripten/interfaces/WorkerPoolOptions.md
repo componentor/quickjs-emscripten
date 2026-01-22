@@ -174,3 +174,28 @@ Required when workers can't resolve the WASM file from their context.
 
 For browser environments, this should be an absolute URL accessible
 from the worker (e.g., "/wasm/quickjs-wasmfs.wasm").
+
+***
+
+### workerUrl?
+
+> `optional` **workerUrl**: `string`
+
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:124
+
+URL or path to the worker script.
+Use this when bundlers break the default import.meta.url resolution.
+
+For browser environments, this should be an absolute URL or path
+(e.g., "/workers/worker-entry.mjs").
+
+When not provided, the library resolves the worker script using
+`new URL("./worker/worker-entry.mjs", import.meta.url)`.
+
+#### Example
+
+```typescript
+const pool = await newWorkerPool({
+  workerUrl: "/workers/worker-entry.mjs"
+})
+```

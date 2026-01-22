@@ -6,7 +6,7 @@
 
 # Class: MultiThreadingNotSupportedError
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:943
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:961
 
 Thrown when multi-threading is required but not available.
 
@@ -20,7 +20,7 @@ Thrown when multi-threading is required but not available.
 
 > **new MultiThreadingNotSupportedError**(): `MultiThreadingNotSupportedError`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:945
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:963
 
 #### Returns
 
@@ -36,7 +36,7 @@ Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:945
 
 > `readonly` **name**: `"MultiThreadingNotSupportedError"` = `"MultiThreadingNotSupportedError"`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:944
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:962
 
 #### Overrides
 

@@ -6,7 +6,7 @@
 
 # Class: WorkerTaskCancelledError
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:909
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:927
 
 Thrown when a task is cancelled.
 
@@ -20,7 +20,7 @@ Thrown when a task is cancelled.
 
 > **new WorkerTaskCancelledError**(`taskId`): `WorkerTaskCancelledError`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:913
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:931
 
 #### Parameters
 
@@ -42,7 +42,7 @@ Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:913
 
 > `readonly` **isCancelled**: `true` = `true`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:912
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:930
 
 ***
 
@@ -50,7 +50,7 @@ Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:912
 
 > `readonly` **name**: `"WorkerTaskCancelledError"` = `"WorkerTaskCancelledError"`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:911
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:929
 
 #### Overrides
 
@@ -62,4 +62,4 @@ Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:911
 
 > `readonly` **taskId**: `string`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:910
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:928

@@ -6,7 +6,7 @@
 
 # Interface: WorkerEnabledContextOptions
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:556
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:574
 
 Options for creating a WorkerEnabledContext.
 
@@ -83,7 +83,7 @@ Default timeout in milliseconds for task execution.
 
 > `optional` **evalStrategy**: `"workers"` \| `"local"` \| `"auto"`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:581
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:599
 
 Strategy for routing evalCodeAsync calls.
 - "workers": Always route to workers (default when pool available)
@@ -199,7 +199,7 @@ When false (default), workers are initialized lazily on first task.
 
 > `optional` **useSession**: `boolean`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:573
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:591
 
 Whether to use a session for sequential evalCodeAsync calls.
 When true, all evalCodeAsync calls go to the same worker,
@@ -273,7 +273,7 @@ from the worker (e.g., "/wasm/quickjs-wasmfs.wasm").
 
 > `optional` **workerOnly**: `boolean`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:562
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:580
 
 If true, only use workers for evalCodeAsync (no local context).
 Useful when you only need code evaluation without handle operations.
@@ -283,3 +283,32 @@ Useful when you only need code evaluation without handle operations.
 ```ts
 false
 ```
+
+***
+
+### workerUrl?
+
+> `optional` **workerUrl**: `string`
+
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:124
+
+URL or path to the worker script.
+Use this when bundlers break the default import.meta.url resolution.
+
+For browser environments, this should be an absolute URL or path
+(e.g., "/workers/worker-entry.mjs").
+
+When not provided, the library resolves the worker script using
+`new URL("./worker/worker-entry.mjs", import.meta.url)`.
+
+#### Example
+
+```typescript
+const pool = await newWorkerPool({
+  workerUrl: "/workers/worker-entry.mjs"
+})
+```
+
+#### Inherited from
+
+[`WorkerPoolOptions`](WorkerPoolOptions.md).[`workerUrl`](WorkerPoolOptions.md#workerurl)

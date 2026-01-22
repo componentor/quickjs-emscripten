@@ -6,7 +6,7 @@
 
 # Interface: WorkerPoolEvalOptions
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:409
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:427
 
 Options for evalCodeAsync, mirroring the main runtime API.
 
@@ -50,7 +50,7 @@ with JS_EvalFunction().
 
 > `optional` **filename**: `string`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:413
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:431
 
 Filename for error messages
 
@@ -88,7 +88,7 @@ Force "strip" mode
 
 > `optional` **timeout**: `number`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:411
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:429
 
 Timeout in milliseconds
 

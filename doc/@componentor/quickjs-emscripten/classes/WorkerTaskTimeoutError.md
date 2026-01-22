@@ -6,7 +6,7 @@
 
 # Class: WorkerTaskTimeoutError
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:899
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:917
 
 Thrown when a task times out.
 
@@ -20,7 +20,7 @@ Thrown when a task times out.
 
 > **new WorkerTaskTimeoutError**(`taskId`, `timeoutMs`): `WorkerTaskTimeoutError`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:904
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:922
 
 #### Parameters
 
@@ -46,7 +46,7 @@ Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:904
 
 > `readonly` **isTimeout**: `true` = `true`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:903
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:921
 
 ***
 
@@ -54,7 +54,7 @@ Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:903
 
 > `readonly` **name**: `"WorkerTaskTimeoutError"` = `"WorkerTaskTimeoutError"`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:902
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:920
 
 #### Overrides
 
@@ -66,7 +66,7 @@ Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:902
 
 > `readonly` **taskId**: `string`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:900
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:918
 
 ***
 
@@ -74,4 +74,4 @@ Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:900
 
 > `readonly` **timeoutMs**: `number`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:901
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:919

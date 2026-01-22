@@ -6,7 +6,7 @@
 
 # Class: PoolDisposedError
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:928
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:946
 
 Thrown when the pool is disposed while tasks are pending.
 
@@ -20,7 +20,7 @@ Thrown when the pool is disposed while tasks are pending.
 
 > **new PoolDisposedError**(): `PoolDisposedError`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:930
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:948
 
 #### Returns
 
@@ -36,7 +36,7 @@ Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:930
 
 > `readonly` **name**: `"PoolDisposedError"` = `"PoolDisposedError"`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:929
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:947
 
 #### Overrides
 

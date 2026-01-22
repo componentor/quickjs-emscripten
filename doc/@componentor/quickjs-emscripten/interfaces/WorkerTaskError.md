@@ -6,7 +6,7 @@
 
 # Interface: WorkerTaskError
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:124
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:142
 
 Error information from a failed worker task.
 
@@ -16,7 +16,7 @@ Error information from a failed worker task.
 
 > `optional` **isCancelled**: `boolean`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:136
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:154
 
 True if the task was cancelled
 
@@ -26,7 +26,7 @@ True if the task was cancelled
 
 > `optional` **isTimeout**: `boolean`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:132
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:150
 
 True if the error was caused by a timeout
 
@@ -36,7 +36,7 @@ True if the error was caused by a timeout
 
 > `optional` **isWorkerCrash**: `boolean`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:134
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:152
 
 True if the worker crashed unexpectedly
 
@@ -46,7 +46,7 @@ True if the worker crashed unexpectedly
 
 > **message**: `string`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:128
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:146
 
 Error message
 
@@ -56,7 +56,7 @@ Error message
 
 > **name**: `string`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:126
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:144
 
 Error name (e.g., "Error", "TypeError")
 
@@ -66,6 +66,6 @@ Error name (e.g., "Error", "TypeError")
 
 > `optional` **stack**: `string`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:130
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:148
 
 Stack trace if available

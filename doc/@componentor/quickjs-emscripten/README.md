@@ -1825,7 +1825,7 @@ It should not retain a reference to its return value or thrown error.
 
 > **WorkerEnabledContextResult**\<`T`\> = \{ `error?`: `undefined`; `value`: `T`; \} \| \{ `error`: [`QuickJSHandle`](#quickjshandle); `value?`: `undefined`; \}
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:586
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:604
 
 Result type that matches QuickJSContextResult for API compatibility.
 
@@ -1841,7 +1841,7 @@ Result type that matches QuickJSContextResult for API compatibility.
 
 > **WorkerPoolContextResult**\<`T`\> = \{ `error?`: `undefined`; `value`: `T`; \} \| \{ `error`: [`WorkerTaskError`](interfaces/WorkerTaskError.md); `value?`: `undefined`; \}
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:399
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:417
 
 Result type that mirrors QuickJSContextResult from the main runtime.
 Provides a familiar API for clients using the worker pool.
@@ -1875,7 +1875,7 @@ Available QuickJS variants for the worker pool.
 
 > **WorkerTaskResult**\<`T`\> = \{ `error?`: `undefined`; `value`: `T`; \} \| \{ `error`: [`WorkerTaskError`](interfaces/WorkerTaskError.md); `value?`: `undefined`; \}
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:142
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:160
 
 Result of a worker task execution.
 Follows the SuccessOrFail pattern from quickjs-emscripten-core.
@@ -2363,7 +2363,7 @@ Create an array that also implements [Disposable](interfaces/Disposable.md).
 
 > **detectPlatform**(): `"node"` \| `"browser"`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:894
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:912
 
 Detect the current platform.
 
@@ -2379,7 +2379,7 @@ Detect the current platform.
 
 > **getDefaultPoolSize**(): `number`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:888
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:906
 
 Get the default pool size based on the environment.
 
@@ -2440,7 +2440,7 @@ If called before `getQuickJS` resolves.
 
 > **getWorkerPool**(): `Promise`\<[`QuickJSWorkerPool`](classes/QuickJSWorkerPool.md)\>
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:387
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:405
 
 Get a shared singleton worker pool.
 
@@ -2473,7 +2473,7 @@ Get the current global worker pool configuration.
 
 > **getWorkerPoolSync**(): [`QuickJSWorkerPool`](classes/QuickJSWorkerPool.md)
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:393
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:411
 
 Provides synchronous access to the singleton pool, if it has been initialized.
 
@@ -2519,7 +2519,7 @@ Defined in: [packages/quickjs-emscripten-core/src/vm-interface.ts:18](https://gi
 
 > **isMultiThreadingSupported**(): `boolean`
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:882
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:900
 
 Detect if multi-threading via Web Workers with SharedArrayBuffer is supported.
 
@@ -2879,7 +2879,7 @@ const ctx = await newWorkerAsyncContext({
 
 > **newWorkerEnabledContext**(`options?`): `Promise`\<[`WorkerEnabledContext`](classes/WorkerEnabledContext.md)\>
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:869
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:887
 
 Create a new WorkerEnabledContext.
 
@@ -2939,7 +2939,7 @@ const result = await ctx.evalCodeAsync('x')  // returns 15
 
 > **newWorkerPool**(`options?`): `Promise`\<[`QuickJSWorkerPool`](classes/QuickJSWorkerPool.md)\>
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:378
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:396
 
 Create a new worker pool.
 
@@ -2963,7 +2963,7 @@ A new QuickJSWorkerPool instance
 
 > **newWorkerPoolContext**(`pool`): [`WorkerPoolContext`](classes/WorkerPoolContext.md)
 
-Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:551
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:569
 
 Create a context-like wrapper around a worker pool.
 
