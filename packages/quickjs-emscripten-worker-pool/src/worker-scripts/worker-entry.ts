@@ -529,38 +529,421 @@ function setupWasmFSGlobals(context: QuickJSContext): void {
   console.log("[Worker] WasmFS globals set up successfully")
 }
 
+/**
+ * Read a file from WasmFS using the Emscripten FS API
+ */
+function readFileFromWasmFS(path: string): string | null {
+  // Get the Emscripten module from the sync context
+  const module = syncModule?.getWasmModule() as unknown as WasmFSModule | undefined
+  if (!module) {
+    console.log(`[Worker] No WasmFS module available for reading: ${path}`)
+    return null
+  }
+
+  // WasmFS path translation: OPFS is mounted at /root in WasmFS
+  // So /home/user/... needs to become /root/home/user/...
+  let translatedPath = path
+  if (path.startsWith("/") && !path.startsWith("/root/")) {
+    translatedPath = "/root" + path
+  }
+
+  try {
+    if (module.readFileString) {
+      const content = module.readFileString(translatedPath)
+      if (content !== null && content !== undefined) {
+        return content
+      }
+    }
+  } catch (e) {
+    console.log(`[Worker] Failed to read file ${translatedPath}:`, e)
+  }
+
+  return null
+}
+
+/**
+ * Check if a path looks like a file path (not a module name)
+ */
+function isFilePath(name: string): boolean {
+  return name.startsWith("/") || name.startsWith("./") || name.startsWith("../")
+}
+
+/**
+ * Check if a module name is a bare specifier (npm package name)
+ */
+function isBareSpecifier(name: string): boolean {
+  // Not a file path, not a node: builtin
+  if (isFilePath(name)) return false
+  if (name.startsWith("node:")) return false
+  // Check if it looks like a package name (starts with letter, @, or is scoped)
+  return /^[@a-zA-Z]/.test(name)
+}
+
+/**
+ * Resolve a relative import path against the current module's directory
+ */
+function resolveModulePath(importPath: string, currentModulePath: string | undefined): string {
+  if (importPath.startsWith("/")) {
+    return importPath
+  }
+
+  if (!currentModulePath) {
+    // No current module context, treat as absolute
+    return importPath
+  }
+
+  // Get directory of current module
+  const lastSlash = currentModulePath.lastIndexOf("/")
+  const currentDir = lastSlash >= 0 ? currentModulePath.substring(0, lastSlash) : ""
+
+  // Handle ./ and ../
+  if (importPath.startsWith("./")) {
+    return currentDir + importPath.substring(1)
+  }
+
+  if (importPath.startsWith("../")) {
+    let dir = currentDir
+    let remaining = importPath
+    while (remaining.startsWith("../")) {
+      const parentSlash = dir.lastIndexOf("/")
+      dir = parentSlash >= 0 ? dir.substring(0, parentSlash) : ""
+      remaining = remaining.substring(3)
+    }
+    return dir + "/" + remaining
+  }
+
+  return importPath
+}
+
+/**
+ * Find the nearest node_modules directory by walking up from a given path
+ */
+function findNodeModulesDir(fromPath: string): string | null {
+  let dir = fromPath
+  // Walk up looking for node_modules
+  while (dir && dir !== "/") {
+    const lastSlash = dir.lastIndexOf("/")
+    dir = lastSlash >= 0 ? dir.substring(0, lastSlash) : ""
+    // Check if this directory might have node_modules
+    // For now, assume /home/user/node_modules exists as the primary location
+    if (dir === "/home/user" || dir === "") {
+      return "/home/user/node_modules"
+    }
+  }
+  return "/home/user/node_modules" // Default fallback
+}
+
+/**
+ * Resolve a bare module specifier to a file path
+ * e.g., 'vite' -> '/home/user/node_modules/vite/dist/node/index.js'
+ */
+function resolveBareModule(moduleName: string, fromPath: string | undefined): string | null {
+  const nodeModulesDir = findNodeModulesDir(fromPath || "/home/user")
+  if (!nodeModulesDir) return null
+
+  // Handle scoped packages (@org/package) and subpath imports (package/subpath)
+  let packageName: string
+  let subpath: string | null = null
+
+  if (moduleName.startsWith("@")) {
+    // Scoped package: @org/package or @org/package/subpath
+    const parts = moduleName.split("/")
+    if (parts.length >= 2) {
+      packageName = parts[0] + "/" + parts[1]
+      if (parts.length > 2) {
+        subpath = "./" + parts.slice(2).join("/")
+      }
+    } else {
+      return null // Invalid scoped package
+    }
+  } else {
+    // Regular package: package or package/subpath
+    const slashIndex = moduleName.indexOf("/")
+    if (slashIndex > 0) {
+      packageName = moduleName.substring(0, slashIndex)
+      subpath = "./" + moduleName.substring(slashIndex + 1)
+    } else {
+      packageName = moduleName
+    }
+  }
+
+  const packageDir = `${nodeModulesDir}/${packageName}`
+  const packageJsonPath = `${packageDir}/package.json`
+
+  // Try to read package.json
+  const packageJsonContent = readFileFromWasmFS(packageJsonPath)
+  if (!packageJsonContent) {
+    console.log(`[Worker] Could not read package.json for ${packageName}`)
+    return null
+  }
+
+  try {
+    const packageJson = JSON.parse(packageJsonContent)
+
+    // If there's a subpath, resolve it
+    if (subpath) {
+      // Check exports map first
+      if (packageJson.exports) {
+        const resolved = resolveExportsMap(packageJson.exports, subpath, packageDir)
+        if (resolved) return resolved
+      }
+      // Fall back to direct file path
+      return resolveFilePath(`${packageDir}/${subpath.substring(2)}`)
+    }
+
+    // No subpath - resolve main entry point
+    // Priority: exports["."] > module > main > index.js
+
+    // Check exports map
+    if (packageJson.exports) {
+      const resolved = resolveExportsMap(packageJson.exports, ".", packageDir)
+      if (resolved) return resolved
+    }
+
+    // Check module field (ESM entry)
+    if (packageJson.module) {
+      const modulePath = `${packageDir}/${packageJson.module}`
+      const resolved = resolveFilePath(modulePath)
+      if (resolved) return resolved
+    }
+
+    // Check main field
+    if (packageJson.main) {
+      const mainPath = `${packageDir}/${packageJson.main}`
+      const resolved = resolveFilePath(mainPath)
+      if (resolved) return resolved
+    }
+
+    // Default to index.js
+    const indexPath = `${packageDir}/index.js`
+    const resolved = resolveFilePath(indexPath)
+    if (resolved) return resolved
+
+    console.log(`[Worker] Could not find entry point for ${packageName}`)
+    return null
+  } catch (e) {
+    console.log(`[Worker] Error parsing package.json for ${packageName}:`, e)
+    return null
+  }
+}
+
+/**
+ * Resolve exports map from package.json
+ */
+function resolveExportsMap(
+  exports: Record<string, unknown> | string,
+  subpath: string,
+  packageDir: string
+): string | null {
+  if (typeof exports === "string") {
+    // Simple string export
+    return resolveFilePath(`${packageDir}/${exports}`)
+  }
+
+  if (typeof exports !== "object" || exports === null) {
+    return null
+  }
+
+  // Look for the subpath in exports
+  const exportEntry = exports[subpath] || exports[subpath === "." ? "." : `./${subpath}`]
+
+  if (!exportEntry) {
+    // Try default export for "."
+    if (subpath === "." && exports.default) {
+      return resolveExportCondition(exports.default, packageDir)
+    }
+    return null
+  }
+
+  return resolveExportCondition(exportEntry, packageDir)
+}
+
+/**
+ * Resolve an export condition (handles conditional exports)
+ */
+function resolveExportCondition(condition: unknown, packageDir: string): string | null {
+  if (typeof condition === "string") {
+    return resolveFilePath(`${packageDir}/${condition}`)
+  }
+
+  if (typeof condition === "object" && condition !== null) {
+    const condObj = condition as Record<string, unknown>
+    // Priority: import > module > default > require
+    for (const key of ["import", "module", "default", "require", "node"]) {
+      if (condObj[key]) {
+        const result = resolveExportCondition(condObj[key], packageDir)
+        if (result) return result
+      }
+    }
+  }
+
+  return null
+}
+
+/**
+ * Resolve a file path, trying different extensions
+ */
+function resolveFilePath(filePath: string): string | null {
+  // Normalize path (remove ./ prefix if present)
+  let normalized = filePath
+  if (normalized.includes("/./")) {
+    normalized = normalized.replace(/\/\.\//g, "/")
+  }
+
+  // Try the exact path first
+  if (readFileFromWasmFS(normalized) !== null) {
+    return normalized
+  }
+
+  // Try with extensions
+  for (const ext of [".js", ".mjs", ".cjs", ".json"]) {
+    const withExt = normalized + ext
+    if (readFileFromWasmFS(withExt) !== null) {
+      return withExt
+    }
+  }
+
+  // Try as directory with index
+  for (const indexFile of ["/index.js", "/index.mjs", "/index.cjs"]) {
+    const indexPath = normalized + indexFile
+    if (readFileFromWasmFS(indexPath) !== null) {
+      return indexPath
+    }
+  }
+
+  return null
+}
+
+// Stack to track module loading for proper relative path resolution
+const moduleLoadStack: string[] = []
+
+/**
+ * Get the current module path from the stack
+ */
+function getCurrentModulePath(): string | undefined {
+  return moduleLoadStack.length > 0 ? moduleLoadStack[moduleLoadStack.length - 1] : undefined
+}
+
+/**
+ * Load a file module and return its source code
+ */
+function loadFileModule(resolvedPath: string): string | { error: Error } {
+  const content = readFileFromWasmFS(resolvedPath)
+  if (content === null) {
+    console.error(`[Worker] Failed to load file module: ${resolvedPath}`)
+    return { error: new Error(`Module not found: ${resolvedPath}`) }
+  }
+
+  console.log(`[Worker] Loaded file module: ${resolvedPath} (${content.length} bytes)`)
+
+  // Push to stack for nested imports
+  moduleLoadStack.push(resolvedPath)
+
+  // Strip shebang if present
+  let source = content
+  if (source.startsWith("#!")) {
+    const newlineIndex = source.indexOf("\n")
+    if (newlineIndex !== -1) {
+      source = source.substring(newlineIndex + 1)
+    }
+  }
+
+  // Inject import.meta properties for ES modules
+  // We append at the end to avoid issues with import statement hoisting
+  const fileUrl = `file://${resolvedPath}`
+  const dirname = resolvedPath.substring(0, resolvedPath.lastIndexOf("/"))
+
+  // Use a wrapper that sets up import.meta before the module runs
+  // QuickJS initializes import.meta as an empty object, so we can define properties on it
+  const metaSetup = `
+;(function() {
+  const _meta = import.meta;
+  if (!_meta.url) Object.defineProperty(_meta, 'url', { value: '${fileUrl}', writable: false, configurable: true });
+  if (!_meta.dirname) Object.defineProperty(_meta, 'dirname', { value: '${dirname}', writable: false, configurable: true });
+  if (!_meta.filename) Object.defineProperty(_meta, 'filename', { value: '${resolvedPath}', writable: false, configurable: true });
+})();
+`
+
+  // Pop from stack after module is loaded (synchronous)
+  // Note: For proper nested import handling, we pop after returning
+  // QuickJS processes modules synchronously, so this works
+  queueMicrotask(() => {
+    if (moduleLoadStack.length > 0 && moduleLoadStack[moduleLoadStack.length - 1] === resolvedPath) {
+      moduleLoadStack.pop()
+    }
+  })
+
+  // Append meta setup at the end (after imports are hoisted)
+  return source + "\n" + metaSetup
+}
+
 function setupModuleLoader(runtime: QuickJSRuntime): void {
   runtime.setModuleLoader((moduleName: string, _ctx: unknown) => {
     console.log(`[Worker] Module loader called for: ${moduleName}`)
     try {
-      // Strip node: prefix if present
-      const normalizedName = moduleName.startsWith("node:") ? moduleName.slice(5) : moduleName
-      console.log(`[Worker] Normalized module name: ${normalizedName}`)
+      // Get current module path for relative resolution
+      const currentModule = getCurrentModulePath()
 
-      // Get known exports for this module
-      const knownExports = moduleExports[normalizedName] || []
-      console.log(`[Worker] Known exports for ${normalizedName}:`, knownExports.length)
+      // 1. Check if this is a file path import
+      if (isFilePath(moduleName)) {
+        const resolvedPath = resolveModulePath(moduleName, currentModule)
+        console.log(`[Worker] File import: ${moduleName} -> ${resolvedPath}`)
+        return loadFileModule(resolvedPath)
+      }
 
-      // Generate named exports
-      const namedExports = knownExports
-        .map((name) => `export var ${name} = _mod.${name};`)
-        .join("\n")
+      // 2. Check for node: built-in modules
+      if (moduleName.startsWith("node:")) {
+        const normalizedName = moduleName.slice(5)
+        console.log(`[Worker] Node builtin: ${normalizedName}`)
+        return generateBuiltinModule(normalizedName, moduleName)
+      }
 
-      // Return module code that exports the polyfilled module
-      const moduleCode = `var _builtins = globalThis.__builtinModules;
-if (!_builtins) throw new Error('__builtinModules not found');
-var _mod = _builtins['${normalizedName}'];
-if (!_mod) throw new Error("Module '${moduleName}' not found in polyfills. Available: " + Object.keys(_builtins || {}).join(', '));
-${namedExports}
-export default _mod;
-`
-      console.log(`[Worker] Returning module code (${moduleCode.length} bytes)`)
-      return moduleCode
+      // 3. Check if it's a bare specifier (npm package)
+      if (isBareSpecifier(moduleName)) {
+        console.log(`[Worker] Bare specifier: ${moduleName}`)
+        const resolvedPath = resolveBareModule(moduleName, currentModule)
+        if (resolvedPath) {
+          console.log(`[Worker] Resolved bare module: ${moduleName} -> ${resolvedPath}`)
+          return loadFileModule(resolvedPath)
+        }
+        // Fall through to try as builtin
+        console.log(`[Worker] Could not resolve as npm package, trying as builtin: ${moduleName}`)
+      }
+
+      // 4. Try as a builtin module (for things like 'fs', 'path', etc.)
+      return generateBuiltinModule(moduleName, moduleName)
     } catch (err) {
       console.error(`[Worker] Module loader error:`, err)
       return { error: err instanceof Error ? err : new Error(String(err)) }
     }
   })
+}
+
+/**
+ * Generate synthetic module code for builtin modules
+ */
+function generateBuiltinModule(normalizedName: string, originalName: string): string {
+  console.log(`[Worker] Generating builtin module: ${normalizedName}`)
+
+  // Get known exports for this module
+  const knownExports = moduleExports[normalizedName] || []
+  console.log(`[Worker] Known exports for ${normalizedName}:`, knownExports.length)
+
+  // Generate named exports
+  const namedExports = knownExports
+    .map((name) => `export var ${name} = _mod.${name};`)
+    .join("\n")
+
+  // Return module code that exports the polyfilled module
+  const moduleCode = `var _builtins = globalThis.__builtinModules;
+if (!_builtins) throw new Error('__builtinModules not found');
+var _mod = _builtins['${normalizedName}'];
+if (!_mod) throw new Error("Module '${originalName}' not found in polyfills. Available: " + Object.keys(_builtins || {}).join(', '));
+${namedExports}
+export default _mod;
+`
+  console.log(`[Worker] Returning builtin module code (${moduleCode.length} bytes)`)
+  return moduleCode
 }
 
 async function handleInit(message: InitMessage): Promise<void> {
