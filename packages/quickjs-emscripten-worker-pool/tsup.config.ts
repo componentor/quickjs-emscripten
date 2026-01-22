@@ -30,13 +30,19 @@ export default defineConfig([
     minifyWhitespace: true,
     tsconfig: "./tsconfig.build.json",
     // Mark QuickJS variants as external - they are loaded dynamically at runtime
+    // NOTE: @componentor/quickjs-emscripten-core MUST be bundled (not external)
+    // because browser workers don't have access to import maps or node_modules
     external: [
       "@componentor/quickjs-wasmfs-release-sync",
       "@componentor/quickjs-singlefile-cjs-release-sync",
       "@componentor/quickjs-singlefile-cjs-release-asyncify",
-      "@componentor/quickjs-emscripten-core",
     ],
+    // Explicitly include quickjs-emscripten-core in the bundle
+    // This is required because browser workers don't have import maps
+    noExternal: ["@componentor/quickjs-emscripten-core"],
     // Don't split into chunks - single file
     splitting: false,
+    // Disable tree shaking to preserve all exports from quickjs-emscripten-core
+    treeshake: false,
   },
 ])

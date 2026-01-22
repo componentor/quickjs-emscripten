@@ -1,7 +1,7 @@
 {
   "name": "@componentor/quickjs-emscripten",
   "private": true,
-  "version": "0.31.29",
+  "version": "0.31.30",
   "sideEffects": false,
   "license": "MIT",
   "type": "commonjs",
