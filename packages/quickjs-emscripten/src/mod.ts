@@ -21,14 +21,13 @@ let singletonPromise: Promise<QuickJSWASMModule> | undefined = undefined
 // ============================================
 
 /**
- * Global configuration for automatic worker pool usage.
+ * Global configuration for worker pool contexts.
+ * These settings are used as defaults when calling {@link newWorkerAsyncContext}.
  */
 export interface WorkerPoolConfig {
   /**
-   * Whether to automatically use worker pool for async contexts.
-   * When true, `newAsyncContext()` will return a `WorkerEnabledContext`
-   * that automatically uses workers for parallel execution.
-   * @default true (when workers are available)
+   * Whether worker pool is enabled.
+   * @default true
    */
   enabled?: boolean
 
@@ -82,13 +81,12 @@ let globalWorkerConfig: WorkerPoolConfig = {
 /**
  * Configure the global worker pool settings.
  *
- * Call this before creating any contexts to set up automatic worker pool usage.
- * When enabled (default), `newAsyncContext()` will automatically use workers
- * for parallel execution.
+ * Call this before creating worker contexts to set up default worker pool options.
+ * These settings are used as defaults when calling {@link newWorkerAsyncContext}.
  *
  * @example
  * ```typescript
- * import { configureWorkerPool, newAsyncContext } from "@componentor/quickjs-emscripten"
+ * import { configureWorkerPool, newWorkerAsyncContext } from "@componentor/quickjs-emscripten"
  *
  * // Configure once at startup
  * configureWorkerPool({
@@ -98,8 +96,8 @@ let globalWorkerConfig: WorkerPoolConfig = {
  *   `
  * })
  *
- * // Now all async contexts automatically use workers!
- * const ctx = await newAsyncContext()
+ * // Create worker context - uses global config!
+ * const ctx = await newWorkerAsyncContext()
  *
  * // Parallel execution across workers
  * const results = await Promise.all([
@@ -107,15 +105,6 @@ let globalWorkerConfig: WorkerPoolConfig = {
  *   ctx.evalCodeAsync('mockFetch("/api/2")'),
  *   ctx.evalCodeAsync('mockFetch("/api/3")'),
  * ])
- * ```
- *
- * @example
- * ```typescript
- * // Disable automatic worker usage
- * configureWorkerPool({ enabled: false })
- *
- * // Now newAsyncContext() returns a regular QuickJSAsyncContext
- * const ctx = await newAsyncContext()
  * ```
  */
 export function configureWorkerPool(config: WorkerPoolConfig): void {
@@ -192,83 +181,19 @@ export async function newAsyncRuntime(options?: AsyncRuntimeOptions): Promise<Qu
 }
 
 /**
- * Context type that can be either a worker-enabled context or a regular async context.
- * Both provide the same essential API (evalCodeAsync, handle operations, etc.)
+ * Create a new {@link QuickJSAsyncContext} in a separate WebAssembly module.
+ *
+ * Each context is isolated in a separate WebAssembly module, so that errors in
+ * one runtime cannot contaminate another runtime, and each runtime can execute
+ * an asynchronous action without conflicts.
+ *
+ * Note that there is a hard limit on the number of WebAssembly modules in older
+ * versions of v8:
+ * https://bugs.chromium.org/p/v8/issues/detail?id=12076
+ *
+ * For parallel execution across workers, use {@link newWorkerAsyncContext} instead.
  */
-export type AsyncContext = WorkerEnabledContext | QuickJSAsyncContext
-
-/**
- * Create a new async context for JavaScript execution.
- *
- * **Automatic Worker Pool Integration:**
- * By default, when workers are available (SharedArrayBuffer supported), this returns
- * a {@link WorkerEnabledContext} that automatically distributes `evalCodeAsync` calls
- * across multiple workers for parallel execution.
- *
- * Configure the worker pool behavior using {@link configureWorkerPool}:
- *
- * @example
- * ```typescript
- * import { configureWorkerPool, newAsyncContext } from "@componentor/quickjs-emscripten"
- *
- * // Configure worker pool with bootstrap code (call once at startup)
- * configureWorkerPool({
- *   poolSize: 4,
- *   bootstrapCode: `
- *     globalThis.mockFetch = (url) => ({ status: 200, url })
- *   `
- * })
- *
- * // Create context - automatically uses workers!
- * const ctx = await newAsyncContext()
- *
- * // Parallel execution across workers
- * const results = await Promise.all([
- *   ctx.evalCodeAsync('mockFetch("/api/1")'),  // Worker 1
- *   ctx.evalCodeAsync('mockFetch("/api/2")'),  // Worker 2
- *   ctx.evalCodeAsync('mockFetch("/api/3")'),  // Worker 3
- * ])
- * ```
- *
- * @example
- * ```typescript
- * // Disable workers for this context
- * const ctx = await newAsyncContext({ useWorkers: false })
- * ```
- *
- * @param options Context options. Set `useWorkers: false` to disable worker pool.
- * @returns A context for JavaScript execution (worker-enabled when available)
- */
-export async function newAsyncContext(
-  options?: ContextOptions & { useWorkers?: boolean },
-): Promise<AsyncContext> {
-  const useWorkers = options?.useWorkers ?? globalWorkerConfig.enabled ?? true
-
-  // Use worker-enabled context if workers are enabled and available
-  if (useWorkers && isMultiThreadingSupported()) {
-    return createWorkerEnabledContext({
-      poolSize: globalWorkerConfig.poolSize,
-      bootstrapCode: globalWorkerConfig.bootstrapCode,
-      useSession: globalWorkerConfig.useSession,
-      verbose: globalWorkerConfig.verbose,
-      defaultTimeout: globalWorkerConfig.defaultTimeout,
-      contextOptions: options,
-    })
-  }
-
-  // Fall back to regular async context
-  const module = await newQuickJSAsyncWASMModule()
-  return module.newContext(options)
-}
-
-/**
- * Create a new async context WITHOUT worker pool integration.
- * Use this when you explicitly need a raw QuickJSAsyncContext.
- *
- * @param options Context options
- * @returns A QuickJSAsyncContext (not worker-enabled)
- */
-export async function newRawAsyncContext(options?: ContextOptions): Promise<QuickJSAsyncContext> {
+export async function newAsyncContext(options?: ContextOptions): Promise<QuickJSAsyncContext> {
   const module = await newQuickJSAsyncWASMModule()
   return module.newContext(options)
 }
@@ -288,29 +213,54 @@ export interface WorkerAsyncContextOptions extends WorkerEnabledContextOptions {
 }
 
 /**
- * Create a new {@link WorkerEnabledContext} with explicit worker pool options.
+ * Create a new {@link WorkerEnabledContext} for parallel execution across workers.
  *
- * Use this when you need fine-grained control over the worker pool configuration
- * for a specific context, rather than using the global configuration.
+ * This is the recommended way to use QuickJS with parallel execution. Each
+ * `evalCodeAsync` call can be distributed to different workers for parallelism.
+ *
+ * Uses global config from {@link configureWorkerPool} as defaults, which can
+ * be overridden by passing options.
  *
  * @example
  * ```typescript
+ * // Simple usage with defaults
+ * const ctx = await newWorkerAsyncContext()
+ *
+ * // Parallel execution
+ * const results = await Promise.all([
+ *   ctx.evalCodeAsync('1 + 1'),
+ *   ctx.evalCodeAsync('2 + 2'),
+ *   ctx.evalCodeAsync('3 + 3'),
+ * ])
+ * ```
+ *
+ * @example
+ * ```typescript
+ * // With bootstrap code for mocks
  * const ctx = await newWorkerAsyncContext({
  *   poolSize: 8,
  *   bootstrapCode: `
- *     globalThis.customHelper = (x) => x * 2
+ *     globalThis.mockFetch = (url) => ({ status: 200, url })
  *   `,
- *   verbose: true,
  * })
  * ```
  *
- * @param options Worker pool and context options
+ * @param options Worker pool and context options (overrides global config)
  * @returns A new WorkerEnabledContext instance
  */
 export async function newWorkerAsyncContext(
   options?: WorkerAsyncContextOptions,
 ): Promise<WorkerEnabledContext> {
-  return createWorkerEnabledContext(options)
+  // Merge global config with provided options
+  const mergedOptions: WorkerAsyncContextOptions = {
+    poolSize: options?.poolSize ?? globalWorkerConfig.poolSize,
+    bootstrapCode: options?.bootstrapCode ?? globalWorkerConfig.bootstrapCode,
+    useSession: options?.useSession ?? globalWorkerConfig.useSession,
+    verbose: options?.verbose ?? globalWorkerConfig.verbose,
+    defaultTimeout: options?.defaultTimeout ?? globalWorkerConfig.defaultTimeout,
+    ...options,
+  }
+  return createWorkerEnabledContext(mergedOptions)
 }
 
 /**
