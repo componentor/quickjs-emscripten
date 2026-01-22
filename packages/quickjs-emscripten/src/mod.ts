@@ -5,13 +5,13 @@ import type {
   QuickJSAsyncRuntime,
   QuickJSWASMModule,
 } from "@componentor/quickjs-emscripten-core"
-import { newQuickJSAsyncWASMModule, newQuickJSWASMModule } from "#variants"
 import {
   newWorkerEnabledContext as createWorkerEnabledContext,
   isMultiThreadingSupported,
   type WorkerEnabledContext,
   type WorkerEnabledContextOptions,
 } from "@componentor/quickjs-emscripten-worker-pool"
+import { newQuickJSAsyncWASMModule, newQuickJSWASMModule } from "#variants"
 
 let singleton: QuickJSWASMModule | undefined = undefined
 let singletonPromise: Promise<QuickJSWASMModule> | undefined = undefined

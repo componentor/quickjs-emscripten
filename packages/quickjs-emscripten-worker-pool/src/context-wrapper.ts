@@ -1,6 +1,6 @@
 import type { Disposable, ContextEvalOptions } from "@componentor/quickjs-emscripten-core"
 import type { QuickJSWorkerPool } from "./pool"
-import type { WorkerTaskResult, WorkerTaskError } from "./types"
+import type { WorkerTaskError } from "./types"
 
 /**
  * Result type that mirrors QuickJSContextResult from the main runtime.
