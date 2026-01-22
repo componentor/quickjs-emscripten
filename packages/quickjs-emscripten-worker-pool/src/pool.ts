@@ -101,6 +101,7 @@ export class QuickJSWorkerPool implements Disposable {
       maxQueueSize: options.maxQueueSize ?? 0,
       bootstrapCode: options.bootstrapCode,
       wasmLocation: options.wasmLocation,
+      workerUrl: options.workerUrl,
     }
 
     const multiThreadSupported = isMultiThreadingSupported()
@@ -143,6 +144,7 @@ export class QuickJSWorkerPool implements Disposable {
         preWarm: resolvedOptions.preWarm,
         bootstrapCode: resolvedOptions.bootstrapCode,
         wasmLocation: resolvedOptions.wasmLocation,
+        workerUrl: resolvedOptions.workerUrl,
         logger,
       })
       logger.log(

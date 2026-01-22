@@ -28,6 +28,7 @@ export class WorkerPoolExecutor implements TaskExecutor {
   private readonly opfsMountPath: string | undefined
   private readonly bootstrapCode: string | undefined
   private readonly wasmLocation: string | undefined
+  private readonly workerUrl: string | undefined
   private readonly logger: Logger
 
   private constructor(options: WorkerPoolExecutorOptions) {
@@ -37,8 +38,21 @@ export class WorkerPoolExecutor implements TaskExecutor {
     this.opfsMountPath = options.opfsMountPath
     this.bootstrapCode = options.bootstrapCode
     this.wasmLocation = options.wasmLocation
+    this.workerUrl = options.workerUrl
     this.logger = options.logger ?? noopLogger
     this.factory = getPlatformWorkerFactory()
+  }
+
+  /**
+   * Get the worker script URL to use.
+   * Uses custom workerUrl if provided, otherwise falls back to factory resolution.
+   */
+  private getWorkerScriptUrl(): string | URL {
+    if (this.workerUrl) {
+      this.logger.log(`Using custom worker URL: ${this.workerUrl}`)
+      return this.workerUrl
+    }
+    return this.factory.getWorkerScriptUrl()
   }
 
   /**
@@ -59,7 +73,7 @@ export class WorkerPoolExecutor implements TaskExecutor {
    */
   private async warmUp(): Promise<void> {
     this.logger.log(`Pre-warming ${this.poolSize} workers...`)
-    const workerScriptUrl = this.factory.getWorkerScriptUrl()
+    const workerScriptUrl = this.getWorkerScriptUrl()
     const initPromises: Promise<WorkerWrapper>[] = []
 
     for (let i = 0; i < this.poolSize; i++) {
@@ -104,7 +118,7 @@ export class WorkerPoolExecutor implements TaskExecutor {
       this.logger.log(
         `Creating new worker #${workerId} (lazy init, ${this.workers.length + 1}/${this.poolSize})`,
       )
-      const workerScriptUrl = this.factory.getWorkerScriptUrl()
+      const workerScriptUrl = this.getWorkerScriptUrl()
       const worker = await WorkerWrapper.create({
         id: workerId,
         createWorker: () => this.factory.createWorker(workerScriptUrl),
@@ -142,7 +156,7 @@ export class WorkerPoolExecutor implements TaskExecutor {
     if (!worker && this.workers.length < this.poolSize) {
       const workerId = ++this.workerIdCounter
       this.logger.log(`Creating worker #${workerId} for session...`)
-      const workerScriptUrl = this.factory.getWorkerScriptUrl()
+      const workerScriptUrl = this.getWorkerScriptUrl()
       worker = await WorkerWrapper.create({
         id: workerId,
         createWorker: () => this.factory.createWorker(workerScriptUrl),

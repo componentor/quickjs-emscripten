@@ -116,6 +116,25 @@ export interface WorkerPoolOptions {
    * from the worker (e.g., "/wasm/quickjs-wasmfs.wasm").
    */
   wasmLocation?: string
+
+  /**
+   * URL or path to the worker script.
+   * Use this when bundlers break the default import.meta.url resolution.
+   *
+   * For browser environments, this should be an absolute URL or path
+   * (e.g., "/workers/worker-entry.mjs").
+   *
+   * When not provided, the library resolves the worker script using
+   * `new URL("./worker/worker-entry.mjs", import.meta.url)`.
+   *
+   * @example
+   * ```typescript
+   * const pool = await newWorkerPool({
+   *   workerUrl: "/workers/worker-entry.mjs"
+   * })
+   * ```
+   */
+  workerUrl?: string
 }
 
 /**
@@ -137,6 +156,8 @@ export interface WorkerPoolExecutorOptions {
   bootstrapCode?: string
   /** URL/path to the WASM file */
   wasmLocation?: string
+  /** URL/path to the worker script */
+  workerUrl?: string
   /** Logger instance */
   logger?: Logger
 }

@@ -849,20 +849,16 @@ function loadFileModule(resolvedPath: string): string | { error: Error } {
   }
 
   // Inject import.meta properties for ES modules
-  // We append at the end to avoid issues with import statement hoisting
+  // QuickJS sets up import.meta BEFORE module evaluation begins, so we need to
+  // inject code that runs first. Since QuickJS evaluates import.meta at parse time,
+  // we need to use a different approach: inject as early as possible in the source.
   const fileUrl = `file://${resolvedPath}`
   const dirname = resolvedPath.substring(0, resolvedPath.lastIndexOf("/"))
 
-  // Use a wrapper that sets up import.meta before the module runs
-  // QuickJS initializes import.meta as an empty object, so we can define properties on it
-  const metaSetup = `
-;(function() {
-  const _meta = import.meta;
-  if (!_meta.url) Object.defineProperty(_meta, 'url', { value: '${fileUrl}', writable: false, configurable: true });
-  if (!_meta.dirname) Object.defineProperty(_meta, 'dirname', { value: '${dirname}', writable: false, configurable: true });
-  if (!_meta.filename) Object.defineProperty(_meta, 'filename', { value: '${resolvedPath}', writable: false, configurable: true });
-})();
-`
+  // Set up import.meta properties at the very start of the module
+  // This needs to run before any other code, including before import statements execute their bodies
+  // In QuickJS, import.meta is initialized as an empty object before module evaluation
+  const metaSetup = `(function(){const m=import.meta;if(!m.url)Object.defineProperty(m,'url',{value:'${fileUrl}',configurable:true});if(!m.dirname)Object.defineProperty(m,'dirname',{value:'${dirname}',configurable:true});if(!m.filename)Object.defineProperty(m,'filename',{value:'${resolvedPath}',configurable:true});})();\n`
 
   // Pop from stack after module is loaded (synchronous)
   // Note: For proper nested import handling, we pop after returning
@@ -876,8 +872,10 @@ function loadFileModule(resolvedPath: string): string | { error: Error } {
     }
   })
 
-  // Append meta setup at the end (after imports are hoisted)
-  return source + "\n" + metaSetup
+  // Prepend meta setup so it runs before anything else in the module
+  // Import statements are hoisted, but their execution (and import.meta access)
+  // still happens in source order, so prepending ensures import.meta is set up first
+  return metaSetup + source
 }
 
 function setupModuleLoader(runtime: QuickJSRuntime): void {
