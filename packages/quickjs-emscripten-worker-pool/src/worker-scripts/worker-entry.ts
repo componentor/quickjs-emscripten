@@ -733,7 +733,7 @@ function resolveBareModule(moduleName: string, fromPath: string | undefined): st
 function resolveExportsMap(
   exports: Record<string, unknown> | string,
   subpath: string,
-  packageDir: string
+  packageDir: string,
 ): string | null {
   if (typeof exports === "string") {
     // Simple string export
@@ -868,7 +868,10 @@ function loadFileModule(resolvedPath: string): string | { error: Error } {
   // Note: For proper nested import handling, we pop after returning
   // QuickJS processes modules synchronously, so this works
   queueMicrotask(() => {
-    if (moduleLoadStack.length > 0 && moduleLoadStack[moduleLoadStack.length - 1] === resolvedPath) {
+    if (
+      moduleLoadStack.length > 0 &&
+      moduleLoadStack[moduleLoadStack.length - 1] === resolvedPath
+    ) {
       moduleLoadStack.pop()
     }
   })
@@ -930,9 +933,7 @@ function generateBuiltinModule(normalizedName: string, originalName: string): st
   console.log(`[Worker] Known exports for ${normalizedName}:`, knownExports.length)
 
   // Generate named exports
-  const namedExports = knownExports
-    .map((name) => `export var ${name} = _mod.${name};`)
-    .join("\n")
+  const namedExports = knownExports.map((name) => `export var ${name} = _mod.${name};`).join("\n")
 
   // Return module code that exports the polyfilled module
   const moduleCode = `var _builtins = globalThis.__builtinModules;
