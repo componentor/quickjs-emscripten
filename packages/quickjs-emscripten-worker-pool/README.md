@@ -56,10 +56,7 @@ pool.dispose()
 For a familiar QuickJSAsyncContext-like interface, use the `WorkerPoolContext` wrapper:
 
 ```typescript
-import {
-  newWorkerPool,
-  newWorkerPoolContext,
-} from "@componentor/quickjs-emscripten-worker-pool"
+import { newWorkerPool, newWorkerPoolContext } from "@componentor/quickjs-emscripten-worker-pool"
 
 // Create a pool-backed context
 const pool = await newWorkerPool({ poolSize: 4 })
@@ -110,15 +107,15 @@ const ctx = await newWorkerEnabledContext({
     // This runs on EVERY worker - perfect for mocks!
     globalThis.mockFetch = (url) => ({ status: 200, url })
     globalThis.config = { apiBase: 'https://api.example.com' }
-  `
+  `,
 })
 
 // Parallel execution - each call may hit a different worker
 // All workers have mockFetch and config from bootstrap!
 const results = await Promise.all([
-  ctx.evalCodeAsync('mockFetch("/api/users")'),   // Worker 1
-  ctx.evalCodeAsync('mockFetch("/api/posts")'),   // Worker 2
-  ctx.evalCodeAsync('config.apiBase'),            // Worker 3
+  ctx.evalCodeAsync('mockFetch("/api/users")'), // Worker 1
+  ctx.evalCodeAsync('mockFetch("/api/posts")'), // Worker 2
+  ctx.evalCodeAsync("config.apiBase"), // Worker 3
 ])
 
 console.log(ctx.dump(results[0].value)) // { status: 200, url: '/api/users' }
@@ -148,11 +145,11 @@ ctx.dispose()
 
 ### Parallel vs Session Mode
 
-| Feature | `useSession: false` (default) | `useSession: true` |
-|---------|-------------------------------|---------------------|
-| Parallelism | Yes - distributed across workers | No - all calls go to same worker |
+| Feature           | `useSession: false` (default)             | `useSession: true`                |
+| ----------------- | ----------------------------------------- | --------------------------------- |
+| Parallelism       | Yes - distributed across workers          | No - all calls go to same worker  |
 | State persistence | No - use `bootstrapCode` for shared state | Yes - variables/functions persist |
-| Use case | Parallel tasks, HTTP mocking | REPL, stateful runtime |
+| Use case          | Parallel tasks, HTTP mocking              | REPL, stateful runtime            |
 
 **How it works:**
 
@@ -524,10 +521,7 @@ const result = await context.evalCodeAsync("while(true){}", {
 })
 
 // Batch evaluation
-const results = await context.evalCodeBatch([
-  "1 + 1",
-  { code: "2 * 2", timeout: 5000 },
-])
+const results = await context.evalCodeBatch(["1 + 1", { code: "2 * 2", timeout: 5000 }])
 
 // Unwrap result (throws if error)
 const value = context.unwrapResult(result)

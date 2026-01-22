@@ -1070,6 +1070,9 @@ Just run `pnpm run set version from sources` to upgrade the pnpm run release.
 - [DisposableFail](classes/DisposableFail.md)
 - [DisposableSuccess](classes/DisposableSuccess.md)
 - [Lifetime](classes/Lifetime.md)
+- [MultiThreadingNotSupportedError](classes/MultiThreadingNotSupportedError.md)
+- [PoolDisposedError](classes/PoolDisposedError.md)
+- [QueueFullError](classes/QueueFullError.md)
 - [QuickJSAsyncContext](classes/QuickJSAsyncContext.md)
 - [QuickJSAsyncRuntime](classes/QuickJSAsyncRuntime.md)
 - [QuickJSAsyncWASMModule](classes/QuickJSAsyncWASMModule.md)
@@ -1077,11 +1080,17 @@ Just run `pnpm run set version from sources` to upgrade the pnpm run release.
 - [QuickJSDeferredPromise](classes/QuickJSDeferredPromise.md)
 - [QuickJSRuntime](classes/QuickJSRuntime.md)
 - [QuickJSWASMModule](classes/QuickJSWASMModule.md)
+- [QuickJSWorkerPool](classes/QuickJSWorkerPool.md)
 - [Scope](classes/Scope.md)
 - [StaticLifetime](classes/StaticLifetime.md)
 - [TestQuickJSWASMModule](classes/TestQuickJSWASMModule.md)
 - [UsingDisposable](classes/UsingDisposable.md)
 - [WeakLifetime](classes/WeakLifetime.md)
+- [WorkerCrashError](classes/WorkerCrashError.md)
+- [WorkerEnabledContext](classes/WorkerEnabledContext.md)
+- [WorkerPoolContext](classes/WorkerPoolContext.md)
+- [WorkerTaskCancelledError](classes/WorkerTaskCancelledError.md)
+- [WorkerTaskTimeoutError](classes/WorkerTaskTimeoutError.md)
 
 ## Interfaces
 
@@ -1102,6 +1111,7 @@ Just run `pnpm run set version from sources` to upgrade the pnpm run release.
 - [JSPromiseStateRejected](interfaces/JSPromiseStateRejected.md)
 - [LowLevelJavascriptVm](interfaces/LowLevelJavascriptVm.md)
 - [ModuleEvalOptions](interfaces/ModuleEvalOptions.md)
+- [PoolStats](interfaces/PoolStats.md)
 - [QuickJSAsyncEmscriptenModule](interfaces/QuickJSAsyncEmscriptenModule.md)
 - [QuickJSAsyncFFI](interfaces/QuickJSAsyncFFI.md)
 - [QuickJSAsyncVariant](interfaces/QuickJSAsyncVariant.md)
@@ -1110,8 +1120,18 @@ Just run `pnpm run set version from sources` to upgrade the pnpm run release.
 - [QuickJSSyncVariant](interfaces/QuickJSSyncVariant.md)
 - [RuntimeOptions](interfaces/RuntimeOptions.md)
 - [RuntimeOptionsBase](interfaces/RuntimeOptionsBase.md)
+- [SessionEvalOptions](interfaces/SessionEvalOptions.md)
 - [SourceMapData](interfaces/SourceMapData.md)
+- [TaskHandle](interfaces/TaskHandle.md)
 - [VmPropertyDescriptor](interfaces/VmPropertyDescriptor.md)
+- [WorkerAsyncContextOptions](interfaces/WorkerAsyncContextOptions.md)
+- [WorkerEnabledContextOptions](interfaces/WorkerEnabledContextOptions.md)
+- [WorkerPoolConfig](interfaces/WorkerPoolConfig.md)
+- [WorkerPoolEvalOptions](interfaces/WorkerPoolEvalOptions.md)
+- [WorkerPoolOptions](interfaces/WorkerPoolOptions.md)
+- [WorkerSession](interfaces/WorkerSession.md)
+- [WorkerTask](interfaces/WorkerTask.md)
+- [WorkerTaskError](interfaces/WorkerTaskError.md)
 
 ## Type Aliases
 
@@ -1799,6 +1819,73 @@ It should not retain a reference to its return value or thrown error.
 
 `VmHandle` \| [`VmCallResult`](#vmcallresult)\<`VmHandle`\> \| `void`
 
+***
+
+### WorkerEnabledContextResult
+
+> **WorkerEnabledContextResult**\<`T`\> = \{ `error?`: `undefined`; `value`: `T`; \} \| \{ `error`: [`QuickJSHandle`](#quickjshandle); `value?`: `undefined`; \}
+
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:586
+
+Result type that matches QuickJSContextResult for API compatibility.
+
+#### Type Parameters
+
+##### T
+
+`T` = `unknown`
+
+***
+
+### WorkerPoolContextResult
+
+> **WorkerPoolContextResult**\<`T`\> = \{ `error?`: `undefined`; `value`: `T`; \} \| \{ `error`: [`WorkerTaskError`](interfaces/WorkerTaskError.md); `value?`: `undefined`; \}
+
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:399
+
+Result type that mirrors QuickJSContextResult from the main runtime.
+Provides a familiar API for clients using the worker pool.
+
+#### Type Parameters
+
+##### T
+
+`T` = `unknown`
+
+***
+
+### WorkerPoolVariant
+
+> **WorkerPoolVariant** = `"singlefile"` \| `"wasmfs"`
+
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:14
+
+Available QuickJS variants for the worker pool.
+
+- `"singlefile"` (default): Isolated workers with no shared state.
+  Best for sandboxed execution where workers don't need to share data.
+
+- `"wasmfs"`: Workers with shared OPFS filesystem.
+  All workers mount the same OPFS directory, enabling file-based communication.
+  Requires SharedArrayBuffer (COOP/COEP headers in browsers).
+
+***
+
+### WorkerTaskResult
+
+> **WorkerTaskResult**\<`T`\> = \{ `error?`: `undefined`; `value`: `T`; \} \| \{ `error`: [`WorkerTaskError`](interfaces/WorkerTaskError.md); `value?`: `undefined`; \}
+
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:142
+
+Result of a worker task execution.
+Follows the SuccessOrFail pattern from quickjs-emscripten-core.
+
+#### Type Parameters
+
+##### T
+
+`T` = `unknown`
+
 ## Variables
 
 ### DEBUG\_ASYNC
@@ -2171,6 +2258,81 @@ Defined in: packages/quickjs-ffi-types/dist/index.d.ts:90
 
 ***
 
+### canUseWorkers()
+
+> **canUseWorkers**(): `boolean`
+
+Defined in: [packages/quickjs-emscripten/src/mod.ts:282](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten/src/mod.ts#L282)
+
+Check if multi-threading is supported in the current environment.
+
+Returns true if SharedArrayBuffer is available (required for Web Workers
+to share memory). In browsers, this requires COOP/COEP headers to be set.
+In Node.js, this is typically always available.
+
+#### Returns
+
+`boolean`
+
+#### Example
+
+```typescript
+if (canUseWorkers()) {
+  console.log('Parallel execution available!')
+} else {
+  console.log('Falling back to single-threaded execution')
+}
+```
+
+***
+
+### configureWorkerPool()
+
+> **configureWorkerPool**(`config`): `void`
+
+Defined in: [packages/quickjs-emscripten/src/mod.ts:110](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten/src/mod.ts#L110)
+
+Configure the global worker pool settings.
+
+Call this before creating worker contexts to set up default worker pool options.
+These settings are used as defaults when calling [newWorkerAsyncContext](#newworkerasynccontext).
+
+#### Parameters
+
+##### config
+
+[`WorkerPoolConfig`](interfaces/WorkerPoolConfig.md)
+
+#### Returns
+
+`void`
+
+#### Example
+
+```typescript
+import { configureWorkerPool, newWorkerAsyncContext } from "@componentor/quickjs-emscripten"
+
+// Configure once at startup
+configureWorkerPool({
+  poolSize: 4,
+  bootstrapCode: `
+    globalThis.mockFetch = (url) => ({ status: 200, url })
+  `
+})
+
+// Create worker context - uses global config!
+const ctx = await newWorkerAsyncContext()
+
+// Parallel execution across workers
+const results = await Promise.all([
+  ctx.evalCodeAsync('mockFetch("/api/1")'),
+  ctx.evalCodeAsync('mockFetch("/api/2")'),
+  ctx.evalCodeAsync('mockFetch("/api/3")'),
+])
+```
+
+***
+
 ### createDisposableArray()
 
 > **createDisposableArray**\<`T`\>(`items?`): [`DisposableArray`](#disposablearray)\<`T`\>
@@ -2197,11 +2359,43 @@ Create an array that also implements [Disposable](interfaces/Disposable.md).
 
 ***
 
+### detectPlatform()
+
+> **detectPlatform**(): `"node"` \| `"browser"`
+
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:894
+
+Detect the current platform.
+
+#### Returns
+
+`"node"` \| `"browser"`
+
+'node' for Node.js, 'browser' for browser environments
+
+***
+
+### getDefaultPoolSize()
+
+> **getDefaultPoolSize**(): `number`
+
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:888
+
+Get the default pool size based on the environment.
+
+#### Returns
+
+`number`
+
+The number of logical CPU cores, or 4 as a fallback
+
+***
+
 ### getQuickJS()
 
 > **getQuickJS**(): `Promise`\<[`QuickJSWASMModule`](classes/QuickJSWASMModule.md)\>
 
-Defined in: [packages/quickjs-emscripten/src/mod.ts:28](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten/src/mod.ts#L28)
+Defined in: [packages/quickjs-emscripten/src/mod.ts:147](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten/src/mod.ts#L147)
 
 Get a shared singleton [QuickJSWASMModule](classes/QuickJSWASMModule.md). Use this to evaluate code
 or create Javascript environments.
@@ -2227,7 +2421,7 @@ To work with the asyncified version of this library, see these functions:
 
 > **getQuickJSSync**(): [`QuickJSWASMModule`](classes/QuickJSWASMModule.md)
 
-Defined in: [packages/quickjs-emscripten/src/mod.ts:41](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten/src/mod.ts#L41)
+Defined in: [packages/quickjs-emscripten/src/mod.ts:160](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten/src/mod.ts#L160)
 
 Provides synchronous access to the shared [QuickJSWASMModule](classes/QuickJSWASMModule.md) instance returned by [getQuickJS](#getquickjs), as long as
 least once.
@@ -2239,6 +2433,57 @@ least once.
 #### Throws
 
 If called before `getQuickJS` resolves.
+
+***
+
+### getWorkerPool()
+
+> **getWorkerPool**(): `Promise`\<[`QuickJSWorkerPool`](classes/QuickJSWorkerPool.md)\>
+
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:387
+
+Get a shared singleton worker pool.
+
+This is convenient for simple use cases. For more control,
+use [newWorkerPool](#newworkerpool) to create isolated pool instances.
+
+#### Returns
+
+`Promise`\<[`QuickJSWorkerPool`](classes/QuickJSWorkerPool.md)\>
+
+The singleton QuickJSWorkerPool instance
+
+***
+
+### getWorkerPoolConfig()
+
+> **getWorkerPoolConfig**(): [`WorkerPoolConfig`](interfaces/WorkerPoolConfig.md)
+
+Defined in: [packages/quickjs-emscripten/src/mod.ts:117](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten/src/mod.ts#L117)
+
+Get the current global worker pool configuration.
+
+#### Returns
+
+[`WorkerPoolConfig`](interfaces/WorkerPoolConfig.md)
+
+***
+
+### getWorkerPoolSync()
+
+> **getWorkerPoolSync**(): [`QuickJSWorkerPool`](classes/QuickJSWorkerPool.md)
+
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:393
+
+Provides synchronous access to the singleton pool, if it has been initialized.
+
+#### Returns
+
+[`QuickJSWorkerPool`](classes/QuickJSWorkerPool.md)
+
+#### Throws
+
+Error if the singleton has not been initialized via [getWorkerPool](#getworkerpool)
 
 ***
 
@@ -2267,6 +2512,28 @@ Defined in: [packages/quickjs-emscripten-core/src/vm-interface.ts:18](https://gi
 #### Returns
 
 `successOrFail is { error: F }`
+
+***
+
+### isMultiThreadingSupported()
+
+> **isMultiThreadingSupported**(): `boolean`
+
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:882
+
+Detect if multi-threading via Web Workers with SharedArrayBuffer is supported.
+
+In browsers, this requires:
+- SharedArrayBuffer to be available
+- The page to be cross-origin isolated (COOP/COEP headers set)
+
+In Node.js, worker_threads is always available.
+
+#### Returns
+
+`boolean`
+
+true if multi-threading is supported, false otherwise
 
 ***
 
@@ -2335,10 +2602,9 @@ const getDebugModule = memoizePromiseFactory(() => newQuickJSWASMModule(DEBUG_SY
 
 > **newAsyncContext**(`options?`): `Promise`\<[`QuickJSAsyncContext`](classes/QuickJSAsyncContext.md)\>
 
-Defined in: [packages/quickjs-emscripten/src/mod.ts:76](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten/src/mod.ts#L76)
+Defined in: [packages/quickjs-emscripten/src/mod.ts:196](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten/src/mod.ts#L196)
 
-Create a new [QuickJSAsyncContext](classes/QuickJSAsyncContext.md) (with an associated runtime) in an
-separate WebAssembly module.
+Create a new [QuickJSAsyncContext](classes/QuickJSAsyncContext.md) in a separate WebAssembly module.
 
 Each context is isolated in a separate WebAssembly module, so that errors in
 one runtime cannot contaminate another runtime, and each runtime can execute
@@ -2347,6 +2613,8 @@ an asynchronous action without conflicts.
 Note that there is a hard limit on the number of WebAssembly modules in older
 versions of v8:
 https://bugs.chromium.org/p/v8/issues/detail?id=12076
+
+For parallel execution across workers, use [newWorkerAsyncContext](#newworkerasynccontext) instead.
 
 #### Parameters
 
@@ -2364,7 +2632,7 @@ https://bugs.chromium.org/p/v8/issues/detail?id=12076
 
 > **newAsyncRuntime**(`options?`): `Promise`\<[`QuickJSAsyncRuntime`](classes/QuickJSAsyncRuntime.md)\>
 
-Defined in: [packages/quickjs-emscripten/src/mod.ts:59](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten/src/mod.ts#L59)
+Defined in: [packages/quickjs-emscripten/src/mod.ts:178](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten/src/mod.ts#L178)
 
 Create a new [QuickJSAsyncRuntime](classes/QuickJSAsyncRuntime.md) in a separate WebAssembly module.
 
@@ -2550,6 +2818,185 @@ This may be necessary in Cloudflare Workers, which can't compile WebAssembly mod
 #### Returns
 
 `T`
+
+***
+
+### newWorkerAsyncContext()
+
+> **newWorkerAsyncContext**(`options?`): `Promise`\<[`WorkerEnabledContext`](classes/WorkerEnabledContext.md)\>
+
+Defined in: [packages/quickjs-emscripten/src/mod.ts:251](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten/src/mod.ts#L251)
+
+Create a new [WorkerEnabledContext](classes/WorkerEnabledContext.md) for parallel execution across workers.
+
+This is the recommended way to use QuickJS with parallel execution. Each
+`evalCodeAsync` call can be distributed to different workers for parallelism.
+
+Uses global config from [configureWorkerPool](#configureworkerpool) as defaults, which can
+be overridden by passing options.
+
+#### Parameters
+
+##### options?
+
+[`WorkerAsyncContextOptions`](interfaces/WorkerAsyncContextOptions.md)
+
+Worker pool and context options (overrides global config)
+
+#### Returns
+
+`Promise`\<[`WorkerEnabledContext`](classes/WorkerEnabledContext.md)\>
+
+A new WorkerEnabledContext instance
+
+#### Examples
+
+```typescript
+// Simple usage with defaults
+const ctx = await newWorkerAsyncContext()
+
+// Parallel execution
+const results = await Promise.all([
+  ctx.evalCodeAsync('1 + 1'),
+  ctx.evalCodeAsync('2 + 2'),
+  ctx.evalCodeAsync('3 + 3'),
+])
+```
+
+```typescript
+// With bootstrap code for mocks
+const ctx = await newWorkerAsyncContext({
+  poolSize: 8,
+  bootstrapCode: `
+    globalThis.mockFetch = (url) => ({ status: 200, url })
+  `,
+})
+```
+
+***
+
+### newWorkerEnabledContext()
+
+> **newWorkerEnabledContext**(`options?`): `Promise`\<[`WorkerEnabledContext`](classes/WorkerEnabledContext.md)\>
+
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:869
+
+Create a new WorkerEnabledContext.
+
+This is the recommended way to use QuickJS with parallel worker execution.
+
+By default (useSession: false), evalCodeAsync calls are distributed across workers
+for parallel execution. Use `bootstrapCode` to set up shared state (like mocks)
+that runs on each worker.
+
+#### Parameters
+
+##### options?
+
+[`WorkerEnabledContextOptions`](interfaces/WorkerEnabledContextOptions.md)
+
+#### Returns
+
+`Promise`\<[`WorkerEnabledContext`](classes/WorkerEnabledContext.md)\>
+
+#### Examples
+
+```typescript
+// Parallel execution with shared mocks via bootstrapCode
+const ctx = await newWorkerEnabledContext({
+  poolSize: 4,
+  bootstrapCode: `
+    globalThis.mockFetch = (url) => ({ status: 200, url })
+  `
+})
+
+// Parallel execution - each call may hit a different worker
+// All workers have mockFetch from bootstrap!
+const results = await Promise.all([
+  ctx.evalCodeAsync('mockFetch("/api/1")'),
+  ctx.evalCodeAsync('mockFetch("/api/2")'),
+  ctx.evalCodeAsync('mockFetch("/api/3")'),
+])
+
+ctx.dispose()
+```
+
+```typescript
+// Use session for state persistence (sequential execution)
+const ctx = await newWorkerEnabledContext({
+  poolSize: 4,
+  useSession: true,  // All calls go to same worker
+})
+
+await ctx.evalCodeAsync('let x = 10')
+await ctx.evalCodeAsync('x += 5')
+const result = await ctx.evalCodeAsync('x')  // returns 15
+```
+
+***
+
+### newWorkerPool()
+
+> **newWorkerPool**(`options?`): `Promise`\<[`QuickJSWorkerPool`](classes/QuickJSWorkerPool.md)\>
+
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:378
+
+Create a new worker pool.
+
+#### Parameters
+
+##### options?
+
+[`WorkerPoolOptions`](interfaces/WorkerPoolOptions.md)
+
+Configuration options for the pool
+
+#### Returns
+
+`Promise`\<[`QuickJSWorkerPool`](classes/QuickJSWorkerPool.md)\>
+
+A new QuickJSWorkerPool instance
+
+***
+
+### newWorkerPoolContext()
+
+> **newWorkerPoolContext**(`pool`): [`WorkerPoolContext`](classes/WorkerPoolContext.md)
+
+Defined in: packages/quickjs-emscripten-worker-pool/dist/index.d.ts:551
+
+Create a context-like wrapper around a worker pool.
+
+This provides an API similar to QuickJSAsyncContext while routing
+code execution to workers for parallel processing.
+
+#### Parameters
+
+##### pool
+
+[`QuickJSWorkerPool`](classes/QuickJSWorkerPool.md)
+
+The worker pool to wrap
+
+#### Returns
+
+[`WorkerPoolContext`](classes/WorkerPoolContext.md)
+
+A context-like interface to the pool
+
+***
+
+### resetWorkerPoolConfig()
+
+> **resetWorkerPoolConfig**(): `void`
+
+Defined in: [packages/quickjs-emscripten/src/mod.ts:124](https://github.com/componentor/quickjs-emscripten/blob/main/packages/quickjs-emscripten/src/mod.ts#L124)
+
+Reset the global worker pool configuration to defaults.
+
+#### Returns
+
+`void`
 
 ***
 

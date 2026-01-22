@@ -177,9 +177,7 @@ export class WorkerPoolContext implements Disposable {
       }))
     }
 
-    const normalizedTasks = tasks.map((task) =>
-      typeof task === "string" ? { code: task } : task,
-    )
+    const normalizedTasks = tasks.map((task) => (typeof task === "string" ? { code: task } : task))
 
     return this._pool.evalCodeBatch(normalizedTasks)
   }

@@ -318,10 +318,7 @@ export class WorkerEnabledContext implements Disposable {
         return { error: { name: "Error", message: "No execution context available" } }
       }
 
-      const result = await this._localContext.evalCodeAsync(
-        code,
-        options?.filename ?? "eval.js",
-      )
+      const result = await this._localContext.evalCodeAsync(code, options?.filename ?? "eval.js")
 
       if (result.error) {
         const errorValue = this._localContext.dump(result.error)

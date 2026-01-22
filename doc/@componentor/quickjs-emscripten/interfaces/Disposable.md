@@ -12,6 +12,10 @@ An object that can be disposed.
 [Lifetime](../classes/Lifetime.md) is the canonical implementation of Disposable.
 Use [Scope](../classes/Scope.md) to manage cleaning up multiple disposables.
 
+## Extended by
+
+- [`WorkerSession`](WorkerSession.md)
+
 ## Properties
 
 ### alive
