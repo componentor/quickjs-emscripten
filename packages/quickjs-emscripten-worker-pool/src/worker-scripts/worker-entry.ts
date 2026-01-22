@@ -1136,7 +1136,7 @@ async function handleEval(message: EvalMessage): Promise<void> {
     })
 
     try {
-      let result: { value?: unknown; error?: unknown }
+      let result: { value?: unknown; error?: unknown } | undefined = undefined
 
       if (isAsyncVariant && asyncContext) {
         // Use evalCodeAsync for TLA support
@@ -1150,13 +1150,129 @@ async function handleEval(message: EvalMessage): Promise<void> {
         }
       } else if (syncContext) {
         // Use evalCode for sync variant (WasmFS uses pthreads for async I/O)
-        const syncResult = syncContext.evalCode(code, message.filename ?? "eval.js")
-        if (syncResult.error) {
-          result = { error: syncContext.dump(syncResult.error) }
-          syncResult.error.dispose()
+
+        // Check if code contains async patterns that need special handling
+        const hasAsyncCode = /\basync\s+function|\bawait\b|\bimport\s*\(/.test(code)
+
+        if (hasAsyncCode) {
+          console.log("[Worker] Detected async code, using Promise polling for sync variant...")
+
+          // Initialize the async result container
+          const initResult = syncContext.evalCode("globalThis.__asyncResult = { pending: true };")
+          if (initResult.error) {
+            initResult.error.dispose()
+          } else {
+            initResult.value.dispose()
+          }
+
+          // Wrap the code to capture the Promise result
+          // The original code (e.g., `(async function() {...})()`) evaluates to a Promise
+          const wrappedCode = `
+            (function() {
+              try {
+                var __promise = ${code};
+                if (__promise && typeof __promise.then === 'function') {
+                  __promise.then(
+                    function(v) { globalThis.__asyncResult = { done: true, value: v }; },
+                    function(e) { globalThis.__asyncResult = { done: true, error: e && e.message ? e.message : String(e) }; }
+                  );
+                } else {
+                  globalThis.__asyncResult = { done: true, value: __promise };
+                }
+              } catch (e) {
+                globalThis.__asyncResult = { done: true, error: e && e.message ? e.message : String(e) };
+              }
+            })();
+          `
+
+          const evalResult = syncContext.evalCode(wrappedCode, message.filename ?? "eval.js")
+          if (evalResult.error) {
+            result = { error: syncContext.dump(evalResult.error) }
+            evalResult.error.dispose()
+          } else {
+            evalResult.value.dispose()
+
+            // Poll executePendingJobs until the async result is available
+            const pollDeadline = message.timeout ? Date.now() + message.timeout : Date.now() + 60000
+            let pollCount = 0
+            const maxPolls = 1000000 // Safety limit
+
+            while (Date.now() < pollDeadline && pollCount < maxPolls) {
+              pollCount++
+
+              // Execute pending jobs (Promise callbacks, microtasks)
+              const jobResult = syncContext.runtime.executePendingJobs()
+              if (jobResult.error) {
+                const errValue = syncContext.dump(jobResult.error)
+                jobResult.error.dispose()
+                result = { error: errValue }
+                break
+              }
+
+              // Check if result is ready
+              const checkResult = syncContext.evalCode("globalThis.__asyncResult")
+              if (checkResult.error) {
+                checkResult.error.dispose()
+                continue
+              }
+
+              const asyncResultValue = syncContext.dump(checkResult.value) as {
+                pending?: boolean
+                done?: boolean
+                value?: unknown
+                error?: string
+              }
+              checkResult.value.dispose()
+
+              if (asyncResultValue && asyncResultValue.done) {
+                console.log(`[Worker] Async result ready after ${pollCount} polls`)
+                if ("error" in asyncResultValue && asyncResultValue.error !== undefined) {
+                  result = { error: { message: asyncResultValue.error } }
+                } else {
+                  result = { value: asyncResultValue.value }
+                }
+                break
+              }
+
+              // Check for cancellation/timeout
+              if (cancelledTaskId === message.taskId) {
+                break
+              }
+              if (deadline && Date.now() > deadline) {
+                timedOut = true
+                break
+              }
+            }
+
+            // Clean up the global
+            const cleanupResult = syncContext.evalCode("delete globalThis.__asyncResult;")
+            if (cleanupResult.error) {
+              cleanupResult.error.dispose()
+            } else {
+              cleanupResult.value.dispose()
+            }
+
+            if (result === undefined) {
+              if (timedOut) {
+                result = { error: { message: `Task timed out after ${message.timeout}ms` } }
+              } else if (cancelledTaskId === message.taskId) {
+                // Will be handled by the cancellation check below
+                result = { error: { message: "Task was cancelled" } }
+              } else {
+                result = { error: { message: "Async operation did not complete" } }
+              }
+            }
+          }
         } else {
-          result = { value: syncContext.dump(syncResult.value) }
-          syncResult.value.dispose()
+          // Regular sync code
+          const syncResult = syncContext.evalCode(code, message.filename ?? "eval.js")
+          if (syncResult.error) {
+            result = { error: syncContext.dump(syncResult.error) }
+            syncResult.error.dispose()
+          } else {
+            result = { value: syncContext.dump(syncResult.value) }
+            syncResult.value.dispose()
+          }
         }
       } else {
         throw new Error("No context available")
