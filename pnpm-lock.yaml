@@ -172,6 +172,9 @@ importers:
       '@componentor/quickjs-singlefile-cjs-release-asyncify':
         specifier: workspace:*
         version: link:../variant-quickjs-singlefile-cjs-release-asyncify
+      '@componentor/quickjs-wasmfs-release-sync':
+        specifier: workspace:*
+        version: link:../variant-quickjs-wasmfs-release-sync
       '@jitl/tsconfig':
         specifier: workspace:*
         version: link:../internal-tsconfig
