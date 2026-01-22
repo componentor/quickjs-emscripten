@@ -1,6 +1,6 @@
 {
   "name": "@componentor/quickjs-emscripten-worker-pool",
-  "version": "0.31.30",
+  "version": "0.31.31",
   "sideEffects": false,
   "license": "MIT",
   "type": "commonjs",

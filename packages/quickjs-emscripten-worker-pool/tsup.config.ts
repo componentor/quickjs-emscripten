@@ -19,7 +19,7 @@ export default defineConfig([
     ],
   },
   // Worker script - bundle for browser Web Workers
-  // QuickJS variants are dynamically imported at runtime based on configuration
+  // MUST be fully self-contained because browser workers can't resolve bare imports
   {
     entry: ["src/worker-scripts/worker-entry.ts"],
     outDir: "dist/worker",
@@ -29,20 +29,19 @@ export default defineConfig([
     minifySyntax: true,
     minifyWhitespace: true,
     tsconfig: "./tsconfig.build.json",
-    // Mark QuickJS variants as external - they are loaded dynamically at runtime
-    // NOTE: @componentor/quickjs-emscripten-core MUST be bundled (not external)
-    // because browser workers don't have access to import maps or node_modules
-    external: [
+    // NO external packages - browser workers can't resolve bare specifiers
+    // Everything must be bundled into the worker script
+    external: [],
+    // Explicitly include all quickjs packages in the bundle
+    noExternal: [
+      "@componentor/quickjs-emscripten-core",
       "@componentor/quickjs-wasmfs-release-sync",
       "@componentor/quickjs-singlefile-cjs-release-sync",
       "@componentor/quickjs-singlefile-cjs-release-asyncify",
     ],
-    // Explicitly include quickjs-emscripten-core in the bundle
-    // This is required because browser workers don't have import maps
-    noExternal: ["@componentor/quickjs-emscripten-core"],
     // Don't split into chunks - single file
     splitting: false,
-    // Disable tree shaking to preserve all exports from quickjs-emscripten-core
+    // Disable tree shaking to preserve all exports
     treeshake: false,
   },
 ])
