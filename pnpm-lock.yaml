@@ -88,6 +88,9 @@ importers:
       '@componentor/quickjs-emscripten-core':
         specifier: workspace:*
         version: link:../quickjs-emscripten-core
+      '@componentor/quickjs-emscripten-worker-pool':
+        specifier: workspace:*
+        version: link:../quickjs-emscripten-worker-pool
       '@componentor/quickjs-wasmfile-debug-asyncify':
         specifier: workspace:*
         version: link:../variant-quickjs-wasmfile-debug-asyncify
@@ -166,12 +169,9 @@ importers:
         specifier: workspace:*
         version: link:../quickjs-emscripten-core
     devDependencies:
-      '@componentor/quickjs-singlefile-cjs-release-sync':
+      '@componentor/quickjs-singlefile-cjs-release-asyncify':
         specifier: workspace:*
-        version: link:../variant-quickjs-singlefile-cjs-release-sync
-      '@componentor/quickjs-wasmfs-release-sync':
-        specifier: workspace:*
-        version: link:../variant-quickjs-wasmfs-release-sync
+        version: link:../variant-quickjs-singlefile-cjs-release-asyncify
       '@jitl/tsconfig':
         specifier: workspace:*
         version: link:../internal-tsconfig

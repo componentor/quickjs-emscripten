@@ -7,10 +7,9 @@
     "paths": {
       "@componentor/quickjs-emscripten-core": ["../quickjs-emscripten-core/src"],
       "@componentor/quickjs-emscripten-core/*": ["../quickjs-emscripten-core/src/*"],
-      "@componentor/quickjs-singlefile-cjs-release-sync": [
-        "../variant-quickjs-singlefile-cjs-release-sync/dist"
-      ],
-      "@componentor/quickjs-wasmfs-release-sync": ["../variant-quickjs-wasmfs-release-sync/dist"]
+      "@componentor/quickjs-singlefile-cjs-release-asyncify": [
+        "../variant-quickjs-singlefile-cjs-release-asyncify/dist"
+      ]
     }
   }
 }

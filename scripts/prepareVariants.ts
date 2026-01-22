@@ -345,7 +345,7 @@ async function main() {
       for (const dirToMake of makeDirs) {
         if (CLEAN) {
           try {
-            fs.rmdirSync(dirToMake, { recursive: true })
+            fs.rmSync(dirToMake, { recursive: true })
           } catch (e) {
             console.log("ignore", e)
           }
@@ -404,6 +404,7 @@ async function main() {
         },
         author: {
           name: "Componentor",
+          url: "https://github.com/componentor",
         },
         scripts: {
           build: "pnpm run build:c && pnpm run build:ts",

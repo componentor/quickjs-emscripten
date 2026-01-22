@@ -1,6 +1,6 @@
 {
   "name": "@componentor/quickjs-emscripten",
-  "version": "0.31.26",
+  "version": "0.31.27",
   "sideEffects": false,
   "license": "MIT",
   "type": "commonjs",
@@ -57,7 +57,8 @@
     "@componentor/quickjs-wasmfile-release-asyncify": "workspace:*",
     "@componentor/quickjs-wasmfile-release-sync": "workspace:*",
     "@componentor/quickjs-wasmfs-release-sync": "workspace:*",
-    "@componentor/quickjs-emscripten-core": "workspace:*"
+    "@componentor/quickjs-emscripten-core": "workspace:*",
+    "@componentor/quickjs-emscripten-worker-pool": "workspace:*"
   },
   "devDependencies": {
     "@componentor/quickjs-ffi-types": "workspace:*",

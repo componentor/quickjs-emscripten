@@ -2,17 +2,16 @@
  * Worker entry point.
  * This file runs inside a Web Worker or Node.js worker_threads.
  *
- * Uses sync variants for WasmFS support (shared filesystem).
- * Async operations are handled via executePendingJobs() loops,
- * matching how the main runtime handles promises and async work.
+ * Uses asyncify variants for full top-level await (TLA) support,
+ * matching how the main runtime uses evalCodeAsync.
  */
 
 import {
-  newQuickJSWASMModuleFromVariant,
+  newQuickJSAsyncWASMModuleFromVariant,
   newVariant,
-  type QuickJSWASMModule,
-  type QuickJSContext,
-  type QuickJSSyncVariant,
+  type QuickJSAsyncWASMModule,
+  type QuickJSAsyncContext,
+  type QuickJSAsyncVariant,
 } from "@componentor/quickjs-emscripten-core"
 import type {
   MainToWorkerMessage,
@@ -22,8 +21,8 @@ import type {
 } from "../serialization"
 import type { WorkerPoolVariant, WorkerTaskError } from "../types"
 
-let module: QuickJSWASMModule | null = null
-let context: QuickJSContext | null = null
+let module: QuickJSAsyncWASMModule | null = null
+let context: QuickJSAsyncContext | null = null
 let cancelledTaskId: string | null = null
 let currentVariant: WorkerPoolVariant = "singlefile"
 
@@ -84,57 +83,48 @@ function setupMessageListener(): void {
 }
 
 /**
- * Load the appropriate QuickJS sync variant based on configuration.
- * Uses sync variants for WasmFS support (shared filesystem).
+ * Load the appropriate QuickJS asyncify variant based on configuration.
+ * Uses asyncify variants for full top-level await support.
  */
 async function loadVariant(
   variantName: WorkerPoolVariant,
   wasmLocation?: string,
-): Promise<QuickJSSyncVariant> {
-  switch (variantName) {
-    case "wasmfs": {
-      // WasmFS variant with shared OPFS filesystem
-      const variantModule = await import("@componentor/quickjs-wasmfs-release-sync")
-      const baseVariant = (variantModule.default ?? variantModule) as unknown as QuickJSSyncVariant
-
-      // Configure WASM location if provided
-      if (wasmLocation) {
-        return newVariant(baseVariant, {
-          wasmLocation,
-          locateFile: (path: string) => {
-            // Handle WASM file
-            if (path.endsWith(".wasm")) {
-              return wasmLocation
-            }
-            // Handle pthread worker - typically in same directory as WASM
-            if (path.endsWith(".worker.js") || path.includes("worker")) {
-              return wasmLocation.replace(/\.wasm$/, "-worker.js")
-            }
-            // Default: use wasmLocation directory
-            const wasmDir = wasmLocation.substring(0, wasmLocation.lastIndexOf("/") + 1)
-            return wasmDir + path
-          },
-        })
-      }
-
-      return baseVariant
-    }
-    case "singlefile":
-    default: {
-      // Default singlefile variant - isolated, no shared state
-      const variantModule = await import("@componentor/quickjs-singlefile-cjs-release-sync")
-      return (variantModule.default ?? variantModule) as unknown as QuickJSSyncVariant
-    }
+): Promise<QuickJSAsyncVariant> {
+  // Note: WasmFS asyncify variant is not yet available, so we use singlefile-asyncify for all cases
+  if (variantName === "wasmfs") {
+    console.warn(
+      "[Worker] WasmFS asyncify variant not available, using singlefile-asyncify instead",
+    )
   }
+
+  // Load the asyncify variant for TLA support
+  const variantModule = await import("@componentor/quickjs-singlefile-cjs-release-asyncify")
+  const baseVariant = (variantModule.default ?? variantModule) as unknown as QuickJSAsyncVariant
+
+  // Configure WASM location if provided
+  if (wasmLocation) {
+    return newVariant(baseVariant, {
+      wasmLocation,
+      locateFile: (path: string) => {
+        if (path.endsWith(".wasm")) {
+          return wasmLocation
+        }
+        const wasmDir = wasmLocation.substring(0, wasmLocation.lastIndexOf("/") + 1)
+        return wasmDir + path
+      },
+    })
+  }
+
+  return baseVariant
 }
 
 async function handleInit(message: InitMessage): Promise<void> {
   try {
     currentVariant = message.variant ?? "singlefile"
 
-    // Load the appropriate sync variant with WASM location if provided
+    // Load the asyncify variant for TLA support
     const variant = await loadVariant(currentVariant, message.wasmLocation)
-    module = await newQuickJSWASMModuleFromVariant(variant)
+    module = await newQuickJSAsyncWASMModuleFromVariant(variant)
     context = module.newContext(message.contextOptions)
 
     // For wasmfs variant, the OPFS is automatically mounted at /root by the variant
@@ -142,7 +132,8 @@ async function handleInit(message: InitMessage): Promise<void> {
 
     // Run bootstrap code if provided (for setting up polyfills, globals, etc.)
     if (message.bootstrapCode && context) {
-      const result = context.evalCode(message.bootstrapCode, "<bootstrap>")
+      // Use evalCodeAsync for TLA support in bootstrap code
+      const result = await context.evalCodeAsync(message.bootstrapCode, "<bootstrap>")
       if (result.error) {
         const errorValue = context.dump(result.error)
         result.error.dispose()
@@ -160,9 +151,6 @@ async function handleInit(message: InitMessage): Promise<void> {
         return
       }
       result.value.dispose()
-
-      // Execute any pending jobs from bootstrap (promises, async work)
-      executePendingJobsLoop(context, 100)
 
       // Set up module loader for ES module imports (dynamic import() calls)
       // This allows polyfilled modules to be loaded via import() syntax
@@ -458,43 +446,6 @@ function isESModule(source: string): boolean {
   return /^\s*(import|export)\s/m.test(source)
 }
 
-/**
- * Execute pending jobs (promises, microtasks) in a loop.
- * This is how the main runtime handles async operations with sync QuickJS variants.
- *
- * @param ctx - The QuickJS context
- * @param maxIterations - Maximum number of iterations to prevent infinite loops
- * @returns True if any jobs were executed
- */
-function executePendingJobsLoop(ctx: QuickJSContext, maxIterations: number = 1000): boolean {
-  let hadJobs = false
-  let iterations = 0
-  let noJobIterations = 0
-  const maxNoJobIterations = 10 // Stop after 10 iterations with no jobs
-
-  while (iterations < maxIterations && noJobIterations < maxNoJobIterations) {
-    const result = ctx.runtime.executePendingJobs()
-
-    if (result.error) {
-      // Log error but continue - some errors are recoverable
-      const errorValue = ctx.dump(result.error)
-      result.error.dispose()
-      console.error("[Worker] Error in pending job:", errorValue)
-      hadJobs = true
-      noJobIterations = 0
-    } else if (result.value > 0) {
-      hadJobs = true
-      noJobIterations = 0
-    } else {
-      noJobIterations++
-    }
-
-    iterations++
-  }
-
-  return hadJobs
-}
-
 async function handleEval(message: EvalMessage): Promise<void> {
   if (!context) {
     postToMain({
@@ -557,10 +508,9 @@ async function handleEval(message: EvalMessage): Promise<void> {
     })
 
     try {
-      // Evaluate the code with the appropriate type option
-      // For ES modules, pass { type: 'module' } to enable import/export parsing
-      const evalOptions = isModule ? { type: "module" as const } : undefined
-      const result = context.evalCode(code, message.filename ?? "eval.js", evalOptions)
+      // Use evalCodeAsync for full top-level await support
+      // This matches how the main runtime handles async code
+      const result = await context.evalCodeAsync(code, message.filename ?? "eval.js")
 
       // Check if cancelled during evaluation
       if (cancelledTaskId === message.taskId) {
@@ -621,66 +571,7 @@ async function handleEval(message: EvalMessage): Promise<void> {
         return
       }
 
-      // Execute pending jobs (promises, async work) in a loop
-      // This is critical for handling dynamic imports, promises, and other async operations
-      // Match the main runtime's approach
-      let iterations = 0
-      const maxIterations = message.timeout ? Math.max(message.timeout / 10, 100) : 1000
-      let noJobIterations = 0
-      const maxNoJobIterations = 50 // Allow 50 iterations with no jobs before considering done
-
-      while (iterations < maxIterations && noJobIterations < maxNoJobIterations) {
-        // Check for cancellation
-        if (cancelledTaskId === message.taskId) {
-          cancelledTaskId = null
-          result.value.dispose()
-          postToMain({
-            type: "error",
-            taskId: message.taskId,
-            error: {
-              name: "CancelledError",
-              message: "Task was cancelled",
-              isCancelled: true,
-            },
-          })
-          return
-        }
-
-        // Check for timeout
-        if (deadline && Date.now() > deadline) {
-          result.value.dispose()
-          postToMain({
-            type: "error",
-            taskId: message.taskId,
-            error: {
-              name: "TimeoutError",
-              message: `Task timed out after ${message.timeout}ms`,
-              isTimeout: true,
-            },
-          })
-          return
-        }
-
-        const pendingResult = context.runtime.executePendingJobs()
-
-        if (pendingResult.error) {
-          // Log error but continue - some errors are recoverable
-          const errorValue = context.dump(pendingResult.error)
-          pendingResult.error.dispose()
-          console.error("[Worker] Error in pending job:", errorValue)
-          noJobIterations = 0
-        } else if (pendingResult.value > 0) {
-          noJobIterations = 0
-        } else {
-          noJobIterations++
-        }
-
-        iterations++
-
-        // Give async operations a chance to queue more work
-        await new Promise((resolve) => setTimeout(resolve, 10))
-      }
-
+      // With asyncify, TLA and promises are handled automatically by evalCodeAsync
       const value = context.dump(result.value)
       result.value.dispose()
 

@@ -5,7 +5,8 @@ A Worker Pool for parallel QuickJS execution with **graceful degradation** to si
 ## Features
 
 - **Parallel Execution** - Run multiple QuickJS evaluations concurrently across Web Workers
-- **Async Support** - Support for promises and async operations via executePendingJobs() loops
+- **Full Async Support** - Uses asyncify variants with `evalCodeAsync` for true top-level await (TLA) support
+- **Context-Compatible API** - `WorkerPoolContext` provides familiar QuickJSAsyncContext-like interface
 - **Shared Filesystem** - Optional WasmFS variant enables shared OPFS filesystem across workers
 - **Graceful Degradation** - Automatically falls back to single-threaded mode when SharedArrayBuffer is unavailable (no COOP/COEP headers)
 - **Cross-Platform** - Works in both browsers (Web Workers) and Node.js (worker_threads)
@@ -17,7 +18,7 @@ A Worker Pool for parallel QuickJS execution with **graceful degradation** to si
 ## Installation
 
 ```bash
-npm install @componentor/quickjs-emscripten-worker-pool @componentor/quickjs-singlefile-cjs-release-sync
+npm install @componentor/quickjs-emscripten-worker-pool @componentor/quickjs-singlefile-cjs-release-asyncify
 ```
 
 ## Quick Start
@@ -50,14 +51,126 @@ const results = await Promise.all([
 pool.dispose()
 ```
 
-## Async Operations Support
+## Context-Compatible API
 
-The worker pool handles promises and async operations using sync variants with `executePendingJobs()` loops. This allows async functions and promises to resolve properly:
+For a familiar QuickJSAsyncContext-like interface, use the `WorkerPoolContext` wrapper:
+
+```typescript
+import {
+  newWorkerPool,
+  newWorkerPoolContext,
+} from "@componentor/quickjs-emscripten-worker-pool"
+
+// Create a pool-backed context
+const pool = await newWorkerPool({ poolSize: 4 })
+const context = newWorkerPoolContext(pool)
+
+// Use like QuickJSAsyncContext.evalCodeAsync()
+const result = await context.evalCodeAsync("1 + 1")
+if (result.value !== undefined) {
+  console.log("Result:", result.value) // 2
+}
+
+// Parallel execution - multiple calls are distributed across workers
+const results = await Promise.all([
+  context.evalCodeAsync("Math.sqrt(16)"),
+  context.evalCodeAsync("Math.pow(2, 10)"),
+  context.evalCodeAsync("[1,2,3].map(x => x * 2)"),
+])
+
+// Batch execution for convenience
+const batchResults = await context.evalCodeBatch([
+  "1 + 1",
+  { code: "2 * 2", timeout: 5000 },
+  "Math.PI",
+])
+
+// unwrapResult helper
+const value = context.unwrapResult(result) // throws if error
+
+// Clean up
+context.dispose()
+pool.dispose()
+```
+
+The `WorkerPoolContext` provides the same result type as the main runtime, making it easy to switch between local and worker-based execution.
+
+## WorkerEnabledContext (Recommended)
+
+For the most seamless integration, use `WorkerEnabledContext` - a hybrid that combines a local QuickJSAsyncContext with worker pool execution. **By default, it uses parallel execution** across workers with `bootstrapCode` to set up shared state:
+
+```typescript
+import { newWorkerEnabledContext } from "@componentor/quickjs-emscripten-worker-pool"
+
+// Create hybrid context with parallel execution (default)
+// Use bootstrapCode to set up shared state across all workers
+const ctx = await newWorkerEnabledContext({
+  poolSize: 4,
+  bootstrapCode: `
+    // This runs on EVERY worker - perfect for mocks!
+    globalThis.mockFetch = (url) => ({ status: 200, url })
+    globalThis.config = { apiBase: 'https://api.example.com' }
+  `
+})
+
+// Parallel execution - each call may hit a different worker
+// All workers have mockFetch and config from bootstrap!
+const results = await Promise.all([
+  ctx.evalCodeAsync('mockFetch("/api/users")'),   // Worker 1
+  ctx.evalCodeAsync('mockFetch("/api/posts")'),   // Worker 2
+  ctx.evalCodeAsync('config.apiBase'),            // Worker 3
+])
+
+console.log(ctx.dump(results[0].value)) // { status: 200, url: '/api/users' }
+
+ctx.dispose()
+```
+
+### Session Mode (State Persistence)
+
+If you need **state to persist across calls** (like a REPL), enable session mode:
+
+```typescript
+const ctx = await newWorkerEnabledContext({
+  poolSize: 4,
+  useSession: true, // All calls go to same worker - state persists
+})
+
+// State persists across evalCodeAsync calls
+await ctx.evalCodeAsync("globalThis.counter = 0")
+await ctx.evalCodeAsync("counter++")
+await ctx.evalCodeAsync("counter++")
+const result = await ctx.evalCodeAsync("counter")
+console.log(ctx.dump(result.value)) // 2
+
+ctx.dispose()
+```
+
+### Parallel vs Session Mode
+
+| Feature | `useSession: false` (default) | `useSession: true` |
+|---------|-------------------------------|---------------------|
+| Parallelism | Yes - distributed across workers | No - all calls go to same worker |
+| State persistence | No - use `bootstrapCode` for shared state | Yes - variables/functions persist |
+| Use case | Parallel tasks, HTTP mocking | REPL, stateful runtime |
+
+**How it works:**
+
+- **Handle operations** (newFunction, newObject, setProp, etc.) use the local context
+- **evalCodeAsync** routes to workers (parallel) or session worker (sequential)
+- **bootstrapCode** runs on each worker during initialization
+- **Automatic fallback** - uses local context when workers unavailable
+
+This lets you use the familiar QuickJS API while benefiting from parallel worker execution with shared initial state.
+
+## Full Async/Await Support
+
+The worker pool uses **asyncify variants** with `evalCodeAsync` for full **top-level await (TLA)** support. This means async functions and promises work exactly like you'd expect:
 
 ```typescript
 const pool = await newWorkerPool({ poolSize: 4 })
 
-// Async functions work - promises are executed via pending jobs loop
+// Top-level await works! Promises are fully resolved
 const result = await pool.evalCode(`
   async function compute() {
     return new Promise(resolve => {
@@ -65,12 +178,13 @@ const result = await pool.evalCode(`
     })
   }
 
-  // Note: The result here is a Promise, not the resolved value
-  // because sync variants don't support true top-level await
-  compute()
+  // Top-level await - result is the resolved value, not a Promise!
+  await compute()
 `)
 
-// For synchronous computations, results work directly
+console.log(result.value) // 42
+
+// Synchronous computations work too
 const result2 = await pool.evalCode(`
   function fibonacci(n) {
     if (n <= 1) return n
@@ -84,7 +198,7 @@ console.log(result2.value) // 6765
 pool.dispose()
 ```
 
-**Note:** Sync variants use `executePendingJobs()` loops to process promises, but don't support true top-level await like asyncify variants do. For full async/TLA support, consider using asyncify variants directly.
+This matches how the main QuickJS runtime handles async code with `evalCodeAsync`.
 
 ## Shared Filesystem (WasmFS Variant)
 
@@ -386,6 +500,101 @@ session.workerId // ID of the pinned worker
 
 // Release session (return worker to pool)
 session.release()
+```
+
+### WorkerPoolContext Methods
+
+```typescript
+import { newWorkerPoolContext } from "@componentor/quickjs-emscripten-worker-pool"
+
+// Create context wrapper around pool
+const context = newWorkerPoolContext(pool)
+
+// Evaluate code (mirrors QuickJSAsyncContext.evalCodeAsync)
+const result = await context.evalCodeAsync("1 + 1")
+// result: { value: 2 } or { error: { name, message } }
+
+// With filename for error messages
+const result = await context.evalCodeAsync("throw new Error('oops')", "test.js")
+
+// With options
+const result = await context.evalCodeAsync("while(true){}", {
+  filename: "infinite.js",
+  timeout: 1000,
+})
+
+// Batch evaluation
+const results = await context.evalCodeBatch([
+  "1 + 1",
+  { code: "2 * 2", timeout: 5000 },
+])
+
+// Unwrap result (throws if error)
+const value = context.unwrapResult(result)
+
+// Check status
+context.alive // true if not disposed
+context.isMultiThreaded // true if using real workers
+
+// Clean up (does NOT dispose the pool)
+context.dispose()
+```
+
+### WorkerEnabledContext Methods
+
+```typescript
+import { newWorkerEnabledContext } from "@componentor/quickjs-emscripten-worker-pool"
+
+// Create with options
+const ctx = await newWorkerEnabledContext({
+  poolSize: 4,
+  // Bootstrap code runs on each worker (great for mocks!)
+  bootstrapCode: `globalThis.mockFetch = () => ({ status: 200 })`,
+  // Use a session for state persistence (default: false)
+  useSession: false,
+  // Strategy for routing evalCodeAsync
+  evalStrategy: "workers", // "workers" | "local" | "auto"
+  // Worker-only mode (no local context for handles)
+  workerOnly: false,
+  // Other pool options...
+})
+
+// Check capabilities
+ctx.hasWorkerPool // true if workers available
+ctx.isMultiThreaded // true if real multi-threading
+ctx.alive // true if not disposed
+ctx.usesSession // true if using a session (useSession: true)
+
+// Access underlying components
+ctx.localContext // QuickJSAsyncContext (null if workerOnly)
+ctx.pool // QuickJSWorkerPool (null if unavailable)
+ctx.session // WorkerSession (null if useSession: false)
+
+// Handle operations (use local context)
+const obj = ctx.newObject()
+const str = ctx.newString("hello")
+ctx.setProp(obj, "greeting", str)
+ctx.setProp(ctx.global, "myObj", obj)
+str.dispose()
+obj.dispose()
+
+// Code evaluation (routes to workers)
+const result = await ctx.evalCodeAsync("myObj.greeting")
+// result: { value: QuickJSHandle } or { error: QuickJSHandle }
+
+// Direct worker evaluation (returns raw values, not handles)
+const workerResult = await ctx.evalCodeOnWorkers("1 + 1")
+// workerResult: { value: 2 } or { error: { name, message } }
+
+// Batch evaluation across workers
+const results = await ctx.evalCodeBatch(["1 + 1", "2 * 2", "3 + 3"])
+
+// Dump handle to JavaScript value
+const value = ctx.dump(result.value)
+
+// Clean up
+result.value?.dispose()
+ctx.dispose()
 ```
 
 ### Capability Detection

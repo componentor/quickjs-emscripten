@@ -10,7 +10,7 @@
       "description": "Variant of quickjs library: Variant with separate .WASM file. Supports browser ESM, NodeJS ESM, and NodeJS CommonJS.",
       "sideEffects": false,
       "repository": { "type": "git", "url": "https://github.com/componentor/quickjs-emscripten" },
-      "author": { "name": "Componentor" },
+      "author": { "name": "Componentor", "url": "https://github.com/componentor" },
       "scripts": {
         "build": "pnpm run build:c && pnpm run build:ts",
         "build:c": "make",
@@ -77,7 +77,7 @@
       "description": "Variant of quickjs library: Variant with separate .WASM file. Supports browser ESM, NodeJS ESM, and NodeJS CommonJS.",
       "sideEffects": false,
       "repository": { "type": "git", "url": "https://github.com/componentor/quickjs-emscripten" },
-      "author": { "name": "Componentor" },
+      "author": { "name": "Componentor", "url": "https://github.com/componentor" },
       "scripts": {
         "build": "pnpm run build:c && pnpm run build:ts",
         "build:c": "make",
@@ -144,7 +144,7 @@
       "description": "Variant of quickjs library: Variant with separate .WASM file. Supports browser ESM, NodeJS ESM, and NodeJS CommonJS.",
       "sideEffects": false,
       "repository": { "type": "git", "url": "https://github.com/componentor/quickjs-emscripten" },
-      "author": { "name": "Componentor" },
+      "author": { "name": "Componentor", "url": "https://github.com/componentor" },
       "scripts": {
         "build": "pnpm run build:c && pnpm run build:ts",
         "build:c": "make",
@@ -211,7 +211,7 @@
       "description": "Variant of quickjs library: Variant with separate .WASM file. Supports browser ESM, NodeJS ESM, and NodeJS CommonJS.",
       "sideEffects": false,
       "repository": { "type": "git", "url": "https://github.com/componentor/quickjs-emscripten" },
-      "author": { "name": "Componentor" },
+      "author": { "name": "Componentor", "url": "https://github.com/componentor" },
       "scripts": {
         "build": "pnpm run build:c && pnpm run build:ts",
         "build:c": "make",
@@ -278,7 +278,7 @@
       "description": "Variant of quickjs library: Variant with separate .WASM file. Supports browser ESM, NodeJS ESM, and NodeJS CommonJS.",
       "sideEffects": false,
       "repository": { "type": "git", "url": "https://github.com/componentor/quickjs-emscripten" },
-      "author": { "name": "Componentor" },
+      "author": { "name": "Componentor", "url": "https://github.com/componentor" },
       "scripts": {
         "build": "pnpm run build:c && pnpm run build:ts",
         "build:c": "make",
@@ -345,7 +345,7 @@
       "description": "Variant of quickjs library: Variant with separate .WASM file. Supports browser ESM, NodeJS ESM, and NodeJS CommonJS.",
       "sideEffects": false,
       "repository": { "type": "git", "url": "https://github.com/componentor/quickjs-emscripten" },
-      "author": { "name": "Componentor" },
+      "author": { "name": "Componentor", "url": "https://github.com/componentor" },
       "scripts": {
         "build": "pnpm run build:c && pnpm run build:ts",
         "build:c": "make",
@@ -412,7 +412,7 @@
       "description": "Variant of quickjs library: Variant with separate .WASM file. Supports browser ESM, NodeJS ESM, and NodeJS CommonJS.",
       "sideEffects": false,
       "repository": { "type": "git", "url": "https://github.com/componentor/quickjs-emscripten" },
-      "author": { "name": "Componentor" },
+      "author": { "name": "Componentor", "url": "https://github.com/componentor" },
       "scripts": {
         "build": "pnpm run build:c && pnpm run build:ts",
         "build:c": "make",
@@ -479,7 +479,7 @@
       "description": "Variant of quickjs library: Variant with separate .WASM file. Supports browser ESM, NodeJS ESM, and NodeJS CommonJS.",
       "sideEffects": false,
       "repository": { "type": "git", "url": "https://github.com/componentor/quickjs-emscripten" },
-      "author": { "name": "Componentor" },
+      "author": { "name": "Componentor", "url": "https://github.com/componentor" },
       "scripts": {
         "build": "pnpm run build:c && pnpm run build:ts",
         "build:c": "make",
@@ -546,7 +546,7 @@
       "description": "Variant of quickjs library: Variant with the WASM data embedded into a universal (Node and Browser compatible) CommonJS module.",
       "sideEffects": false,
       "repository": { "type": "git", "url": "https://github.com/componentor/quickjs-emscripten" },
-      "author": { "name": "Componentor" },
+      "author": { "name": "Componentor", "url": "https://github.com/componentor" },
       "scripts": {
         "build": "pnpm run build:c && pnpm run build:ts",
         "build:c": "make -j2",
@@ -603,7 +603,7 @@
       "description": "Variant of quickjs library: Variant with the WASM data embedded into a universal (Node and Browser compatible) CommonJS module.",
       "sideEffects": false,
       "repository": { "type": "git", "url": "https://github.com/componentor/quickjs-emscripten" },
-      "author": { "name": "Componentor" },
+      "author": { "name": "Componentor", "url": "https://github.com/componentor" },
       "scripts": {
         "build": "pnpm run build:c && pnpm run build:ts",
         "build:c": "make -j2",
@@ -660,7 +660,7 @@
       "description": "Variant of quickjs library: Variant with the WASM data embedded into a universal (Node and Browser compatible) CommonJS module.",
       "sideEffects": false,
       "repository": { "type": "git", "url": "https://github.com/componentor/quickjs-emscripten" },
-      "author": { "name": "Componentor" },
+      "author": { "name": "Componentor", "url": "https://github.com/componentor" },
       "scripts": {
         "build": "pnpm run build:c && pnpm run build:ts",
         "build:c": "make -j2",
@@ -717,7 +717,7 @@
       "description": "Variant of quickjs library: Variant with the WASM data embedded into a universal (Node and Browser compatible) CommonJS module.",
       "sideEffects": false,
       "repository": { "type": "git", "url": "https://github.com/componentor/quickjs-emscripten" },
-      "author": { "name": "Componentor" },
+      "author": { "name": "Componentor", "url": "https://github.com/componentor" },
       "scripts": {
         "build": "pnpm run build:c && pnpm run build:ts",
         "build:c": "make -j2",
@@ -774,7 +774,7 @@
       "description": "Variant of quickjs library: Variant with the WASM data embedded into a NodeJS ESModule.",
       "sideEffects": false,
       "repository": { "type": "git", "url": "https://github.com/componentor/quickjs-emscripten" },
-      "author": { "name": "Componentor" },
+      "author": { "name": "Componentor", "url": "https://github.com/componentor" },
       "scripts": {
         "build": "pnpm run build:c && pnpm run build:ts",
         "build:c": "make -j2",
@@ -828,7 +828,7 @@
       "description": "Variant of quickjs library: Variant with the WASM data embedded into a NodeJS ESModule.",
       "sideEffects": false,
       "repository": { "type": "git", "url": "https://github.com/componentor/quickjs-emscripten" },
-      "author": { "name": "Componentor" },
+      "author": { "name": "Componentor", "url": "https://github.com/componentor" },
       "scripts": {
         "build": "pnpm run build:c && pnpm run build:ts",
         "build:c": "make -j2",
@@ -882,7 +882,7 @@
       "description": "Variant of quickjs library: Variant with the WASM data embedded into a NodeJS ESModule.",
       "sideEffects": false,
       "repository": { "type": "git", "url": "https://github.com/componentor/quickjs-emscripten" },
-      "author": { "name": "Componentor" },
+      "author": { "name": "Componentor", "url": "https://github.com/componentor" },
       "scripts": {
         "build": "pnpm run build:c && pnpm run build:ts",
         "build:c": "make -j2",
@@ -936,7 +936,7 @@
       "description": "Variant of quickjs library: Variant with the WASM data embedded into a NodeJS ESModule.",
       "sideEffects": false,
       "repository": { "type": "git", "url": "https://github.com/componentor/quickjs-emscripten" },
-      "author": { "name": "Componentor" },
+      "author": { "name": "Componentor", "url": "https://github.com/componentor" },
       "scripts": {
         "build": "pnpm run build:c && pnpm run build:ts",
         "build:c": "make -j2",
@@ -990,7 +990,7 @@
       "description": "Variant of quickjs library: Variant with the WASM data embedded into a browser ESModule.",
       "sideEffects": false,
       "repository": { "type": "git", "url": "https://github.com/componentor/quickjs-emscripten" },
-      "author": { "name": "Componentor" },
+      "author": { "name": "Componentor", "url": "https://github.com/componentor" },
       "scripts": {
         "build": "pnpm run build:c && pnpm run build:ts",
         "build:c": "make -j2",
@@ -1046,7 +1046,7 @@
       "description": "Variant of quickjs library: Variant with the WASM data embedded into a browser ESModule.",
       "sideEffects": false,
       "repository": { "type": "git", "url": "https://github.com/componentor/quickjs-emscripten" },
-      "author": { "name": "Componentor" },
+      "author": { "name": "Componentor", "url": "https://github.com/componentor" },
       "scripts": {
         "build": "pnpm run build:c && pnpm run build:ts",
         "build:c": "make -j2",
@@ -1102,7 +1102,7 @@
       "description": "Variant of quickjs library: Variant with the WASM data embedded into a browser ESModule.",
       "sideEffects": false,
       "repository": { "type": "git", "url": "https://github.com/componentor/quickjs-emscripten" },
-      "author": { "name": "Componentor" },
+      "author": { "name": "Componentor", "url": "https://github.com/componentor" },
       "scripts": {
         "build": "pnpm run build:c && pnpm run build:ts",
         "build:c": "make -j2",
@@ -1158,7 +1158,7 @@
       "description": "Variant of quickjs library: Variant with the WASM data embedded into a browser ESModule.",
       "sideEffects": false,
       "repository": { "type": "git", "url": "https://github.com/componentor/quickjs-emscripten" },
-      "author": { "name": "Componentor" },
+      "author": { "name": "Componentor", "url": "https://github.com/componentor" },
       "scripts": {
         "build": "pnpm run build:c && pnpm run build:ts",
         "build:c": "make -j2",
@@ -1214,7 +1214,7 @@
       "description": "Variant of quickjs library: Compiled to pure Javascript, no WebAssembly required.",
       "sideEffects": false,
       "repository": { "type": "git", "url": "https://github.com/componentor/quickjs-emscripten" },
-      "author": { "name": "Componentor" },
+      "author": { "name": "Componentor", "url": "https://github.com/componentor" },
       "scripts": {
         "build": "pnpm run build:c && pnpm run build:ts",
         "build:c": "make -j2",

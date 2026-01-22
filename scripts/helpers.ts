@@ -12,7 +12,8 @@ const INSTALL_FROM_REGISTRY = Boolean(process.env.INSTALL_FROM_REGISTRY)
 
 function getPackageJson(packageName: string) {
   packageSubdirs ??= fs.readdirSync(packagesDir).map((dir) => path.join(packagesDir, dir))
-  const subname = packageName.split("/").at(-1) ?? "none"
+  const parts = packageName.split("/")
+  const subname = parts[parts.length - 1] ?? "none"
   let searchDirs = packageSubdirs.filter((dir) => dir.endsWith(subname))
   if (searchDirs.length === 0) {
     searchDirs = packageSubdirs

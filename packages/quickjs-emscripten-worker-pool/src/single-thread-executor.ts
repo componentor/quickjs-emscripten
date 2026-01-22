@@ -1,9 +1,9 @@
 import {
-  newQuickJSWASMModuleFromVariant,
-  type QuickJSWASMModule,
-  type QuickJSContext,
+  newQuickJSAsyncWASMModuleFromVariant,
+  type QuickJSAsyncWASMModule,
+  type QuickJSAsyncContext,
   type ContextOptions,
-  type QuickJSSyncVariant,
+  type QuickJSAsyncVariant,
 } from "@componentor/quickjs-emscripten-core"
 import type { TaskExecutor, InternalTask, WorkerTaskResult } from "./types"
 import type { Logger } from "./logger"
@@ -12,12 +12,12 @@ import type { Logger } from "./logger"
  * Single-threaded executor that runs tasks sequentially on the main thread.
  * Used as a fallback when SharedArrayBuffer is not available.
  *
- * Uses sync variant with executePendingJobs() loops for async operations,
- * matching how the worker-entry.ts handles promises and async work.
+ * Uses asyncify variant with evalCodeAsync for full top-level await support,
+ * matching how the worker-entry.ts handles async operations.
  */
 export class SingleThreadExecutor implements TaskExecutor {
-  private module: QuickJSWASMModule | null = null
-  private context: QuickJSContext | null = null
+  private module: QuickJSAsyncWASMModule | null = null
+  private context: QuickJSAsyncContext | null = null
   private busy = false
   private _alive = true
 
@@ -43,19 +43,20 @@ export class SingleThreadExecutor implements TaskExecutor {
   }
 
   private async initialize(): Promise<void> {
-    this.logger.log("Loading QuickJS sync WASM module (single-threaded mode)...")
-    // Dynamically import the sync variant
-    const variantModule = await import("@componentor/quickjs-singlefile-cjs-release-sync")
+    this.logger.log("Loading QuickJS asyncify WASM module (single-threaded mode)...")
+    // Dynamically import the asyncify variant for full TLA support
+    const variantModule = await import("@componentor/quickjs-singlefile-cjs-release-asyncify")
     // Handle both ESM default export and CJS module.exports patterns
-    const variant = (variantModule.default ?? variantModule) as unknown as QuickJSSyncVariant
-    this.module = await newQuickJSWASMModuleFromVariant(variant)
+    const variant = (variantModule.default ?? variantModule) as unknown as QuickJSAsyncVariant
+    this.module = await newQuickJSAsyncWASMModuleFromVariant(variant)
     this.context = this.module.newContext(this.contextOptions)
-    this.logger.log("QuickJS sync context initialized")
+    this.logger.log("QuickJS asyncify context initialized")
 
     // Run bootstrap code if provided
     if (this.bootstrapCode && this.context) {
       this.logger.log("Running bootstrap code...")
-      const result = this.context.evalCode(this.bootstrapCode, "<bootstrap>")
+      // Use evalCodeAsync for TLA support in bootstrap code
+      const result = await this.context.evalCodeAsync(this.bootstrapCode, "<bootstrap>")
       if (result.error) {
         const errorValue = this.context.dump(result.error)
         result.error.dispose()
@@ -64,44 +65,8 @@ export class SingleThreadExecutor implements TaskExecutor {
         )
       }
       result.value.dispose()
-      // Execute any pending jobs from bootstrap
-      this.executePendingJobsLoop(100)
       this.logger.log("Bootstrap code completed")
     }
-  }
-
-  /**
-   * Execute pending jobs (promises, microtasks) in a loop.
-   * This handles async operations with sync QuickJS variants.
-   */
-  private executePendingJobsLoop(maxIterations: number = 1000): boolean {
-    if (!this.context) return false
-
-    let hadJobs = false
-    let iterations = 0
-    let noJobIterations = 0
-    const maxNoJobIterations = 10
-
-    while (iterations < maxIterations && noJobIterations < maxNoJobIterations) {
-      const result = this.context.runtime.executePendingJobs()
-
-      if (result.error) {
-        const errorValue = this.context.dump(result.error)
-        result.error.dispose()
-        this.logger.error("Error in pending job:", errorValue)
-        hadJobs = true
-        noJobIterations = 0
-      } else if (result.value > 0) {
-        hadJobs = true
-        noJobIterations = 0
-      } else {
-        noJobIterations++
-      }
-
-      iterations++
-    }
-
-    return hadJobs
   }
 
   get alive(): boolean {
@@ -160,8 +125,8 @@ export class SingleThreadExecutor implements TaskExecutor {
       }
 
       try {
-        // Use evalCode with executePendingJobs() loop for async operations
-        const result = this.context.evalCode(task.code, task.filename ?? "eval.js")
+        // Use evalCodeAsync for full top-level await support
+        const result = await this.context.evalCodeAsync(task.code, task.filename ?? "eval.js")
 
         if (result.error) {
           const errorValue = this.context.dump(result.error)
@@ -196,10 +161,7 @@ export class SingleThreadExecutor implements TaskExecutor {
           }
         }
 
-        // Execute pending jobs (promises, async work) in a loop
-        const maxIterations = task.timeout ? Math.max(task.timeout / 10, 100) : 1000
-        this.executePendingJobsLoop(maxIterations)
-
+        // With asyncify, TLA and promises are handled automatically by evalCodeAsync
         const value = this.context.dump(result.value)
         result.value.dispose()
 
