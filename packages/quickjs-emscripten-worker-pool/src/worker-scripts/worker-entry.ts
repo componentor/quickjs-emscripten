@@ -402,9 +402,7 @@ async function handleInit(message: InitMessage): Promise<void> {
     currentVariant = message.variant ?? "singlefile"
     isAsyncVariant = currentVariant !== "wasmfs"
 
-    console.log(
-      `[Worker] Initializing with variant: ${currentVariant}, isAsync: ${isAsyncVariant}`,
-    )
+    console.log(`[Worker] Initializing with variant: ${currentVariant}, isAsync: ${isAsyncVariant}`)
 
     if (isAsyncVariant) {
       // Load async variant (singlefile with asyncify)
