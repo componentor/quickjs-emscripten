@@ -8,7 +8,7 @@ import {
   type Disposable,
   type VmCallResult,
 } from "@componentor/quickjs-emscripten-core"
-import type { QuickJSWorkerPool} from "./pool";
+import type { QuickJSWorkerPool } from "./pool"
 import { newWorkerPool } from "./pool"
 import type { WorkerPoolOptions, WorkerTaskResult, WorkerSession } from "./types"
 import { isMultiThreadingSupported } from "./capabilities"
