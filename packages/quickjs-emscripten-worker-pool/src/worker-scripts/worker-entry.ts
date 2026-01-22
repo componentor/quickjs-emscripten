@@ -363,6 +363,172 @@ const moduleExports: Record<string, string[]> = {
 /**
  * Set up module loader for ES module imports.
  */
+/**
+ * WasmFS module interface (Emscripten Module-level wrappers)
+ */
+interface WasmFSModule {
+  readFile?(path: string): Uint8Array
+  readFileString?(path: string): string
+  writeFile?(path: string, data: Uint8Array): void
+  writeFileString?(path: string, content: string): void
+  readdir?(path: string): string[]
+  stat?(path: string): { mtime: Date; isDirectory(): boolean; mode: number }
+  mkdir?(path: string): void
+  unlink?(path: string): void
+  rmdir?(path: string): void
+  rename?(oldPath: string, newPath: string): void
+  exists?(path: string): boolean
+}
+
+/**
+ * Expose WasmFS methods to the QuickJS context as globalThis.__wasmFS
+ * This allows the fs polyfill to use WasmFS directly instead of std.open()
+ */
+function setupWasmFSGlobals(context: QuickJSContext): void {
+  const module = syncModule?.getWasmModule() as unknown as WasmFSModule | undefined
+  if (!module) {
+    console.log("[Worker] No WasmFS module available")
+    return
+  }
+
+  console.log("[Worker] Setting up WasmFS globals...")
+
+  // Create __wasmFS object
+  const wasmFSObj = context.newObject()
+
+  // Helper to create a wrapped function
+  const wrapFn = (name: string, fn: (...args: unknown[]) => unknown) => {
+    const wrapped = context.newFunction(name, (...handles) => {
+      try {
+        const args = handles.map((h) => context.dump(h))
+        const result = fn(...args)
+
+        // Handle different return types
+        if (result === undefined || result === null) {
+          return context.undefined
+        }
+        if (typeof result === "string") {
+          return context.newString(result)
+        }
+        if (typeof result === "boolean") {
+          return result ? context.true : context.false
+        }
+        if (typeof result === "number") {
+          return context.newNumber(result)
+        }
+        if (result instanceof Uint8Array) {
+          // Convert to array for QuickJS
+          const arr = context.newArray()
+          for (let i = 0; i < result.length; i++) {
+            const num = context.newNumber(result[i])
+            context.setProp(arr, i, num)
+            num.dispose()
+          }
+          return arr
+        }
+        if (Array.isArray(result)) {
+          const arr = context.newArray()
+          for (let i = 0; i < result.length; i++) {
+            const str = context.newString(String(result[i]))
+            context.setProp(arr, i, str)
+            str.dispose()
+          }
+          return arr
+        }
+        if (typeof result === "object") {
+          // Return stat-like objects
+          const obj = context.newObject()
+          for (const [key, val] of Object.entries(result as Record<string, unknown>)) {
+            if (typeof val === "function") {
+              const fnResult = (val as () => unknown)()
+              if (typeof fnResult === "boolean") {
+                context.setProp(obj, key, fnResult ? context.true : context.false)
+              }
+            } else if (typeof val === "number") {
+              const num = context.newNumber(val)
+              context.setProp(obj, key, num)
+              num.dispose()
+            } else if (val instanceof Date) {
+              const num = context.newNumber(val.getTime())
+              context.setProp(obj, key, num)
+              num.dispose()
+            }
+          }
+          return obj
+        }
+        return context.undefined
+      } catch (e) {
+        console.error(`[Worker] WasmFS.${name} error:`, e)
+        return context.newError(e instanceof Error ? e.message : String(e))
+      }
+    })
+    context.setProp(wasmFSObj, name, wrapped)
+    wrapped.dispose()
+  }
+
+  // Expose available WasmFS methods
+  if (module.readFileString) {
+    wrapFn("readFileString", (path: unknown) => module.readFileString!(String(path)))
+  }
+  if (module.writeFileString) {
+    wrapFn("writeFileString", (path: unknown, content: unknown) => {
+      module.writeFileString!(String(path), String(content))
+      return true
+    })
+  }
+  if (module.readFile) {
+    wrapFn("readFile", (path: unknown) => module.readFile!(String(path)))
+  }
+  if (module.writeFile) {
+    wrapFn("writeFile", (path: unknown, data: unknown) => {
+      // Convert array to Uint8Array
+      const arr = Array.isArray(data) ? new Uint8Array(data as number[]) : (data as Uint8Array)
+      module.writeFile!(String(path), arr)
+      return true
+    })
+  }
+  if (module.readdir) {
+    wrapFn("readdir", (path: unknown) => module.readdir!(String(path)))
+  }
+  if (module.stat) {
+    wrapFn("stat", (path: unknown) => module.stat!(String(path)))
+  }
+  if (module.mkdir) {
+    wrapFn("mkdir", (path: unknown) => {
+      module.mkdir!(String(path))
+      return true
+    })
+  }
+  if (module.unlink) {
+    wrapFn("unlink", (path: unknown) => {
+      module.unlink!(String(path))
+      return true
+    })
+  }
+  if (module.rmdir) {
+    wrapFn("rmdir", (path: unknown) => {
+      module.rmdir!(String(path))
+      return true
+    })
+  }
+  if (module.rename) {
+    wrapFn("rename", (oldPath: unknown, newPath: unknown) => {
+      module.rename!(String(oldPath), String(newPath))
+      return true
+    })
+  }
+  if (module.exists) {
+    wrapFn("exists", (path: unknown) => module.exists!(String(path)))
+  }
+
+  // Set __wasmFS as a global
+  const global = context.global
+  context.setProp(global, "__wasmFS", wasmFSObj)
+  wasmFSObj.dispose()
+
+  console.log("[Worker] WasmFS globals set up successfully")
+}
+
 function setupModuleLoader(runtime: QuickJSRuntime): void {
   runtime.setModuleLoader((moduleName: string, _ctx: unknown) => {
     console.log(`[Worker] Module loader called for: ${moduleName}`)
@@ -421,6 +587,12 @@ async function handleInit(message: InitMessage): Promise<void> {
     const context = getContext()
     if (!context) {
       throw new Error("Failed to create context")
+    }
+
+    // For WasmFS variant, expose WasmFS methods as globals BEFORE running bootstrap
+    // This allows the fs polyfill to use __wasmFS instead of std.open()
+    if (!isAsyncVariant && syncContext) {
+      setupWasmFSGlobals(syncContext)
     }
 
     // Run bootstrap code if provided
